@@ -1,4 +1,4 @@
-const bcrypt=require('bcrypt.js');
+const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const User=require('../models/User');
 
@@ -20,7 +20,7 @@ const registerUser=async (req,res)=>{
             role,
             teamName,
             purse:purse||100,
-            purseRemaining:purseRemaining||100
+            purseRemaining:purse||100
         });
 
         res.status(201).json({
