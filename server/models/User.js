@@ -24,11 +24,11 @@ const UserSchema=new mongoose.Schema({
     },
     purse:{
         type:Number,
-        default:100
+        default:12000
     },
     purseRemaining:{
         type:Number,
-        default:100
+        default:12000
     },
 
 },{

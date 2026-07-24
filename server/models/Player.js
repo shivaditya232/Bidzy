@@ -45,8 +45,9 @@ const playerSchema=new mongoose.Schema({
         type:Number,
         required:true
     },
-    setName:{
-        type:String,
+    set:{
+        type:mongoose.Types.ObjectId,
+        ref:'Set',
         required:true
     }
 },{timestamps:true});
