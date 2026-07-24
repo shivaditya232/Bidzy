@@ -1,5 +1,5 @@
 const Player=require('../models/Player');
-
+const Set=require('../models/Set');
 const getNextOrderStart=async ()=>{
     const lastPlayer=await Player.findOne().sort({order:-1});
     if(lastPlayer){
@@ -12,8 +12,14 @@ const getNextOrderStart=async ()=>{
 
 const getPlayers=async (req,res)=>{
     try{
-        const players=await Player.find().sort({order:1});
-        res.status(200).json(players);
+        const players=await Player.find().populate('set');
+        const sorted=players.sort((a,b)=>{
+            if(a.set.sequence!==b.set.sequence){
+                return a.set.sequence-b.set.sequence;
+            }
+            return a.order-b.order;
+        });
+        res.status(200).json(sorted);
     }
     catch(error){
         res.status(500).send({message:'Servor error',error:error.message});
@@ -22,9 +28,14 @@ const getPlayers=async (req,res)=>{
 
 const createPlayer=async (req,res)=>{
     try{
+        const {set}=req.body;
+        const setExists=await Set.findById(set);
+        if(!setExists){
+            return res.status(400).json({message:'No existing set'});
+        }
         const startOrder=await getNextOrderStart();
         const player=await Player.create({...req.body,order:startOrder});
-        res.status(201).json({message:'Player created succesfully'});
+        res.status(201).json({message:'Player created succesfully',player});
     }
     catch(error){
         res.status(500).send({message:'Servor error',error:error.message});
@@ -35,7 +46,7 @@ const updatePlayer=async (req,res)=>{
     try{
         const player=await Player.findByIdAndUpdate(req.params.id,req.body,{
             new:true,
-            runValidtors:true
+            runValidators:true
         });
 
         if(!player){
@@ -53,6 +64,14 @@ const updatePlayer=async (req,res)=>{
 const bulkCreatePlayers=async (req,res)=>{
     try{
         const players=req.body.players;
+
+        for (const player of players) {
+      const setExists = await Set.findById(player.set);
+      if (!setExists) {
+        return res.status(400).json({ message: `Invalid set ID for player ${player.name}` });
+      }
+    }
+
         const startOrder=await getNextOrderStart();
 
         const withOrder=players.map((player,index)=>{
