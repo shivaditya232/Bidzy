@@ -5,6 +5,7 @@ const connectDB=require('./config/db');
 const authRoutes=require('./routes/authRoutes');
 const playerRoutes=require('./routes/playerRoutes');
 const setRoutes = require('./routes/setRoutes');
+const auctionRoutes = require('./routes/auctionRoutes');
 const app=express();
 connectDB();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/api/auth',authRoutes);
 app.use('/api/players',playerRoutes);
 app.use('/api/sets', setRoutes);
+app.use('/api/auction', auctionRoutes);
 app.get('/',(req,res)=>{
     res.send("Bidzy API is running")
 });

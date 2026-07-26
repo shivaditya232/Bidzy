@@ -8,7 +8,7 @@ const BIDDING_SECONDS=15;
 const getOrCreateSession=async ()=>{
     let session=await AuctionSession.findOne();
     if(!session){
-        session=await AuctionSession.create();
+        session=await AuctionSession.create({});
     }
     return session;
 }
@@ -26,7 +26,7 @@ const startAuction=async (req,res)=>{
         const firstPlayer=await getNextPendingPlayer();
 
         if(!firstPlayer){
-            return res.status('400')
+            return res.status(400).json({message:"No players available to auction"});
         }
 
         session.currentPlayer=firstPlayer._id;
@@ -62,9 +62,8 @@ const placeBid=async (req,res)=>{
         if(new Date()>session.timerEndsAt){
             return res.status(400).json({message:'The time is over'});
         }
-        const {amount}=req.body;
         
-        if(session.highestBidder && session.highestBidder.toString===req.user.id){
+        if(session.highestBidder && session.highestBidder.toString()===req.user.id){
             return res.status(400).json({message:"You're already the highest bidder"});
         }
         const newAmount=session.currentPrice+getBidIncrement(session.currentPrice);
@@ -128,7 +127,7 @@ const finalizeAndAdvance=async()=>{
         await finishedPlayer.save();
     }
 
-    const upcomingPlayer=getNextPendingPlayer();
+    const upcomingPlayer=await getNextPendingPlayer();
     if(!upcomingPlayer){
         session.status='ended';
         session.currentPlayer=null;
@@ -149,6 +148,17 @@ const finalizeAndAdvance=async()=>{
 
 };
 
+const getCurrentAuction=async (req,res)=>{
+    try{
+        const session=await getOrCreateSession();
+        const populatedSession=await session.populate(['currentPlayer','highestBidder']);
+        res.status(200).json({populatedSession});
+    }
+    catch(error){
+        res.status(500).json({message:"Server error",error:error.message});
+    }
+}
+
 setInterval(async()=>{
     try{
         const session=await getOrCreateSession();
@@ -161,4 +171,4 @@ setInterval(async()=>{
     }
 },1000);
 
-module.exports={getOrCreateSession,startAuction,placeBid};
+module.exports={getOrCreateSession,startAuction,placeBid,getCurrentAuction};
