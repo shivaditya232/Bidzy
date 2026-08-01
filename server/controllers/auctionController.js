@@ -61,6 +61,7 @@ const placeBid=async (req,res)=>{
         }
         if(new Date()>session.timerEndsAt){
             return res.status(400).json({message:'The time is over'});
+        
         }
         
         if(session.highestBidder && session.highestBidder.toString()===req.user.id){
