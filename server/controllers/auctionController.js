@@ -2,7 +2,7 @@ const AuctionSession=require('../models/AuctionSession');
 const Player=require('../models/Player');
 const User=require('../models/User');
 const Bid=require('../models/Bid');
-
+const {getIO}=require('../config/socket');
 const BIDDING_SECONDS=15;
 
 const getOrCreateSession=async ()=>{
@@ -84,6 +84,11 @@ const placeBid=async (req,res)=>{
             team:req.user.id,
             amount:newAmount
         });
+        getIO().emit('bid-placed',{
+            currentPrice:session.currentPrice,
+            highestBidder:session.highestBidder,
+            timerEndsAt:session.timerEndsAt
+        });
 
         res.status(200).json({message:"PLayer bid placed successfully",session});
     }
@@ -136,6 +141,12 @@ const finalizeAndAdvance=async()=>{
         session.currentPrice=0;
         session.timerEndsAt=null;
         await session.save();
+        getIO().emit('auction-ended',{
+            finishedPlayer:finishedPlayer._id,
+            finalStatus:finishedPlayer.status,
+            soldPrice:finishedPlayer.soldPrice||null,
+            soldTo:finishedPlayer.soldTo||null
+        })
         return;
     }
 
@@ -146,6 +157,21 @@ const finalizeAndAdvance=async()=>{
     await session.save();
     upcomingPlayer.status='live';
     await upcomingPlayer.save();
+    getIO().emit('next-player',{
+        finishedPlayer:{
+            id:finishedPlayer._id,
+            status:finishedPlayer.status,
+            soldPrice:finishedPlayer.soldPrice||null,
+            soldTo:finishedPlayer.soldTo||null
+        },
+        newPlayer:{
+            id:upcomingPlayer._id,
+            name:upcomingPlayer.name,
+            basePrice:upcomingPlayer.basePrice
+        },
+        currentPrice:session.currentPrice,
+        timerEndsAt:session.timerEndsAt
+    })
 
 };
 
