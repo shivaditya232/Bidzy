@@ -1,8 +1,27 @@
+import { Routes, Route } from 'react-router-dom'
+import Login from './pages/Login'
+import AdminDashboard from './pages/AdminDashboard'
+import AuctionBoard from './pages/AuctionBoard'
+import ProtectedRoute from './components/ProtectedRoute'
+
 function App() {
   return (
-    <div className="text-4xl font-bold text-blue-600 text-center mt-10">
-      Bidzy
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      
+
+      
+      <Route path="/admin" element={
+        <ProtectedRoute allowedRole="admin">
+          <AdminDashboard />
+        </ProtectedRoute>
+        
+      } />
+      <Route path="/auction" element={
+        <ProtectedRoute allowedRole="team"><AuctionBoard /></ProtectedRoute>
+         }   />
+      
+    </Routes>
   )
 }
 
