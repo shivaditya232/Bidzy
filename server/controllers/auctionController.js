@@ -39,6 +39,12 @@ const startAuction=async (req,res)=>{
         firstPlayer.status='live';
         await firstPlayer.save();
 
+        getIO().emit('auction-started',{
+            currentPlayer:firstPlayer,
+            currentPrice:session.currentPrice,
+            timerEndsAt:session.timerEndsAt
+        });
+
         res.status(200).json({message:'Auction started'});
     }
     catch(error){

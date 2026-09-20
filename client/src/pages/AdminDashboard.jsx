@@ -1,9 +1,24 @@
 import { useState,useEffect } from "react"
 import api from "../api/axios"
+import socket from "../api/socket"
+import Toast from "../components/Toast"
 
 function AdminDashboard() {
     const [players,setPlayers]=useState([])
+    const [message,setMessage]=useState('')
+    const [messageType,setMessageType]=useState('success')
+
     useEffect(()=>{
+        if(!message) return;
+        const timer=setTimeout(()=>{
+            setMessage('')
+        },3000)
+        return ()=>{
+            clearTimeout(timer)
+        }
+    },[message])
+
+    const fetchPlayers=()=>{
         api.get('/players')
         .then(res=>{
             setPlayers(res.data)
@@ -11,11 +26,31 @@ function AdminDashboard() {
         .catch(err=>{
             console.log(err)
         })
+    }
+
+    useEffect(()=>{
+        fetchPlayers()
+
+        socket.on('auction-started',()=>{
+            fetchPlayers()
+        })
+        socket.on('next-player',()=>{
+            fetchPlayers()
+        })
+        socket.on('auction-ended',()=>{
+            fetchPlayers()
+        })
+
+        return ()=>{
+            socket.off('auction-started')
+            socket.off('next-player')
+            socket.off('auction-ended')
+        }
     },[])
 
     const [sets,setSets]=useState([])
 
-    useEffect(()=>{
+    const fetchSets=()=>{
         api.get('/sets')
         .then(res=>{
             setSets(res.data)
@@ -23,7 +58,27 @@ function AdminDashboard() {
         .catch(err=>{
             console.log(err)
         })
+    }
+
+    useEffect(()=>{
+        fetchSets()
     },[])
+
+    const [newSetName,setNewSetName]=useState('')
+
+    const handleCreateSet=()=>{
+        api.post('/sets',{name:newSetName})
+        .then(res=>{
+            setMessage(res.data.message)
+            setMessageType('success')
+            setNewSetName('')
+            fetchSets()
+        })
+        .catch(err=>{
+            setMessage(err.response?.data?.message||'Something went wrong')
+            setMessageType('error')
+        })
+    }
 
     const [name,setName]=useState('')
     const [role,setRole]=useState('Batsman')
@@ -44,24 +99,28 @@ function AdminDashboard() {
     const handleAddPlayer=()=>{
         api.post('/players',{name,role,country,basePrice,set,stats})
         .then(res=>{
-            console.log('Player added:',res.data)
             setPlayers([...players,res.data.player])
+            setMessage('Player added successfully')
+            setMessageType('success')
             setName('')
             setCountry('')
             setBasePrice('')
             setStats({matches:'',runs:'',battingAverage:'',strikeRate:'',wickets:'',bowlingEconomy:''})
         })
         .catch(err=>{
-            console.log(err)
+            setMessage(err.response?.data?.message||'Something went wrong')
+            setMessageType('error')
         })
     }
     const handleStartAuction=()=>{
         api.post('/auction/start')
         .then(res=>{
-            console.log(res.data)
+            setMessage(res.data.message)
+            setMessageType('success')
         })
         .catch(err=>{
-            console.log(err)
+            setMessage(err.response?.data?.message||'Something went wrong')
+            setMessageType('error')
         })
     }
 
@@ -71,12 +130,32 @@ function AdminDashboard() {
 
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-800">Admin dashboard</h1>
+        </div>
+
+        <Toast message={message} type={messageType} />
+
+        <div className="flex justify-end mb-8">
           <button
             onClick={handleStartAuction}
             className="bg-green-600 text-white px-5 py-2 rounded font-medium hover:bg-green-700"
           >
             Start Auction
           </button>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Create Set</h2>
+          <div className="flex gap-3">
+            <input type="text" value={newSetName} onChange={(e)=>{setNewSetName(e.target.value)}}
+              placeholder="e.g. Marquee, Batsman Set 1"
+              className="flex-1 border border-gray-300 rounded px-3 py-2" />
+            <button
+              onClick={handleCreateSet}
+              className="bg-gray-800 text-white px-5 py-2 rounded font-medium hover:bg-gray-900"
+            >
+              Create Set
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 mb-8">
@@ -126,41 +205,57 @@ function AdminDashboard() {
 
           <h3 className="text-sm font-semibold text-gray-600 mt-6 mb-3">Stats</h3>
           <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Matches</label>
-              <input type="number" value={stats.matches} onChange={(e)=>{handleStatsChange('matches',e.target.value)}}
-                className="w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
+            {(role==='Batsman' || role==='Wicketkeeper' || role==='Allrounder') && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Matches</label>
+                  <input type="number" value={stats.matches} onChange={(e)=>{handleStatsChange('matches',e.target.value)}}
+                    className="w-full border border-gray-300 rounded px-3 py-2" />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Runs</label>
-              <input type="number" value={stats.runs} onChange={(e)=>{handleStatsChange('runs',e.target.value)}}
-                className="w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Runs</label>
+                  <input type="number" value={stats.runs} onChange={(e)=>{handleStatsChange('runs',e.target.value)}}
+                    className="w-full border border-gray-300 rounded px-3 py-2" />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Batting Average</label>
-              <input type="number" value={stats.battingAverage} onChange={(e)=>{handleStatsChange('battingAverage',e.target.value)}}
-                className="w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Batting Average</label>
+                  <input type="number" value={stats.battingAverage} onChange={(e)=>{handleStatsChange('battingAverage',e.target.value)}}
+                    className="w-full border border-gray-300 rounded px-3 py-2" />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Strike Rate</label>
-              <input type="number" value={stats.strikeRate} onChange={(e)=>{handleStatsChange('strikeRate',e.target.value)}}
-                className="w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Strike Rate</label>
+                  <input type="number" value={stats.strikeRate} onChange={(e)=>{handleStatsChange('strikeRate',e.target.value)}}
+                    className="w-full border border-gray-300 rounded px-3 py-2" />
+                </div>
+              </>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Wickets</label>
-              <input type="number" value={stats.wickets} onChange={(e)=>{handleStatsChange('wickets',e.target.value)}}
-                className="w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
+            {role==='Bowler' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Matches</label>
+                <input type="number" value={stats.matches} onChange={(e)=>{handleStatsChange('matches',e.target.value)}}
+                  className="w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Bowling Economy</label>
-              <input type="number" value={stats.bowlingEconomy} onChange={(e)=>{handleStatsChange('bowlingEconomy',e.target.value)}}
-                className="w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
+            {(role==='Bowler' || role==='Allrounder') && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Wickets</label>
+                  <input type="number" value={stats.wickets} onChange={(e)=>{handleStatsChange('wickets',e.target.value)}}
+                    className="w-full border border-gray-300 rounded px-3 py-2" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Bowling Economy</label>
+                  <input type="number" value={stats.bowlingEconomy} onChange={(e)=>{handleStatsChange('bowlingEconomy',e.target.value)}}
+                    className="w-full border border-gray-300 rounded px-3 py-2" />
+                </div>
+              </>
+            )}
           </div>
 
           <button

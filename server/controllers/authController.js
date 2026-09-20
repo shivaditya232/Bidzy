@@ -19,8 +19,8 @@ const registerUser=async (req,res)=>{
             password:hashedPassword,
             role,
             teamName,
-            purse:purse||100,
-            purseRemaining:purse||100
+            purse:purse||12000,
+            purseRemaining:purse||12000
         });
 
         res.status(201).json({
