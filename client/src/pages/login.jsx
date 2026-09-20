@@ -31,32 +31,42 @@ function Login(){
         }
     }
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-80">
-                <h1 className="text-2xl font-bold mb-6 text-center">Bidzy Login</h1>
-                {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden px-4">
+            <div className="pointer-events-none absolute -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-200/30 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-violet-200/20 blur-3xl" />
 
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <form onSubmit={handleSubmit} className="relative bg-white p-8 rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_40px_-16px_rgba(15,23,42,0.2)] w-80">
+                <div className="flex flex-col items-center mb-6">
+                    <span className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-display font-bold text-lg shadow-md shadow-indigo-500/30 mb-3">
+                        B
+                    </span>
+                    <h1 className="font-display font-bold text-xl text-slate-800">Bidzy</h1>
+                    <p className="text-xs text-slate-400 mt-0.5">Sign in to continue</p>
+                </div>
+
+                {error && <p className="text-red-600 text-sm mb-4 text-center bg-red-50 rounded-lg py-2">{error}</p>}
+
+                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                 <input
                     type="email"
                     value={email}
                     onChange={(e)=>{setEmail(e.target.value)}}
                     required
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-shadow"
                 />
 
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
                 <input
                     type="password"
                     value={password}
                     onChange={(e)=>{setPassword(e.target.value)}}
                     required
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 mb-5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-shadow"
                 />
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                    className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-semibold shadow-md shadow-indigo-500/25 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all"
                 >
                     Log In
                 </button>
