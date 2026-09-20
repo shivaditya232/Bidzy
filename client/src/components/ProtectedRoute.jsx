@@ -7,8 +7,11 @@ function ProtectedRoute({children,allowedRole}){
     if(!token){
         return <Navigate to="/login" />
     }
-    if(allowedRole && role!==allowedRole){
-        return <Navigate to="/login" />
+    if(allowedRole){
+        const isAllowed=Array.isArray(allowedRole) ? allowedRole.includes(role) : role===allowedRole;
+        if(!isAllowed){
+            return <Navigate to="/login" />
+        }
     }
     return children
 }
