@@ -12,7 +12,7 @@ const getNextOrderStart=async ()=>{
 
 const getPlayers=async (req,res)=>{
     try{
-        const players=await Player.find().populate('set');
+        const players=await Player.find().populate('set').populate('soldTo','teamName');
         const sorted=players.sort((a,b)=>{
             if(a.set.sequence!==b.set.sequence){
                 return a.set.sequence-b.set.sequence;
@@ -86,4 +86,21 @@ const bulkCreatePlayers=async (req,res)=>{
     }
 
 };
-module.exports={bulkCreatePlayers,getPlayers,createPlayer,updatePlayer};
+const deletePlayer=async (req,res)=>{
+    try{
+        const player=await Player.findById(req.params.id);
+        if(!player){
+            return res.status(404).json({message:'Player not found'});
+        }
+        if(player.status!=='pending'){
+            return res.status(400).json({message:'Only pending players can be deleted'});
+        }
+        await Player.findByIdAndDelete(req.params.id);
+        res.status(200).json({message:'Player deleted successfully'});
+    }
+    catch(error){
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+module.exports={bulkCreatePlayers,getPlayers,createPlayer,updatePlayer,deletePlayer};

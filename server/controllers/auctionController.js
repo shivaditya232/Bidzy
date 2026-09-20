@@ -2,6 +2,7 @@ const AuctionSession=require('../models/AuctionSession');
 const Player=require('../models/Player');
 const User=require('../models/User');
 const Bid=require('../models/Bid');
+const AuctionRound=require('../models/AuctionRound');
 const {getIO}=require('../config/socket');
 const BIDDING_SECONDS=15;
 
@@ -85,15 +86,17 @@ const placeBid=async (req,res)=>{
         session.timerEndsAt=new Date(Date.now()+BIDDING_SECONDS*1000);
         await session.save();
 
+        getIO().emit('bid-placed',{
+            currentPrice:session.currentPrice,
+            highestBidder:session.highestBidder,
+            highestBidderName:team.teamName,
+            timerEndsAt:session.timerEndsAt
+        });
+
         await Bid.create({
             player:session.currentPlayer,
             team:req.user.id,
             amount:newAmount
-        });
-        getIO().emit('bid-placed',{
-            currentPrice:session.currentPrice,
-            highestBidder:session.highestBidder,
-            timerEndsAt:session.timerEndsAt
         });
 
         res.status(200).json({message:"PLayer bid placed successfully",session});
@@ -124,6 +127,7 @@ const finalizeAndAdvance=async()=>{
     }
     
     const finishedPlayer=await Player.findById(session.currentPlayer);
+    let winningTeamName=null;
     if(session.highestBidder){
     finishedPlayer.status='sold';
     finishedPlayer.soldPrice=session.currentPrice;
@@ -133,6 +137,7 @@ const finalizeAndAdvance=async()=>{
     const winningTeam=await User.findById(session.highestBidder);
     winningTeam.purseRemaining-=session.currentPrice;
     await winningTeam.save();
+    winningTeamName=winningTeam.teamName;
 }
     else{
         finishedPlayer.status='unsold';
@@ -148,10 +153,14 @@ const finalizeAndAdvance=async()=>{
         session.timerEndsAt=null;
         await session.save();
         getIO().emit('auction-ended',{
-            finishedPlayer:finishedPlayer._id,
-            finalStatus:finishedPlayer.status,
-            soldPrice:finishedPlayer.soldPrice||null,
-            soldTo:finishedPlayer.soldTo||null
+            finishedPlayer:{
+                id:finishedPlayer._id,
+                name:finishedPlayer.name,
+                status:finishedPlayer.status,
+                soldPrice:finishedPlayer.soldPrice||null,
+                soldTo:finishedPlayer.soldTo||null,
+                teamName:winningTeamName
+            }
         })
         return;
     }
@@ -166,9 +175,11 @@ const finalizeAndAdvance=async()=>{
     getIO().emit('next-player',{
         finishedPlayer:{
             id:finishedPlayer._id,
+            name:finishedPlayer.name,
             status:finishedPlayer.status,
             soldPrice:finishedPlayer.soldPrice||null,
-            soldTo:finishedPlayer.soldTo||null
+            soldTo:finishedPlayer.soldTo||null,
+            teamName:winningTeamName
         },
         newPlayer:{
             id:upcomingPlayer._id,
@@ -181,10 +192,64 @@ const finalizeAndAdvance=async()=>{
 
 };
 
+const resetAuction=async (req,res)=>{
+    try{
+        const players=await Player.find({status:{$in:['sold','unsold']}}).populate('soldTo','teamName');
+
+        const results=players.map(player=>({
+            playerName:player.name,
+            role:player.role,
+            country:player.country,
+            status:player.status,
+            soldPrice:player.soldPrice||null,
+            teamName:player.soldTo ? player.soldTo.teamName : null
+        }));
+
+        if(results.length>0){
+            await AuctionRound.create({results});
+        }
+
+        await Player.updateMany({},{status:'pending',soldPrice:null,soldTo:null});
+        await User.updateMany({role:'team'},[{$set:{purseRemaining:'$purse'}}],{updatePipeline:true});
+        await AuctionSession.deleteMany({});
+
+        res.status(200).json({message:'Auction has been reset. Ready for a new round.'});
+    }
+    catch(error){
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+const getAuctionRounds=async (req,res)=>{
+    try{
+        const rounds=await AuctionRound.find().sort({completedAt:-1});
+        res.status(200).json(rounds);
+    }
+    catch(error){
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+const getAuctionRoundById=async (req,res)=>{
+    try{
+        const round=await AuctionRound.findById(req.params.id);
+        if(!round){
+            return res.status(404).json({message:'Auction round not found'});
+        }
+        res.status(200).json(round);
+    }
+    catch(error){
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
 const getCurrentAuction=async (req,res)=>{
     try{
         const session=await getOrCreateSession();
-        const populatedSession=await session.populate(['currentPlayer','highestBidder']);
+        const populatedSession=await session.populate([
+            {path:'currentPlayer'},
+            {path:'highestBidder',select:'teamName'}
+        ]);
         res.status(200).json({populatedSession});
     }
     catch(error){
@@ -204,4 +269,4 @@ setInterval(async()=>{
     }
 },1000);
 
-module.exports={getOrCreateSession,startAuction,placeBid,getCurrentAuction};
+module.exports={getOrCreateSession,startAuction,placeBid,getCurrentAuction,resetAuction,getAuctionRounds,getAuctionRoundById};
