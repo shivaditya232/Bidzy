@@ -7,6 +7,7 @@ const playerRoutes=require('./routes/playerRoutes');
 const setRoutes = require('./routes/setRoutes');
 const auctionRoutes = require('./routes/auctionRoutes');
 const userRoutes = require('./routes/userRoutes');
+const roomRoutes=require('./routes/roomRoutes');
 const socketConfig=require('./config/socket');
 const seedDefaultSets=require('./config/seedSets');
 const http=require('http');
@@ -23,6 +24,7 @@ app.use('/api/players',playerRoutes);
 app.use('/api/sets', setRoutes);
 app.use('/api/auction', auctionRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/rooms',roomRoutes);
 app.get('/',(req,res)=>{
     res.send("Bidzy API is running")
 });
