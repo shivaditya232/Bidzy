@@ -4,20 +4,24 @@ const User=require('../models/User');
 
 const registerUser=async (req,res)=>{
     try{
-        const {name,email,password,role,teamName,purse}=req.body;
+        //only these three are read. role/teamName/purse in the body are ignored on purpose.
+        const name=typeof req.body.name==='string' ? req.body.name.trim() : '';
+        const email=typeof req.body.email==='string' ? req.body.email.trim().toLowerCase() : '';
+        const password=typeof req.body.password==='string' ? req.body.password : '';
+
+        if(!name||!email||!password){
+            return res.status(400).json({message:"Name, email and password are required"});
+        }
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+            return res.status(400).json({message:"Enter a valid email"});
+        }
+        if(password.length<6){
+            return res.status(400).json({message:"Password must be at least 6 characters"});
+        }
 
         const existingUser= await User.findOne({email});
         if(existingUser){
             return res.status(400).json({message:"User already exists with this email"});
-        }
-
-        let finalRole='team';
-        if(role==='admin'){
-            const adminExists=await User.findOne({role:'admin'});
-            if(adminExists){
-                return res.status(403).json({message:"Admin account already exists"});
-            }
-            finalRole='admin';
         }
 
         const hashedPassword=await bcrypt.hash(password,10);
@@ -25,24 +29,28 @@ const registerUser=async (req,res)=>{
         const newUser=await User.create({
             name,
             email,
-            password:hashedPassword,
-            role:finalRole,
-            teamName,
-            purse:purse||12000,
-            purseRemaining:purse||12000
+            password:hashedPassword
         });
+
+        //log them straight in after sign-up
+        const token=jwt.sign({id:newUser._id},process.env.JWT_SECRET,{expiresIn:'7d'});
 
         res.status(201).json({
             message:"User created successfully",
+            token,
             user:{
                 id:newUser._id,
                 name:newUser.name,
                 email:newUser.email,
-                role:newUser.role
+                role:newUser.role||null
             }
         });
     }
     catch(error){
+        //two sign-ups with the same email at the same instant: both pass findOne, the unique index rejects the second
+        if(error.code===11000){
+            return res.status(400).json({message:"User already exists with this email"});
+        }
         console.error('registerUser failed:',error.message);
         res.status(500).json({message:"server error",error:error.message});
     }
@@ -50,7 +58,11 @@ const registerUser=async (req,res)=>{
 
 const loginUser=async(req,res)=>{
     try{
-        const {email,password}=req.body;
+        const email=typeof req.body.email==='string' ? req.body.email.trim().toLowerCase() : '';
+        const password=typeof req.body.password==='string' ? req.body.password : '';
+        if(!email||!password){
+            return res.status(400).json({message:"Email and password are required"});
+        }
 
         const user=await User.findOne({email});
         if(!user){
@@ -60,8 +72,9 @@ const loginUser=async(req,res)=>{
         if(!isMatch){
             return res.status(400).json({message:'Invalid email or password'});
         }
+        //token only says who you are. what you're allowed to do is looked up fresh on each request.
         const token=jwt.sign({
-            id:user._id,role:user.role
+            id:user._id
         },process.env.JWT_SECRET,{
             expiresIn:'7d'
         });

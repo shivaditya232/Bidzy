@@ -8,7 +8,9 @@ const UserSchema=new mongoose.Schema({
     email:{
         type:String,
         required:true,
-        unique:true
+        unique:true,
+        lowercase:true,
+        trim:true
     },
     password:{
         type:String,
@@ -16,8 +18,9 @@ const UserSchema=new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['admin','team'],
-        required:true
+        //legacy global role for the single-auction app. new sign-ups get none;
+        //from A3.3 roles live on room membership (host/team) instead.
+        enum:['admin','team']
     },
     teamName:{
         type:String,
