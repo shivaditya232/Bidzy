@@ -1,8 +1,8 @@
 import { useState,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
-import { roomPath, getRoomId } from "../api/room"
-import socket from "../api/socket"
+import { roomPath } from "../api/room"
+import socket, { connectToRoom } from "../api/socket"
 import Toast from "../components/Toast"
 import ConfirmModal from "../components/ConfirmModal"
 import Navbar from "../components/Navbar"
@@ -52,18 +52,17 @@ function AdminDashboard() {
     useEffect(()=>{
         fetchPlayers()
 
-        socket.on('auction-started',(data)=>{
-          if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
+        socket.on('auction-started',()=>{
             fetchPlayers()
         })
-        socket.on('next-player',(data)=>{
-          if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
+        socket.on('next-player',()=>{
             fetchPlayers()
         })
-        socket.on('auction-ended',(data)=>{
-          if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
+        socket.on('auction-ended',()=>{
             fetchPlayers()
         })
+        // listeners are ready -> connect (with our token) and join this room's live events
+        connectToRoom()
 
         return ()=>{
             socket.off('auction-started')

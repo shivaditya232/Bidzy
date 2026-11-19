@@ -5,7 +5,7 @@ const Room=require('../models/Room');
 const Membership=require('../models/Membership');
 const Bid=require('../models/Bid');
 const AuctionRound=require('../models/AuctionRound');
-const {getIO}=require('../config/socket');
+const {emitToRoom}=require('../config/socket');
 
 //one session doc per room. if two requests create it at once, the unique index lets one win and the other re-reads.
 const getOrCreateSession=async (roomId)=>{
@@ -51,7 +51,7 @@ const startAuction=async (req,res)=>{
         firstPlayer.status='live';
         await firstPlayer.save();
 
-        getIO().emit('auction-started',{
+        emitToRoom(room._id,'auction-started',{
             roomId:room._id,
             currentPlayer:firstPlayer,
             currentPrice:session.currentPrice,
@@ -135,7 +135,7 @@ const placeBid=async (req,res)=>{
             return res.status(409).json({message:"You were outbid, try again"});
         }
 
-        getIO().emit('bid-placed',{
+        emitToRoom(room._id,'bid-placed',{
             roomId:room._id,
             currentPrice:updatedSession.currentPrice,
             highestBidder:updatedSession.highestBidder,
@@ -236,7 +236,7 @@ const finalizeAndAdvance=async(roomId)=>{
         );
         if(endedSession){
             await Room.updateOne({_id:roomId},{$set:{status:'ended'}});
-            getIO().emit('auction-ended',{roomId,finishedPlayer:finishedData});
+            emitToRoom(roomId,'auction-ended',{roomId,finishedPlayer:finishedData});
         }
         return;
     }
@@ -257,7 +257,7 @@ const finalizeAndAdvance=async(roomId)=>{
     }
     await Player.updateOne({_id:upcomingPlayer._id},{$set:{status:'live'}});
 
-    getIO().emit('next-player',{
+    emitToRoom(roomId,'next-player',{
         roomId,
         finishedPlayer:finishedData,
         newPlayer:{

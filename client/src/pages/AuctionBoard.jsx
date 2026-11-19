@@ -1,8 +1,8 @@
 import { useState,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
-import { roomPath, getRoomId } from "../api/room"
-import socket from "../api/socket"
+import { roomPath } from "../api/room"
+import socket, { connectToRoom } from "../api/socket"
 import Toast from "../components/Toast"
 import PlayerStatsModal from "../components/PlayerStatsModal"
 import Navbar from "../components/Navbar"
@@ -89,13 +89,11 @@ function AuctionBoard() {
     fetchAllPlayers()
     fetchTeamsList()
 
-    socket.on('auction-started',(data)=>{
-      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
+    socket.on('auction-started',()=>{
       fetchAuction()
       fetchAllPlayers()
     })
     socket.on('bid-placed',(data)=>{
-      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       setSession(prev => prev ? {
         ...prev,
         currentPrice: data.currentPrice,
@@ -104,7 +102,6 @@ function AuctionBoard() {
       } : prev)
     })
     socket.on('next-player',(data)=>{
-      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       setResultPopup(data.finishedPlayer)
       setTimeout(()=>{
         setResultPopup(null)
@@ -115,7 +112,6 @@ function AuctionBoard() {
       },2000)
     })
     socket.on('auction-ended',(data)=>{
-      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       setResultPopup(data.finishedPlayer)
       setTimeout(()=>{
         setResultPopup(null)
@@ -125,6 +121,8 @@ function AuctionBoard() {
         fetchTeamsList()
       },2000)
     })
+    // listeners are ready -> connect (with our token) and join this room's live events
+    connectToRoom()
     return ()=>{
       socket.off('auction-started')
       socket.off('bid-placed')

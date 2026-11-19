@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from '../api/axios';
+import { resetSocket } from "../api/socket";
 
 function Login(){
     const [email,setEmail]=useState('');
@@ -28,6 +29,8 @@ function Login(){
             const role=myRole==='host' ? 'admin' : 'team';
             localStorage.setItem('roomId',room._id);
             localStorage.setItem('role',role);
+            //drop any socket from a previous login so the next one connects with this user's token
+            resetSocket();
 
             if(role==='admin'){
                 navigate('/admin');
