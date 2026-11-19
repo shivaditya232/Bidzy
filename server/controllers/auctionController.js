@@ -1,39 +1,50 @@
+const mongoose=require('mongoose');
 const AuctionSession=require('../models/AuctionSession');
 const Player=require('../models/Player');
-const User=require('../models/User');
+const Room=require('../models/Room');
+const Membership=require('../models/Membership');
 const Bid=require('../models/Bid');
 const AuctionRound=require('../models/AuctionRound');
 const {getIO}=require('../config/socket');
-const BIDDING_SECONDS=15;
 
-const getOrCreateSession=async ()=>{
-    let session=await AuctionSession.findOne();
+//one session doc per room. if two requests create it at once, the unique index lets one win and the other re-reads.
+const getOrCreateSession=async (roomId)=>{
+    let session=await AuctionSession.findOne({room:roomId});
     if(!session){
-        session=await AuctionSession.create({});
+        try{
+            session=await AuctionSession.create({room:roomId});
+        }
+        catch(error){
+            if(error.code!==11000) throw error;
+            session=await AuctionSession.findOne({room:roomId});
+        }
     }
     return session;
 }
 
-
-
 const startAuction=async (req,res)=>{
+    let claimed=false;
     try{
-        const session=await getOrCreateSession();
-
-        if(session.status==='live'){
-            return res.status(400).json({message:'Auction is already live'});
-        }
-
-        const firstPlayer=await getNextPendingPlayer();
+        const room=req.room;
+        const firstPlayer=await getNextPendingPlayer(room._id);
 
         if(!firstPlayer){
             return res.status(400).json({message:"No players available to auction"});
         }
 
+        //claim the start: lobby -> live, only once. a double click (or two host tabs) can't start it twice.
+        const liveRoom=await Room.findOneAndUpdate({_id:room._id,status:'lobby'},{$set:{status:'live'}},{returnDocument:'after'});
+        if(!liveRoom){
+            const message=room.status==='ended' ? 'Auction has ended. Start a new auction first' : 'Auction is already live';
+            return res.status(400).json({message});
+        }
+        claimed=true;
+
+        const session=await getOrCreateSession(room._id);
         session.currentPlayer=firstPlayer._id;
         session.currentPrice=firstPlayer.basePrice;
         session.highestBidder=null;
-        session.timerEndsAt=new Date(Date.now()+BIDDING_SECONDS*1000);
+        session.timerEndsAt=new Date(Date.now()+liveRoom.settings.timerSeconds*1000);
         session.status='live';
         await session.save();
 
@@ -41,6 +52,7 @@ const startAuction=async (req,res)=>{
         await firstPlayer.save();
 
         getIO().emit('auction-started',{
+            roomId:room._id,
             currentPlayer:firstPlayer,
             currentPrice:session.currentPrice,
             timerEndsAt:session.timerEndsAt
@@ -49,35 +61,45 @@ const startAuction=async (req,res)=>{
         res.status(200).json({message:'Auction started'});
     }
     catch(error){
+        //we flipped the room to live but couldn't finish -> put it back so the host can retry
+        if(claimed){
+            await Room.updateOne({_id:req.room._id,status:'live'},{$set:{status:'lobby'}}).catch(()=>{});
+        }
         console.error('startAuction failed:',error.message);
         res.status(500).json({message:"Servor error",error:error.message});
     }
 }
 
-const getBidIncrement=(currentPrice)=>{
-    if(currentPrice<100) return 5;
-    if(currentPrice<200) return 10;
-    if(currentPrice<500) return 20;
-    return 25;
+//bands come from the room's settings, e.g. [{upTo:100,step:5},...,{upTo:null,step:25}]
+const getBidIncrement=(currentPrice,increments)=>{
+    for(const band of increments){
+        if(band.upTo===null||band.upTo===undefined||currentPrice<band.upTo){
+            return band.step;
+        }
+    }
+    return increments[increments.length-1].step;
 }
 
 const placeBid=async (req,res)=>{
     try{
-        const session=await getOrCreateSession();
-        if(session.status!=='live'){
+        const room=req.room;
+        const memberId=req.member._id;
+        const session=await AuctionSession.findOne({room:room._id});
+        if(!session||session.status!=='live'){
             return res.status(400).json({message:"No active bidding"});
         }
         if(new Date()>session.timerEndsAt){
             return res.status(400).json({message:'The time is over'});
-        
+
         }
-        
-        if(session.highestBidder && session.highestBidder.toString()===req.user.id){
+
+        if(session.highestBidder && session.highestBidder.toString()===memberId.toString()){
             return res.status(400).json({message:"You're already the highest bidder"});
         }
-        const newAmount=session.currentPrice+getBidIncrement(session.currentPrice);
+        const newAmount=session.currentPrice+getBidIncrement(session.currentPrice,room.settings.increments);
 
-        const team=await User.findById(req.user.id);
+        //fresh read: the purse may have changed since the request started
+        const team=await Membership.findById(memberId);
 
         if(newAmount>team.purseRemaining){
             return res.status(400).json({message:"Insufficient purse to place the bid"});
@@ -92,13 +114,13 @@ const placeBid=async (req,res)=>{
                 currentPlayer:session.currentPlayer,
                 currentPrice:session.currentPrice,
                 timerEndsAt:{$gt:now},
-                highestBidder:{$ne:req.user.id}
+                highestBidder:{$ne:memberId}
             },
             {
                 $set:{
                     currentPrice:newAmount,
-                    highestBidder:req.user.id,
-                    timerEndsAt:new Date(now.getTime()+BIDDING_SECONDS*1000)
+                    highestBidder:memberId,
+                    timerEndsAt:new Date(now.getTime()+room.settings.timerSeconds*1000)
                 }
             },
             {returnDocument:'after'}
@@ -114,6 +136,7 @@ const placeBid=async (req,res)=>{
         }
 
         getIO().emit('bid-placed',{
+            roomId:room._id,
             currentPrice:updatedSession.currentPrice,
             highestBidder:updatedSession.highestBidder,
             highestBidderName:team.teamName,
@@ -121,8 +144,9 @@ const placeBid=async (req,res)=>{
         });
 
         await Bid.create({
+            room:room._id,
             player:updatedSession.currentPlayer,
-            team:req.user.id,
+            team:memberId,
             amount:newAmount
         });
 
@@ -134,8 +158,8 @@ const placeBid=async (req,res)=>{
     }
 }
 
-const getNextPendingPlayer=async()=>{
-    const pendingPlayers=await Player.find({status:'pending'}).populate('set');
+const getNextPendingPlayer=async(roomId)=>{
+    const pendingPlayers=await Player.find({room:roomId,status:'pending'}).populate('set');
 
     pendingPlayers.sort((a,b)=>{
         if(a.set.sequence!==b.set.sequence){
@@ -147,17 +171,17 @@ const getNextPendingPlayer=async()=>{
     return pendingPlayers[0]||null;
 }
 
-const finalizeAndAdvance=async()=>{
+const finalizeAndAdvance=async(roomId)=>{
     //Step 1: claim. freeze the session (timerEndsAt:null) only if it is still live and the timer has passed.
     //only one caller can win this. it also makes any late bid fail, because bids need timerEndsAt > now.
     let session=await AuctionSession.findOneAndUpdate(
-        {status:'live',currentPlayer:{$ne:null},timerEndsAt:{$lte:new Date()}},
+        {room:roomId,status:'live',currentPlayer:{$ne:null},timerEndsAt:{$lte:new Date()}},
         {$set:{timerEndsAt:null}},
         {returnDocument:'after'}
     );
     if(!session){
         //no fresh claim. if a previous finalize crashed halfway, the session is live but frozen -> resume it.
-        session=await AuctionSession.findOne({status:'live',currentPlayer:{$ne:null},timerEndsAt:null});
+        session=await AuctionSession.findOne({room:roomId,status:'live',currentPlayer:{$ne:null},timerEndsAt:null});
     }
     if(!session){
         return;
@@ -165,7 +189,7 @@ const finalizeAndAdvance=async()=>{
 
     //Step 2: flip the player to sold/unsold. only the call that does this flip deducts the purse.
     const finishedPlayer=await Player.findOneAndUpdate(
-        {_id:session.currentPlayer,status:{$in:['live','pending']}},
+        {_id:session.currentPlayer,room:roomId,status:{$in:['live','pending']}},
         session.highestBidder
             ? {$set:{status:'sold',soldPrice:session.currentPrice,soldTo:session.highestBidder}}
             : {$set:{status:'unsold'}},
@@ -174,8 +198,8 @@ const finalizeAndAdvance=async()=>{
 
     if(finishedPlayer && finishedPlayer.status==='sold'){
         //conditional $inc: deduct only if the team can still afford it
-        const paidTeam=await User.findOneAndUpdate(
-            {_id:session.highestBidder,purseRemaining:{$gte:session.currentPrice}},
+        const paidTeam=await Membership.findOneAndUpdate(
+            {_id:session.highestBidder,room:roomId,purseRemaining:{$gte:session.currentPrice}},
             {$inc:{purseRemaining:-session.currentPrice}}
         );
         if(!paidTeam){
@@ -191,7 +215,7 @@ const finalizeAndAdvance=async()=>{
     const player=finishedPlayer||await Player.findById(session.currentPlayer);
     let winningTeamName=null;
     if(player.status==='sold'){
-        const winningTeam=await User.findById(player.soldTo).select('teamName');
+        const winningTeam=await Membership.findById(player.soldTo).select('teamName');
         winningTeamName=winningTeam ? winningTeam.teamName : null;
     }
     const finishedData={
@@ -204,25 +228,27 @@ const finalizeAndAdvance=async()=>{
     };
 
     //Step 3: advance. filter on currentPlayer so the session moves on exactly once.
-    const upcomingPlayer=await getNextPendingPlayer();
+    const upcomingPlayer=await getNextPendingPlayer(roomId);
     if(!upcomingPlayer){
         const endedSession=await AuctionSession.findOneAndUpdate(
             {_id:session._id,status:'live',currentPlayer:session.currentPlayer},
             {$set:{status:'ended',currentPlayer:null,highestBidder:null,currentPrice:0,timerEndsAt:null}}
         );
         if(endedSession){
-            getIO().emit('auction-ended',{finishedPlayer:finishedData});
+            await Room.updateOne({_id:roomId},{$set:{status:'ended'}});
+            getIO().emit('auction-ended',{roomId,finishedPlayer:finishedData});
         }
         return;
     }
 
+    const room=await Room.findById(roomId).select('settings.timerSeconds');
     const advancedSession=await AuctionSession.findOneAndUpdate(
         {_id:session._id,status:'live',currentPlayer:session.currentPlayer},
         {$set:{
             currentPlayer:upcomingPlayer._id,
             currentPrice:upcomingPlayer.basePrice,
             highestBidder:null,
-            timerEndsAt:new Date(Date.now()+BIDDING_SECONDS*1000)
+            timerEndsAt:new Date(Date.now()+room.settings.timerSeconds*1000)
         }},
         {returnDocument:'after'}
     );
@@ -232,6 +258,7 @@ const finalizeAndAdvance=async()=>{
     await Player.updateOne({_id:upcomingPlayer._id},{$set:{status:'live'}});
 
     getIO().emit('next-player',{
+        roomId,
         finishedPlayer:finishedData,
         newPlayer:{
             id:upcomingPlayer._id,
@@ -246,7 +273,8 @@ const finalizeAndAdvance=async()=>{
 
 const resetAuction=async (req,res)=>{
     try{
-        const players=await Player.find({status:{$in:['sold','unsold']}}).populate('soldTo','teamName');
+        const roomId=req.room._id;
+        const players=await Player.find({room:roomId,status:{$in:['sold','unsold']}}).populate('soldTo','teamName');
 
         const results=players.map(player=>({
             playerName:player.name,
@@ -260,12 +288,13 @@ const resetAuction=async (req,res)=>{
         }));
 
         if(results.length>0){
-            await AuctionRound.create({results});
+            await AuctionRound.create({room:roomId,results});
         }
 
-        await Player.updateMany({},{status:'pending',soldPrice:null,soldTo:null});
-        await User.updateMany({role:'team'},[{$set:{purseRemaining:'$purse'}}],{updatePipeline:true});
-        await AuctionSession.deleteMany({});
+        await Player.updateMany({room:roomId},{status:'pending',soldPrice:null,soldTo:null});
+        await Membership.updateMany({room:roomId,role:'team'},[{$set:{purseRemaining:'$purse'}}],{updatePipeline:true});
+        await AuctionSession.deleteOne({room:roomId});
+        await Room.updateOne({_id:roomId},{$set:{status:'lobby'}});
 
         res.status(200).json({message:'Auction has been reset. Ready for a new round.'});
     }
@@ -277,7 +306,7 @@ const resetAuction=async (req,res)=>{
 
 const getAuctionRounds=async (req,res)=>{
     try{
-        const rounds=await AuctionRound.find().sort({completedAt:-1});
+        const rounds=await AuctionRound.find({room:req.room._id}).sort({completedAt:-1});
         res.status(200).json(rounds);
     }
     catch(error){
@@ -288,7 +317,10 @@ const getAuctionRounds=async (req,res)=>{
 
 const getAuctionRoundById=async (req,res)=>{
     try{
-        const round=await AuctionRound.findById(req.params.id);
+        if(!mongoose.isValidObjectId(req.params.id)){
+            return res.status(404).json({message:'Auction round not found'});
+        }
+        const round=await AuctionRound.findOne({_id:req.params.id,room:req.room._id});
         if(!round){
             return res.status(404).json({message:'Auction round not found'});
         }
@@ -302,7 +334,7 @@ const getAuctionRoundById=async (req,res)=>{
 
 const getCurrentAuction=async (req,res)=>{
     try{
-        const session=await getOrCreateSession();
+        const session=await getOrCreateSession(req.room._id);
         const populatedSession=await session.populate([
             {path:'currentPlayer'},
             {path:'highestBidder',select:'teamName'}
@@ -318,17 +350,23 @@ const getCurrentAuction=async (req,res)=>{
 //if Atlas is slow, a tick can take longer than 1s. this flag stops the next tick from starting on top of it.
 let isTicking=false;
 
+//every second: find every live room whose timer ran out and finalize them all in parallel.
+//rooms are independent docs, so one slow room doesn't hold up the others' writes.
 const autoAdvanceTimer=setInterval(async()=>{
     if(isTicking){
         return;
     }
     isTicking=true;
     try{
-        const session=await getOrCreateSession();
         //timerEndsAt null while live = a finalize was interrupted (e.g. server restart), so resume it
-        if(session.status==='live' && (!session.timerEndsAt || new Date()>session.timerEndsAt)){
-            await finalizeAndAdvance();
-        }
+        const dueSessions=await AuctionSession.find({
+            status:'live',
+            $or:[{timerEndsAt:null},{timerEndsAt:{$lte:new Date()}}]
+        }).select('room');
+
+        await Promise.all(dueSessions.map(s=>
+            finalizeAndAdvance(s.room).catch(error=>console.error('Auto advance failed for room',s.room.toString(),error.message))
+        ));
     }
     catch(error){
         console.error('Auto advance check failed',error.message);

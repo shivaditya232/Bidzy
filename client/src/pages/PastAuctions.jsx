@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
+import { roomPath } from "../api/room"
 import Navbar from "../components/Navbar"
 
 const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.18)] p-6"
@@ -10,7 +11,7 @@ function PastAuctions() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        api.get('/auction/rounds')
+        api.get(roomPath('/auction/rounds'))
         .then(res => {
             setRounds(res.data)
         })

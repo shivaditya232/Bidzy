@@ -1,11 +1,12 @@
 const express=require('express');
 const router=express.Router();
 const {getPlayers,createPlayer,updatePlayer,bulkCreatePlayers,deletePlayer}=require('../controllers/playerController');
-const {protect,authorize}=require('../middleware/authMiddleware');
+const {requireHost}=require('../middleware/roomMiddleware');
 
-router.get('/',protect,getPlayers);
-router.post('/',protect,authorize('admin'),createPlayer);
-router.post('/bulk',protect,authorize('admin'),bulkCreatePlayers);
-router.patch('/:id',protect,authorize('admin'),updatePlayer);
-router.delete('/:id',protect,authorize('admin'),deletePlayer);
+//mounted at /api/rooms/:roomId/players. protect + loadRoomMember already ran, so req.room and req.member exist.
+router.get('/',getPlayers);
+router.post('/',requireHost,createPlayer);
+router.post('/bulk',requireHost,bulkCreatePlayers);
+router.patch('/:id',requireHost,updatePlayer);
+router.delete('/:id',requireHost,deletePlayer);
 module.exports=router;

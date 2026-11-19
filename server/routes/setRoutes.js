@@ -1,12 +1,13 @@
 const express=require('express');
 const router=express.Router();
 const {createSet,reorderSets,getSets,updateSet,deleteSet}=require('../controllers/setController');
-const {protect,authorize}=require('../middleware/authMiddleware');
+const {requireHost}=require('../middleware/roomMiddleware');
 
-router.get('/',protect,getSets);
-router.post('/',protect,authorize('admin'),createSet);
-router.patch('/reorder',protect,authorize('admin'),reorderSets);
-router.patch('/:id',protect,authorize('admin'),updateSet);
-router.delete('/:id',protect,authorize('admin'),deleteSet);
+//mounted at /api/rooms/:roomId/sets
+router.get('/',getSets);
+router.post('/',requireHost,createSet);
+router.patch('/reorder',requireHost,reorderSets);
+router.patch('/:id',requireHost,updateSet);
+router.delete('/:id',requireHost,deleteSet);
 
 module.exports=router;

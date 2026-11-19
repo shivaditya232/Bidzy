@@ -1,6 +1,8 @@
 const crypto=require('crypto');
+const mongoose=require('mongoose');
 const Room=require('../models/Room');
 const Membership=require('../models/Membership');
+const seedDefaultSets=require('../config/seedSets');
 
 //no 0/O/1/I so codes are easy to read out loud
 const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -86,6 +88,7 @@ const createRoom=async (req,res)=>{
         }
 
         await Membership.create({room:room._id,user:req.user.id,role:'host'});
+        await seedDefaultSets(room._id);
 
         res.status(201).json({message:'Room created',room});
     }
@@ -139,6 +142,14 @@ const joinRoom=async (req,res)=>{
                 purse:claimed.settings.purse,
                 purseRemaining:claimed.settings.purse
             });
+            //the host may have changed the purse between our read and our insert. settings saves the room first,
+            //then updates every team, so if we got in after that update, the room already shows the new purse here.
+            const latest=await Room.findById(room._id).select('settings.purse');
+            if(latest.settings.purse!==claimed.settings.purse){
+                await Membership.updateOne({_id:member._id,purse:claimed.settings.purse},{$set:{purse:latest.settings.purse,purseRemaining:latest.settings.purse}});
+                member.purse=latest.settings.purse;
+                member.purseRemaining=latest.settings.purse;
+            }
             res.status(201).json({message:'Joined room',room:claimed,member});
         }
         catch(error){
@@ -187,6 +198,7 @@ const getRoom=async (req,res)=>{
         res.status(200).json({
             room:req.room,
             me:{
+                id:req.member._id,
                 role:req.member.role,
                 teamName:req.member.teamName||null,
                 purseRemaining:req.member.purseRemaining??null
@@ -253,4 +265,71 @@ const updateRoomSettings=async (req,res)=>{
     }
 };
 
-module.exports={createRoom,joinRoom,getMyRooms,getRoom,updateRoomSettings};
+//my own membership in this room (replaces /users/me for the auction board)
+const getMyMember=async (req,res)=>{
+    try{
+        res.status(200).json(req.member);
+    }
+    catch(error){
+        console.error('getMyMember failed:',error.message);
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+//the teams in this room (replaces /users/teams and /users/public-teams). the host also sees emails.
+const getMembers=async (req,res)=>{
+    try{
+        const teams=await Membership.find({room:req.room._id,role:'team'}).populate('user','name email').sort({createdAt:1});
+        const isHost=req.member.role==='host';
+        res.status(200).json(teams.map(t=>({
+            _id:t._id,
+            teamName:t.teamName,
+            purse:t.purse,
+            purseRemaining:t.purseRemaining,
+            name:t.user ? t.user.name : null,
+            email:isHost&&t.user ? t.user.email : undefined
+        })));
+    }
+    catch(error){
+        console.error('getMembers failed:',error.message);
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+//host edits a team's name or purse (replaces PATCH /users/:id)
+const updateMember=async (req,res)=>{
+    try{
+        if(!mongoose.isValidObjectId(req.params.memberId)){
+            return res.status(404).json({message:'Team not found'});
+        }
+        const updateData={};
+        if(req.body.teamName!==undefined){
+            const teamName=cleanName(req.body.teamName,40);
+            if(!teamName) return res.status(400).json({message:'Team name is required (max 40 characters)'});
+            updateData.teamName=teamName;
+        }
+        if(req.body.purseRemaining!==undefined){
+            const purseRemaining=Number(req.body.purseRemaining);
+            if(!Number.isInteger(purseRemaining)||purseRemaining<0) return res.status(400).json({message:'Purse must be a whole number, 0 or more'});
+            updateData.purseRemaining=purseRemaining;
+        }
+        const team=await Membership.findOneAndUpdate(
+            {_id:req.params.memberId,room:req.room._id,role:'team'},
+            {$set:updateData},
+            {returnDocument:'after',runValidators:true}
+        );
+        if(!team){
+            return res.status(404).json({message:'Team not found'});
+        }
+        res.status(200).json({message:'Team updated successfully',team});
+    }
+    catch(error){
+        if(error.code===11000){
+            return res.status(400).json({message:'That team name is already taken in this room'});
+        }
+        console.error('updateMember failed:',error.message);
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+module.exports={createRoom,joinRoom,getMyRooms,getRoom,updateRoomSettings,getMyMember,getMembers,updateMember};

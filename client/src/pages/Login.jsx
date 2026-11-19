@@ -14,9 +14,19 @@ function Login(){
         try{
             const res=await api.post('auth/login',{email,password});
             const token=res.data.token;
-            const role=res.data.user.role;
-
             localStorage.setItem('token',token);
+
+            //bridge until the lobby (A3.5): open your most recent room.
+            //host of the room -> the dashboard, team in the room -> the auction board
+            const roomsRes=await api.get('/rooms');
+            if(roomsRes.data.length===0){
+                localStorage.removeItem('token');
+                setError('You are not in any room yet');
+                return;
+            }
+            const {room,myRole}=roomsRes.data[0];
+            const role=myRole==='host' ? 'admin' : 'team';
+            localStorage.setItem('roomId',room._id);
             localStorage.setItem('role',role);
 
             if(role==='admin'){

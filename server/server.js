@@ -3,26 +3,19 @@ const express=require('express');
 const cors=require('cors');
 const connectDB=require('./config/db');
 const authRoutes=require('./routes/authRoutes');
-const playerRoutes=require('./routes/playerRoutes');
-const setRoutes = require('./routes/setRoutes');
-const auctionRoutes = require('./routes/auctionRoutes');
 const userRoutes = require('./routes/userRoutes');
+//players, sets and the auction now live inside rooms: /api/rooms/:roomId/players etc.
 const roomRoutes=require('./routes/roomRoutes');
 const socketConfig=require('./config/socket');
-const seedDefaultSets=require('./config/seedSets');
 const http=require('http');
 const {Server}=require('socket.io');
 const app=express();
 const server=http.createServer(app);
 const io=socketConfig.init(server);
 connectDB();
-seedDefaultSets();
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth',authRoutes);
-app.use('/api/players',playerRoutes);
-app.use('/api/sets', setRoutes);
-app.use('/api/auction', auctionRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/rooms',roomRoutes);
 app.get('/',(req,res)=>{

@@ -37,9 +37,10 @@ const playerSchema=new mongoose.Schema({
     soldPrice:{
         type:Number
     },
+    //the winning team's membership in this room (teamName + purse live there)
     soldTo:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
+        ref:'Membership'
     },
     order:{
         type:Number,
@@ -49,6 +50,12 @@ const playerSchema=new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:'Set',
         required:true
+    },
+    room:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Room',
+        required:true,
+        index:true
     }
 },{timestamps:true});
 

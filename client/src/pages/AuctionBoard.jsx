@@ -1,6 +1,7 @@
 import { useState,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
+import { roomPath, getRoomId } from "../api/room"
 import socket from "../api/socket"
 import Toast from "../components/Toast"
 import PlayerStatsModal from "../components/PlayerStatsModal"
@@ -33,7 +34,7 @@ function AuctionBoard() {
   },[message])
 
   const fetchAuction=()=>{
-    api.get('/auction')
+    api.get(roomPath('/auction'))
     .then(res=>{
       setSession(res.data.populatedSession)
     })
@@ -43,7 +44,7 @@ function AuctionBoard() {
   }
 
   const fetchMyProfile=()=>{
-    api.get('/users/me')
+    api.get(roomPath('/members/me'))
     .then(res=>{
       setMyProfile(res.data)
     })
@@ -53,7 +54,7 @@ function AuctionBoard() {
   }
 
   const fetchAllPlayers=()=>{
-    api.get('/players')
+    api.get(roomPath('/players'))
     .then(res=>{
       setAllPlayers(res.data)
     })
@@ -63,7 +64,7 @@ function AuctionBoard() {
   }
 
   const fetchTeamsList=()=>{
-    api.get('/users/public-teams')
+    api.get(roomPath('/members'))
     .then(res=>{
       setTeamsList(res.data)
     })
@@ -72,7 +73,7 @@ function AuctionBoard() {
     })
   }
   const handleBid=()=>{
-    api.post('/auction/bid')
+    api.post(roomPath('/auction/bid'))
     .then(res=>{
       setMessage('Bid placed successfully')
       setMessageType('success')
@@ -88,11 +89,13 @@ function AuctionBoard() {
     fetchAllPlayers()
     fetchTeamsList()
 
-    socket.on('auction-started',()=>{
+    socket.on('auction-started',(data)=>{
+      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       fetchAuction()
       fetchAllPlayers()
     })
     socket.on('bid-placed',(data)=>{
+      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       setSession(prev => prev ? {
         ...prev,
         currentPrice: data.currentPrice,
@@ -101,6 +104,7 @@ function AuctionBoard() {
       } : prev)
     })
     socket.on('next-player',(data)=>{
+      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       setResultPopup(data.finishedPlayer)
       setTimeout(()=>{
         setResultPopup(null)
@@ -111,6 +115,7 @@ function AuctionBoard() {
       },2000)
     })
     socket.on('auction-ended',(data)=>{
+      if(String(data.roomId)!==getRoomId()) return // another room's event (until A3.4 uses socket rooms)
       setResultPopup(data.finishedPlayer)
       setTimeout(()=>{
         setResultPopup(null)

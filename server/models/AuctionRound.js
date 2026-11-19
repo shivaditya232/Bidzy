@@ -1,6 +1,12 @@
 const mongoose=require('mongoose');
 
 const auctionRoundSchema=new mongoose.Schema({
+    room:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Room',
+        required:true,
+        index:true
+    },
     completedAt:{
         type:Date,
         default:Date.now

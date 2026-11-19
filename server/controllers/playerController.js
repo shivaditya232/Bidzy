@@ -1,7 +1,9 @@
 const Player=require('../models/Player');
 const Set=require('../models/Set');
-const getNextOrderStart=async ()=>{
-    const lastPlayer=await Player.findOne().sort({order:-1});
+
+//order is per room: each room's players are numbered 1,2,3...
+const getNextOrderStart=async (roomId)=>{
+    const lastPlayer=await Player.findOne({room:roomId}).sort({order:-1});
     if(lastPlayer){
         return lastPlayer.order+1;
     }
@@ -12,7 +14,7 @@ const getNextOrderStart=async ()=>{
 
 const getPlayers=async (req,res)=>{
     try{
-        const players=await Player.find().populate('set').populate('soldTo','teamName');
+        const players=await Player.find({room:req.room._id}).populate('set').populate('soldTo','teamName');
         const sorted=players.sort((a,b)=>{
             if(a.set.sequence!==b.set.sequence){
                 return a.set.sequence-b.set.sequence;
@@ -30,12 +32,13 @@ const getPlayers=async (req,res)=>{
 const createPlayer=async (req,res)=>{
     try{
         const {set}=req.body;
-        const setExists=await Set.findById(set);
+        //the set has to be one of THIS room's sets
+        const setExists=await Set.findOne({_id:set,room:req.room._id});
         if(!setExists){
             return res.status(400).json({message:'No existing set'});
         }
-        const startOrder=await getNextOrderStart();
-        const player=await Player.create({...req.body,order:startOrder});
+        const startOrder=await getNextOrderStart(req.room._id);
+        const player=await Player.create({...req.body,order:startOrder,room:req.room._id});
         res.status(201).json({message:'Player created succesfully',player});
     }
     catch(error){
@@ -46,7 +49,15 @@ const createPlayer=async (req,res)=>{
 
 const updatePlayer=async (req,res)=>{
     try{
-        const player=await Player.findByIdAndUpdate(req.params.id,req.body,{
+        //room can never be changed through this route (that would move a player into someone else's room)
+        const {room,...updates}=req.body;
+        if(updates.set!==undefined){
+            const setExists=await Set.findOne({_id:updates.set,room:req.room._id});
+            if(!setExists){
+                return res.status(400).json({message:'No existing set'});
+            }
+        }
+        const player=await Player.findOneAndUpdate({_id:req.params.id,room:req.room._id},updates,{
             new:true,
             runValidators:true
         });
@@ -69,16 +80,16 @@ const bulkCreatePlayers=async (req,res)=>{
         const players=req.body.players;
 
         for (const player of players) {
-      const setExists = await Set.findById(player.set);
+      const setExists = await Set.findOne({_id:player.set,room:req.room._id});
       if (!setExists) {
         return res.status(400).json({ message: `Invalid set ID for player ${player.name}` });
       }
     }
 
-        const startOrder=await getNextOrderStart();
+        const startOrder=await getNextOrderStart(req.room._id);
 
         const withOrder=players.map((player,index)=>{
-            return {...player,order:startOrder+index};
+            return {...player,order:startOrder+index,room:req.room._id};
         })
 
         const created=await Player.insertMany(withOrder);
@@ -92,14 +103,14 @@ const bulkCreatePlayers=async (req,res)=>{
 };
 const deletePlayer=async (req,res)=>{
     try{
-        const player=await Player.findById(req.params.id);
+        const player=await Player.findOne({_id:req.params.id,room:req.room._id});
         if(!player){
             return res.status(404).json({message:'Player not found'});
         }
         if(player.status!=='pending'){
             return res.status(400).json({message:'Only pending players can be deleted'});
         }
-        await Player.findByIdAndDelete(req.params.id);
+        await Player.deleteOne({_id:player._id});
         res.status(200).json({message:'Player deleted successfully'});
     }
     catch(error){
