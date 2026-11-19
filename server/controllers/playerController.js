@@ -22,6 +22,7 @@ const getPlayers=async (req,res)=>{
         res.status(200).json(sorted);
     }
     catch(error){
+        console.error('getPlayers failed:',error.message);
         res.status(500).send({message:'Servor error',error:error.message});
     }
 };
@@ -38,6 +39,7 @@ const createPlayer=async (req,res)=>{
         res.status(201).json({message:'Player created succesfully',player});
     }
     catch(error){
+        console.error('createPlayer failed:',error.message);
         res.status(500).send({message:'Servor error',error:error.message});
     }
 }
@@ -57,6 +59,7 @@ const updatePlayer=async (req,res)=>{
 
     }
     catch(error){
+        console.error('updatePlayer failed:',error.message);
         res.status(500).json({message:"Server error",error:error.message});
     }
 };
@@ -82,6 +85,7 @@ const bulkCreatePlayers=async (req,res)=>{
         res.status(201).json({message:created.length+"players uploaded",players:created});
     }
     catch(error){
+        console.error('bulkCreatePlayers failed:',error.message);
         res.status(500).json({message:"Server error",error:error.message});
     }
 
@@ -99,6 +103,7 @@ const deletePlayer=async (req,res)=>{
         res.status(200).json({message:'Player deleted successfully'});
     }
     catch(error){
+        console.error('deletePlayer failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };

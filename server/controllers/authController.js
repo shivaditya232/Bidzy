@@ -11,13 +11,22 @@ const registerUser=async (req,res)=>{
             return res.status(400).json({message:"User already exists with this email"});
         }
 
+        let finalRole='team';
+        if(role==='admin'){
+            const adminExists=await User.findOne({role:'admin'});
+            if(adminExists){
+                return res.status(403).json({message:"Admin account already exists"});
+            }
+            finalRole='admin';
+        }
+
         const hashedPassword=await bcrypt.hash(password,10);
 
         const newUser=await User.create({
             name,
             email,
             password:hashedPassword,
-            role,
+            role:finalRole,
             teamName,
             purse:purse||12000,
             purseRemaining:purse||12000
@@ -34,6 +43,7 @@ const registerUser=async (req,res)=>{
         });
     }
     catch(error){
+        console.error('registerUser failed:',error.message);
         res.status(500).json({message:"server error",error:error.message});
     }
 };
@@ -68,6 +78,7 @@ const loginUser=async(req,res)=>{
         });
     }
     catch(error){
+        console.error('loginUser failed:',error.message);
         res.status(500).json({message:"Servor error",error:error.message});
     }
 };

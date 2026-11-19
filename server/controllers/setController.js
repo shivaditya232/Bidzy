@@ -23,6 +23,7 @@ const createSet=async (req,res)=>{
         res.status(201).json({message:'Set created successfully',set:newSet});
     }
     catch(error){
+        console.error('createSet failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -33,6 +34,7 @@ const getSets=async (req,res)=>{
     res.status(200).json(sets);
     }
     catch(error){
+        console.error('getSets failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 }
@@ -51,6 +53,7 @@ const reorderSets=async (req,res)=>{
         res.status(200).json({message:"Reordered successfully"});
     }
     catch(error){
+        console.error('reorderSets failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 }
@@ -68,6 +71,7 @@ const updateSet=async (req,res)=>{
         res.status(200).json({message:'Set updated successfully',set:updatedSet});
     }
     catch(error){
+        console.error('updateSet failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -85,6 +89,7 @@ const deleteSet=async (req,res)=>{
         res.status(200).json({message:'Set deleted successfully'});
     }
     catch(error){
+        console.error('deleteSet failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };

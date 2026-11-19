@@ -11,7 +11,16 @@ const auctionRoundSchema=new mongoose.Schema({
         country:{type:String},
         status:{type:String,enum:['sold','unsold']},
         soldPrice:{type:Number},
-        teamName:{type:String}
+        teamName:{type:String},
+        image:{type:String},
+        stats:{
+            matches:{type:Number},
+            runs:{type:Number},
+            battingAverage:{type:Number},
+            strikeRate:{type:Number},
+            wickets:{type:Number},
+            bowlingEconomy:{type:Number}
+        }
     }]
 });
 

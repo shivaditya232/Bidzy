@@ -49,6 +49,7 @@ const startAuction=async (req,res)=>{
         res.status(200).json({message:'Auction started'});
     }
     catch(error){
+        console.error('startAuction failed:',error.message);
         res.status(500).json({message:"Servor error",error:error.message});
     }
 }
@@ -102,6 +103,7 @@ const placeBid=async (req,res)=>{
         res.status(200).json({message:"PLayer bid placed successfully",session});
     }
     catch(error){
+        console.error('placeBid failed:',error.message);
         res.status(500).json({message:"Server error",error:error.message});
     }
 }
@@ -202,7 +204,9 @@ const resetAuction=async (req,res)=>{
             country:player.country,
             status:player.status,
             soldPrice:player.soldPrice||null,
-            teamName:player.soldTo ? player.soldTo.teamName : null
+            teamName:player.soldTo ? player.soldTo.teamName : null,
+            image:player.image||null,
+            stats:player.stats
         }));
 
         if(results.length>0){
@@ -216,6 +220,7 @@ const resetAuction=async (req,res)=>{
         res.status(200).json({message:'Auction has been reset. Ready for a new round.'});
     }
     catch(error){
+        console.error('resetAuction failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -226,6 +231,7 @@ const getAuctionRounds=async (req,res)=>{
         res.status(200).json(rounds);
     }
     catch(error){
+        console.error('getAuctionRounds failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -239,6 +245,7 @@ const getAuctionRoundById=async (req,res)=>{
         res.status(200).json(round);
     }
     catch(error){
+        console.error('getAuctionRoundById failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -253,6 +260,7 @@ const getCurrentAuction=async (req,res)=>{
         res.status(200).json({populatedSession});
     }
     catch(error){
+        console.error('getCurrentAuction failed:',error.message);
         res.status(500).json({message:"Server error",error:error.message});
     }
 }

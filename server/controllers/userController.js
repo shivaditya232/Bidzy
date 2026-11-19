@@ -6,6 +6,7 @@ const getTeams=async (req,res)=>{
         res.status(200).json(teams);
     }
     catch(error){
+        console.error('getTeams failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -29,6 +30,7 @@ const updateTeam=async (req,res)=>{
         res.status(200).json({message:'Team updated successfully',team});
     }
     catch(error){
+        console.error('updateTeam failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -39,6 +41,7 @@ const getPublicTeams=async (req,res)=>{
         res.status(200).json(teams);
     }
     catch(error){
+        console.error('getPublicTeams failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
@@ -52,6 +55,7 @@ const getMyProfile=async (req,res)=>{
         res.status(200).json(user);
     }
     catch(error){
+        console.error('getMyProfile failed:',error.message);
         res.status(500).json({message:'Server error',error:error.message});
     }
 };
