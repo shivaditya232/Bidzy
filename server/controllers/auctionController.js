@@ -82,25 +82,51 @@ const placeBid=async (req,res)=>{
         if(newAmount>team.purseRemaining){
             return res.status(400).json({message:"Insufficient purse to place the bid"});
         }
-        session.currentPrice=newAmount;
-        session.highestBidder=req.user.id;
-        session.timerEndsAt=new Date(Date.now()+BIDDING_SECONDS*1000);
-        await session.save();
+        //compare-and-set: only update if the session is still exactly what we just read.
+        //if another bid landed in between, currentPrice has changed and nothing matches.
+        const now=new Date();
+        const updatedSession=await AuctionSession.findOneAndUpdate(
+            {
+                _id:session._id,
+                status:'live',
+                currentPlayer:session.currentPlayer,
+                currentPrice:session.currentPrice,
+                timerEndsAt:{$gt:now},
+                highestBidder:{$ne:req.user.id}
+            },
+            {
+                $set:{
+                    currentPrice:newAmount,
+                    highestBidder:req.user.id,
+                    timerEndsAt:new Date(now.getTime()+BIDDING_SECONDS*1000)
+                }
+            },
+            {returnDocument:'after'}
+        );
+
+        if(!updatedSession){
+            //no match: either someone bid first, or the timer ran out in between. re-read to tell which.
+            const latest=await AuctionSession.findById(session._id);
+            if(!latest || latest.status!=='live' || !latest.timerEndsAt || new Date()>latest.timerEndsAt || latest.currentPlayer.toString()!==session.currentPlayer.toString()){
+                return res.status(400).json({message:'The time is over'});
+            }
+            return res.status(409).json({message:"You were outbid, try again"});
+        }
 
         getIO().emit('bid-placed',{
-            currentPrice:session.currentPrice,
-            highestBidder:session.highestBidder,
+            currentPrice:updatedSession.currentPrice,
+            highestBidder:updatedSession.highestBidder,
             highestBidderName:team.teamName,
-            timerEndsAt:session.timerEndsAt
+            timerEndsAt:updatedSession.timerEndsAt
         });
 
         await Bid.create({
-            player:session.currentPlayer,
+            player:updatedSession.currentPlayer,
             team:req.user.id,
             amount:newAmount
         });
 
-        res.status(200).json({message:"PLayer bid placed successfully",session});
+        res.status(200).json({message:"PLayer bid placed successfully",session:updatedSession});
     }
     catch(error){
         console.error('placeBid failed:',error.message);
@@ -122,74 +148,98 @@ const getNextPendingPlayer=async()=>{
 }
 
 const finalizeAndAdvance=async()=>{
-    const session=await getOrCreateSession();
-
-    if(session.status!=='live'||!session.currentPlayer){
+    //Step 1: claim. freeze the session (timerEndsAt:null) only if it is still live and the timer has passed.
+    //only one caller can win this. it also makes any late bid fail, because bids need timerEndsAt > now.
+    let session=await AuctionSession.findOneAndUpdate(
+        {status:'live',currentPlayer:{$ne:null},timerEndsAt:{$lte:new Date()}},
+        {$set:{timerEndsAt:null}},
+        {returnDocument:'after'}
+    );
+    if(!session){
+        //no fresh claim. if a previous finalize crashed halfway, the session is live but frozen -> resume it.
+        session=await AuctionSession.findOne({status:'live',currentPlayer:{$ne:null},timerEndsAt:null});
+    }
+    if(!session){
         return;
     }
-    
-    const finishedPlayer=await Player.findById(session.currentPlayer);
-    let winningTeamName=null;
-    if(session.highestBidder){
-    finishedPlayer.status='sold';
-    finishedPlayer.soldPrice=session.currentPrice;
-    finishedPlayer.soldTo=session.highestBidder;
-    await finishedPlayer.save();
 
-    const winningTeam=await User.findById(session.highestBidder);
-    winningTeam.purseRemaining-=session.currentPrice;
-    await winningTeam.save();
-    winningTeamName=winningTeam.teamName;
-}
-    else{
-        finishedPlayer.status='unsold';
-        await finishedPlayer.save();
+    //Step 2: flip the player to sold/unsold. only the call that does this flip deducts the purse.
+    const finishedPlayer=await Player.findOneAndUpdate(
+        {_id:session.currentPlayer,status:{$in:['live','pending']}},
+        session.highestBidder
+            ? {$set:{status:'sold',soldPrice:session.currentPrice,soldTo:session.highestBidder}}
+            : {$set:{status:'unsold'}},
+        {returnDocument:'after'}
+    );
+
+    if(finishedPlayer && finishedPlayer.status==='sold'){
+        //conditional $inc: deduct only if the team can still afford it
+        const paidTeam=await User.findOneAndUpdate(
+            {_id:session.highestBidder,purseRemaining:{$gte:session.currentPrice}},
+            {$inc:{purseRemaining:-session.currentPrice}}
+        );
+        if(!paidTeam){
+            console.error('Purse too low at finalize, marking unsold:',finishedPlayer.name);
+            finishedPlayer.status='unsold';
+            finishedPlayer.soldPrice=null;
+            finishedPlayer.soldTo=null;
+            await finishedPlayer.save();
+        }
     }
 
+    //if the flip didn't match, an earlier run already did it. just load the player for the event data.
+    const player=finishedPlayer||await Player.findById(session.currentPlayer);
+    let winningTeamName=null;
+    if(player.status==='sold'){
+        const winningTeam=await User.findById(player.soldTo).select('teamName');
+        winningTeamName=winningTeam ? winningTeam.teamName : null;
+    }
+    const finishedData={
+        id:player._id,
+        name:player.name,
+        status:player.status,
+        soldPrice:player.soldPrice||null,
+        soldTo:player.soldTo||null,
+        teamName:winningTeamName
+    };
+
+    //Step 3: advance. filter on currentPlayer so the session moves on exactly once.
     const upcomingPlayer=await getNextPendingPlayer();
     if(!upcomingPlayer){
-        session.status='ended';
-        session.currentPlayer=null;
-        session.highestBidder=null;
-        session.currentPrice=0;
-        session.timerEndsAt=null;
-        await session.save();
-        getIO().emit('auction-ended',{
-            finishedPlayer:{
-                id:finishedPlayer._id,
-                name:finishedPlayer.name,
-                status:finishedPlayer.status,
-                soldPrice:finishedPlayer.soldPrice||null,
-                soldTo:finishedPlayer.soldTo||null,
-                teamName:winningTeamName
-            }
-        })
+        const endedSession=await AuctionSession.findOneAndUpdate(
+            {_id:session._id,status:'live',currentPlayer:session.currentPlayer},
+            {$set:{status:'ended',currentPlayer:null,highestBidder:null,currentPrice:0,timerEndsAt:null}}
+        );
+        if(endedSession){
+            getIO().emit('auction-ended',{finishedPlayer:finishedData});
+        }
         return;
     }
 
-    session.currentPlayer=upcomingPlayer._id;
-    session.currentPrice=upcomingPlayer.basePrice;
-    session.highestBidder=null;
-    session.timerEndsAt=new Date(Date.now()+BIDDING_SECONDS*1000);
-    await session.save();
-    upcomingPlayer.status='live';
-    await upcomingPlayer.save();
+    const advancedSession=await AuctionSession.findOneAndUpdate(
+        {_id:session._id,status:'live',currentPlayer:session.currentPlayer},
+        {$set:{
+            currentPlayer:upcomingPlayer._id,
+            currentPrice:upcomingPlayer.basePrice,
+            highestBidder:null,
+            timerEndsAt:new Date(Date.now()+BIDDING_SECONDS*1000)
+        }},
+        {returnDocument:'after'}
+    );
+    if(!advancedSession){
+        return;
+    }
+    await Player.updateOne({_id:upcomingPlayer._id},{$set:{status:'live'}});
+
     getIO().emit('next-player',{
-        finishedPlayer:{
-            id:finishedPlayer._id,
-            name:finishedPlayer.name,
-            status:finishedPlayer.status,
-            soldPrice:finishedPlayer.soldPrice||null,
-            soldTo:finishedPlayer.soldTo||null,
-            teamName:winningTeamName
-        },
+        finishedPlayer:finishedData,
         newPlayer:{
             id:upcomingPlayer._id,
             name:upcomingPlayer.name,
             basePrice:upcomingPlayer.basePrice
         },
-        currentPrice:session.currentPrice,
-        timerEndsAt:session.timerEndsAt
+        currentPrice:advancedSession.currentPrice,
+        timerEndsAt:advancedSession.timerEndsAt
     })
 
 };
@@ -265,16 +315,27 @@ const getCurrentAuction=async (req,res)=>{
     }
 }
 
-setInterval(async()=>{
+//if Atlas is slow, a tick can take longer than 1s. this flag stops the next tick from starting on top of it.
+let isTicking=false;
+
+const autoAdvanceTimer=setInterval(async()=>{
+    if(isTicking){
+        return;
+    }
+    isTicking=true;
     try{
         const session=await getOrCreateSession();
-        if(session.status==='live' && session.timerEndsAt && new Date()>session.timerEndsAt){
+        //timerEndsAt null while live = a finalize was interrupted (e.g. server restart), so resume it
+        if(session.status==='live' && (!session.timerEndsAt || new Date()>session.timerEndsAt)){
             await finalizeAndAdvance();
         }
     }
     catch(error){
         console.error('Auto advance check failed',error.message);
     }
+    finally{
+        isTicking=false;
+    }
 },1000);
 
-module.exports={getOrCreateSession,startAuction,placeBid,getCurrentAuction,resetAuction,getAuctionRounds,getAuctionRoundById};
+module.exports={getOrCreateSession,startAuction,placeBid,getCurrentAuction,resetAuction,getAuctionRounds,getAuctionRoundById,finalizeAndAdvance,autoAdvanceTimer};
