@@ -9,6 +9,7 @@ const mongoose=require('mongoose');
 const User=require('../models/User');
 const Room=require('../models/Room');
 const Membership=require('../models/Membership');
+const Set=require('../models/Set');
 const {createRoom,joinRoom,getMyRooms,getRoom,updateRoomSettings}=require('../controllers/roomController');
 const {loadRoomMember,requireHost}=require('../middleware/roomMiddleware');
 
@@ -33,8 +34,8 @@ const makeUser=(name)=>User.create({name,email:name.toLowerCase()+'@test.com',pa
 before(async()=>{
     await mongoose.connect(process.env.MONGO_URI,{dbName:TEST_DB});
     assert.strictEqual(mongoose.connection.name,TEST_DB,'refusing to run outside the test database');
-    await Promise.all([User.deleteMany({}),Room.deleteMany({}),Membership.deleteMany({})]);
-    await Promise.all([Room.syncIndexes(),Membership.syncIndexes(),User.syncIndexes()]);
+    await Promise.all([User.deleteMany({}),Room.deleteMany({}),Membership.deleteMany({}),Set.deleteMany({})]);
+    await Promise.all([Room.syncIndexes(),Membership.syncIndexes(),User.syncIndexes(),Set.syncIndexes()]);
     [host,alice,bob,outsider]=await Promise.all(['Host','Alice','Bob','Outsider'].map(makeUser));
 });
 
@@ -59,6 +60,11 @@ test('create room: you become host, room gets defaults and an invite code',async
 
     const m=await Membership.findOne({room:roomId,user:host._id});
     assert.strictEqual(m.role,'host');
+
+    const sets=await Set.find({room:roomId}).sort({sequence:1});
+    assert.deepStrictEqual(sets.map(s=>s.name+':'+s.sequence),
+        ['Marquee:1','Batsman Set 1:2','Allrounder Set 1:3','Bowler Set 1:4','Wicketkeeper Set 1:5'],
+        'new room gets the 5 default sets in order');
 });
 
 test('create room validation',async()=>{

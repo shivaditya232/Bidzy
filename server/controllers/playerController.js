@@ -49,7 +49,6 @@ const createPlayer=async (req,res)=>{
 
 const updatePlayer=async (req,res)=>{
     try{
-        //room can never be changed through this route (that would move a player into someone else's room)
         const {room,...updates}=req.body;
         if(updates.set!==undefined){
             const setExists=await Set.findOne({_id:updates.set,room:req.room._id});

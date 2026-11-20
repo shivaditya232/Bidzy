@@ -73,7 +73,7 @@ const createRoom=async (req,res)=>{
             return res.status(400).json({message:error});
         }
 
-        //a clash is very unlikely (32^6 ≈ 1 billion codes), but the unique index will tell us. just try again.
+        
         let room=null;
         for(let attempt=0;attempt<5&&!room;attempt++){
             try{
@@ -265,7 +265,7 @@ const updateRoomSettings=async (req,res)=>{
     }
 };
 
-//my own membership in this room (replaces /users/me for the auction board)
+//my own membership in this room 
 const getMyMember=async (req,res)=>{
     try{
         res.status(200).json(req.member);
@@ -276,7 +276,7 @@ const getMyMember=async (req,res)=>{
     }
 };
 
-//the teams in this room (replaces /users/teams and /users/public-teams). the host also sees emails.
+//the teams in this room 
 const getMembers=async (req,res)=>{
     try{
         const teams=await Membership.find({room:req.room._id,role:'team'}).populate('user','name email').sort({createdAt:1});
@@ -296,7 +296,7 @@ const getMembers=async (req,res)=>{
     }
 };
 
-//host edits a team's name or purse (replaces PATCH /users/:id)
+//host edits a team's name or purse 
 const updateMember=async (req,res)=>{
     try{
         if(!mongoose.isValidObjectId(req.params.memberId)){
