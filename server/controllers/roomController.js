@@ -3,6 +3,7 @@ const mongoose=require('mongoose');
 const Room=require('../models/Room');
 const Membership=require('../models/Membership');
 const seedDefaultSets=require('../config/seedSets');
+const {getSquad,getRoomSquads}=require('../utils/auctionRules');
 
 //no 0/O/1/I so codes are easy to read out loud
 const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -19,7 +20,8 @@ const makeInviteCode=()=>{
 const isInt=(value,min,max)=>Number.isInteger(value)&&value>=min&&value<=max;
 
 //checks only the fields that were sent. returns {error} or {values}
-const validateSettings=(body)=>{
+//current = the room's settings right now ({purse, rules}), needed because the rules are checked as a whole
+const validateSettings=(body,current)=>{
     const values={};
     if(body.purse!==undefined){
         if(!isInt(body.purse,1,1000000000)) return {error:'Purse must be a whole number above 0'};
@@ -53,6 +55,35 @@ const validateSettings=(body)=>{
         }
         values.increments=bands.map((band,i)=>({upTo:i===bands.length-1 ? null : band.upTo,step:band.step}));
     }
+    //squad rules: the host may send some or all of them. merged with the current ones and checked together,
+    //so e.g. min 25 / max 19 can never be saved. a purse change is also checked against them.
+    if(body.rules!==undefined||values.purse!==undefined){
+        const sent=body.rules===undefined ? {} : body.rules;
+        if(typeof sent!=='object'||sent===null||Array.isArray(sent)) return {error:'Rules must be an object'};
+        const rules={...current.rules,...sent};
+        if(!isInt(rules.squadMin,1,50)||!isInt(rules.squadMax,1,50)) return {error:'Squad size must be between 1 and 50'};
+        if(rules.squadMin>rules.squadMax) return {error:'Squad minimum cannot be more than the maximum'};
+        if(!isInt(rules.overseasMin,0,50)||!isInt(rules.overseasMax,0,50)) return {error:'Overseas limits must be between 0 and 50'};
+        if(rules.overseasMin>rules.overseasMax) return {error:'Overseas minimum cannot be more than the maximum'};
+        if(rules.overseasMax>rules.squadMax) return {error:'Overseas maximum cannot be more than the squad maximum'};
+        if(!isInt(rules.minPlayerPrice,0,1000000000)) return {error:'Minimum player price must be a whole number, 0 or more'};
+        if(typeof rules.homeCountry!=='string'||!rules.homeCountry.trim()||rules.homeCountry.trim().length>40) return {error:'Home country is required (max 40 characters)'};
+        //otherwise no team could ever complete a minimum squad
+        const purse=values.purse!==undefined ? values.purse : current.purse;
+        if(rules.squadMin*rules.minPlayerPrice>purse){
+            return {error:`A purse of ${purse} can't buy ${rules.squadMin} players at ${rules.minPlayerPrice} each`};
+        }
+        if(body.rules!==undefined){
+            values.rules={
+                squadMin:rules.squadMin,
+                squadMax:rules.squadMax,
+                overseasMin:rules.overseasMin,
+                overseasMax:rules.overseasMax,
+                minPlayerPrice:rules.minPlayerPrice,
+                homeCountry:rules.homeCountry.trim()
+            };
+        }
+    }
     return {values};
 };
 
@@ -68,7 +99,7 @@ const createRoom=async (req,res)=>{
         if(!name){
             return res.status(400).json({message:'Room name is required (max 60 characters)'});
         }
-        const {error,values}=validateSettings(req.body.settings||{});
+        const {error,values}=validateSettings(req.body.settings||{},{purse:12000,rules:Room.DEFAULT_RULES});
         if(error){
             return res.status(400).json({message:error});
         }
@@ -221,7 +252,8 @@ const getRoom=async (req,res)=>{
 
 const updateRoomSettings=async (req,res)=>{
     try{
-        const {error,values}=validateSettings(req.body);
+        const currentSettings=req.room.toObject().settings;
+        const {error,values}=validateSettings(req.body,{purse:currentSettings.purse,rules:currentSettings.rules});
         if(error){
             return res.status(400).json({message:error});
         }
@@ -268,7 +300,10 @@ const updateRoomSettings=async (req,res)=>{
 //my own membership in this room 
 const getMyMember=async (req,res)=>{
     try{
-        res.status(200).json(req.member);
+        const squad=req.member.role==='team'
+            ? await getSquad(req.room._id,req.member._id,req.room.settings.rules)
+            : {size:0,overseas:0};
+        res.status(200).json({...req.member.toObject(),squadSize:squad.size,overseasCount:squad.overseas});
     }
     catch(error){
         console.error('getMyMember failed:',error.message);
@@ -279,13 +314,18 @@ const getMyMember=async (req,res)=>{
 //the teams in this room 
 const getMembers=async (req,res)=>{
     try{
-        const teams=await Membership.find({room:req.room._id,role:'team'}).populate('user','name email').sort({createdAt:1});
+        const [teams,squads]=await Promise.all([
+            Membership.find({room:req.room._id,role:'team'}).populate('user','name email').sort({createdAt:1}),
+            getRoomSquads(req.room._id,req.room.settings.rules)
+        ]);
         const isHost=req.member.role==='host';
         res.status(200).json(teams.map(t=>({
             _id:t._id,
             teamName:t.teamName,
             purse:t.purse,
             purseRemaining:t.purseRemaining,
+            squadSize:squads[t._id.toString()] ? squads[t._id.toString()].size : 0,
+            overseasCount:squads[t._id.toString()] ? squads[t._id.toString()].overseas : 0,
             name:t.user ? t.user.name : null,
             email:isHost&&t.user ? t.user.email : undefined
         })));

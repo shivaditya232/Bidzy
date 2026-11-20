@@ -6,6 +6,7 @@ const Membership=require('../models/Membership');
 const Bid=require('../models/Bid');
 const AuctionRound=require('../models/AuctionRound');
 const {emitToRoom}=require('../config/socket');
+const {getSquad,checkBid}=require('../utils/auctionRules');
 
 //one session doc per room. if two requests create it at once, the unique index lets one win and the other re-reads.
 const getOrCreateSession=async (roomId)=>{
@@ -103,6 +104,19 @@ const placeBid=async (req,res)=>{
 
         if(newAmount>team.purseRemaining){
             return res.status(400).json({message:"Insufficient purse to place the bid"});
+        }
+
+        //IPL rules: squad max, overseas max/min, purse reserve for the minimum squad.
+        //safe to check before the compare-and-set: a team's squad and purse only change when a player
+        //is sold (finalize), and a room auctions one player at a time.
+        const rules=room.settings.rules;
+        const [player,squad]=await Promise.all([
+            Player.findById(session.currentPlayer).select('country'),
+            getSquad(room._id,memberId,rules)
+        ]);
+        const ruleProblem=checkBid({rules,squad,player,purseRemaining:team.purseRemaining,amount:newAmount});
+        if(ruleProblem){
+            return res.status(400).json({message:ruleProblem});
         }
         //compare-and-set: only update if the session is still exactly what we just read.
         //if another bid landed in between, currentPrice has changed and nothing matches.
