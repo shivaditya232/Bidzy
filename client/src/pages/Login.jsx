@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from '../api/axios';
-import { resetSocket } from "../api/socket";
+import { errorMessage } from '../api/axios';
+import { login, logout } from "../api/auth";
+import { getMyRooms, roomHome } from "../api/rooms";
 
 function Login(){
     const [email,setEmail]=useState('');
@@ -13,34 +14,20 @@ function Login(){
         e.preventDefault();
         setError('');
         try{
-            const res=await api.post('auth/login',{email,password});
-            const token=res.data.token;
-            localStorage.setItem('token',token);
+            await login({email,password});
 
-            //bridge until the lobby (A3.5): open your most recent room.
-            //host of the room -> the dashboard, team in the room -> the auction board
-            const roomsRes=await api.get('/rooms');
-            if(roomsRes.data.length===0){
-                localStorage.removeItem('token');
+            //until the lobby page exists: open your most recent room
+            //(host -> /rooms/:id/host, team -> /rooms/:id/board)
+            const rooms=await getMyRooms();
+            if(rooms.length===0){
+                logout();
                 setError('You are not in any room yet');
                 return;
             }
-            const {room,myRole}=roomsRes.data[0];
-            const role=myRole==='host' ? 'admin' : 'team';
-            localStorage.setItem('roomId',room._id);
-            localStorage.setItem('role',role);
-            //drop any socket from a previous login so the next one connects with this user's token
-            resetSocket();
-
-            if(role==='admin'){
-                navigate('/admin');
-            }
-            else{
-                navigate('/auction');
-            }
+            navigate(roomHome(rooms[0].room._id,rooms[0].myRole));
         }
         catch(err){
-            setError('Login Failed');
+            setError(errorMessage(err));
         }
     }
     return (

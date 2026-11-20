@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import api from "../api/axios"
-import { roomPath } from "../api/room"
+import { roomPath, useRoomId } from "../api/room"
 import Navbar from "../components/Navbar"
 
 const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.18)] p-6"
@@ -9,10 +9,11 @@ const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2p
 function AuctionRoundDetail() {
     const [round, setRound] = useState(null)
     const navigate = useNavigate()
+    const roomId=useRoomId()
     const { id } = useParams()
 
     useEffect(() => {
-        api.get(roomPath(`/auction/rounds/${id}`))
+        api.get(roomPath(roomId,`/auction/rounds/${id}`))
         .then(res => {
             setRound(res.data)
         })
@@ -40,7 +41,7 @@ function AuctionRoundDetail() {
     if (!round) {
         return (
             <div className="min-h-screen bg-slate-50">
-                <Navbar title="Past Auction" actions={[{ label:'Back to Past Auctions', onClick:()=>navigate('/history') }]} />
+                <Navbar title="Past Auction" actions={[{ label:'Back to Past Auctions', onClick:()=>navigate(`/rooms/${roomId}/history`) }]} />
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-slate-500">Loading...</div>
             </div>
         )
@@ -56,7 +57,7 @@ function AuctionRoundDetail() {
 
             <Navbar
                 title="Past Auction"
-                actions={[{ label:'Back to Past Auctions', onClick:()=>navigate('/history') }]}
+                actions={[{ label:'Back to Past Auctions', onClick:()=>navigate(`/rooms/${roomId}/history`) }]}
             />
 
             <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-8">

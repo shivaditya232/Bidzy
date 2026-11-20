@@ -11,4 +11,7 @@ api.interceptors.request.use((config)=>{
     return config;
 });
 
+// the server always replies {message:'...'} on errors. use this in catch blocks to show it.
+export const errorMessage=(err)=>err?.response?.data?.message||'Something went wrong';
+
 export default api;

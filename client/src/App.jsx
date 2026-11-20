@@ -5,7 +5,7 @@ import AuctionBoard from './pages/AuctionBoard'
 import Results from './pages/Results'
 import PastAuctions from './pages/PastAuctions'
 import AuctionRoundDetail from './pages/AuctionRoundDetail'
-import ProtectedRoute from './components/ProtectedRoute'
+import RoomGuard from './components/RoomGuard'
 
 function App() {
   return (
@@ -13,25 +13,21 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
 
-
-      
-      <Route path="/admin" element={
-        <ProtectedRoute allowedRole="admin">
-          <AdminDashboard />
-        </ProtectedRoute>
-        
+      {/* everything inside a room. the room comes from the URL, the guard checks you're in it */}
+      <Route path="/rooms/:roomId/host" element={
+        <RoomGuard allowedRole="host"><AdminDashboard /></RoomGuard>
       } />
-      <Route path="/auction" element={
-        <ProtectedRoute allowedRole="team"><AuctionBoard /></ProtectedRoute>
-         }   />
-      <Route path="/results" element={
-        <ProtectedRoute allowedRole={['admin','team']}><Results /></ProtectedRoute>
+      <Route path="/rooms/:roomId/board" element={
+        <RoomGuard allowedRole="team"><AuctionBoard /></RoomGuard>
       } />
-      <Route path="/history" element={
-        <ProtectedRoute allowedRole={['admin','team']}><PastAuctions /></ProtectedRoute>
+      <Route path="/rooms/:roomId/results" element={
+        <RoomGuard><Results /></RoomGuard>
       } />
-      <Route path="/history/:id" element={
-        <ProtectedRoute allowedRole={['admin','team']}><AuctionRoundDetail /></ProtectedRoute>
+      <Route path="/rooms/:roomId/history" element={
+        <RoomGuard><PastAuctions /></RoomGuard>
+      } />
+      <Route path="/rooms/:roomId/history/:id" element={
+        <RoomGuard><AuctionRoundDetail /></RoomGuard>
       } />
       <Route path="*" element={<Navigate to="/login" replace />} />
 

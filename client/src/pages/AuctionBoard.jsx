@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
-import { roomPath } from "../api/room"
+import { roomPath, useRoomId } from "../api/room"
 import socket, { connectToRoom } from "../api/socket"
 import Toast from "../components/Toast"
 import PlayerStatsModal from "../components/PlayerStatsModal"
@@ -22,6 +22,7 @@ function AuctionBoard() {
   const [selectedTeamId,setSelectedTeamId]=useState(null);
   const [selectedPlayer,setSelectedPlayer]=useState(null);
   const navigate=useNavigate()
+  const roomId=useRoomId()
 
   useEffect(()=>{
     if(!message) return;
@@ -34,7 +35,7 @@ function AuctionBoard() {
   },[message])
 
   const fetchAuction=()=>{
-    api.get(roomPath('/auction'))
+    api.get(roomPath(roomId,'/auction'))
     .then(res=>{
       setSession(res.data.populatedSession)
     })
@@ -44,7 +45,7 @@ function AuctionBoard() {
   }
 
   const fetchMyProfile=()=>{
-    api.get(roomPath('/members/me'))
+    api.get(roomPath(roomId,'/members/me'))
     .then(res=>{
       setMyProfile(res.data)
     })
@@ -54,7 +55,7 @@ function AuctionBoard() {
   }
 
   const fetchAllPlayers=()=>{
-    api.get(roomPath('/players'))
+    api.get(roomPath(roomId,'/players'))
     .then(res=>{
       setAllPlayers(res.data)
     })
@@ -64,7 +65,7 @@ function AuctionBoard() {
   }
 
   const fetchTeamsList=()=>{
-    api.get(roomPath('/members'))
+    api.get(roomPath(roomId,'/members'))
     .then(res=>{
       setTeamsList(res.data)
     })
@@ -73,7 +74,7 @@ function AuctionBoard() {
     })
   }
   const handleBid=()=>{
-    api.post(roomPath('/auction/bid'))
+    api.post(roomPath(roomId,'/auction/bid'))
     .then(res=>{
       setMessage('Bid placed successfully')
       setMessageType('success')
@@ -122,7 +123,7 @@ function AuctionBoard() {
       },2000)
     })
     // listeners are ready -> connect (with our token) and join this room's live events
-    connectToRoom()
+    connectToRoom(roomId)
     return ()=>{
       socket.off('auction-started')
       socket.off('bid-placed')
@@ -164,8 +165,8 @@ function AuctionBoard() {
       <Navbar
         title="Auction Board"
         actions={[
-          { label:'Past Auctions', onClick:()=>navigate('/history') },
-          { label:'View Results', onClick:()=>navigate('/results') }
+          { label:'Past Auctions', onClick:()=>navigate(`/rooms/${roomId}/history`) },
+          { label:'View Results', onClick:()=>navigate(`/rooms/${roomId}/results`) }
         ]}
       />
 

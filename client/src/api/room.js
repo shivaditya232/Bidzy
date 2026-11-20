@@ -1,5 +1,8 @@
-// Bridge until the lobby page (A3.5): the room you're working in is remembered after login,
-// and every players/sets/auction/members call goes under /rooms/:roomId.
-export const getRoomId=()=>localStorage.getItem('roomId')
+import { useParams } from 'react-router-dom'
 
-export const roomPath=(path)=>`/rooms/${getRoomId()}${path}`
+// The room you're in comes from the URL: /rooms/:roomId/...
+// (not localStorage, so two tabs can be in two different rooms)
+export const useRoomId=()=>useParams().roomId
+
+// build an API path inside a room: roomPath(roomId,'/players') -> /rooms/<id>/players
+export const roomPath=(roomId,path)=>`/rooms/${roomId}${path}`

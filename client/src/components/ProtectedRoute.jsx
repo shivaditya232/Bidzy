@@ -1,17 +1,11 @@
 import {Navigate} from 'react-router-dom'
+import { isLoggedIn } from '../api/auth'
 
-function ProtectedRoute({children,allowedRole}){
-    const token=localStorage.getItem('token');
-    const role=localStorage.getItem('role');
-
-    if(!token){
+// for pages that just need you logged in (e.g. the future lobby).
+// pages inside a room use RoomGuard instead, which also checks your role in that room.
+function ProtectedRoute({children}){
+    if(!isLoggedIn()){
         return <Navigate to="/login" />
-    }
-    if(allowedRole){
-        const isAllowed=Array.isArray(allowedRole) ? allowedRole.includes(role) : role===allowedRole;
-        if(!isAllowed){
-            return <Navigate to="/login" />
-        }
     }
     return children
 }

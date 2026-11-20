@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
-import { roomPath } from "../api/room"
+import { roomPath, useRoomId } from "../api/room"
 import Navbar from "../components/Navbar"
 
 const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.18)] p-6"
@@ -9,9 +9,10 @@ const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2p
 function PastAuctions() {
     const [rounds, setRounds] = useState([])
     const navigate = useNavigate()
+    const roomId=useRoomId()
 
     useEffect(() => {
-        api.get(roomPath('/auction/rounds'))
+        api.get(roomPath(roomId,'/auction/rounds'))
         .then(res => {
             setRounds(res.data)
         })
@@ -49,7 +50,7 @@ function PastAuctions() {
 
                         return (
                             <div key={round._id}
-                                onClick={() => navigate(`/history/${round._id}`)}
+                                onClick={() => navigate(`/rooms/${roomId}/history/${round._id}`)}
                                 className={`${cardClass} cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all`}>
                                 <h2 className="font-display font-semibold text-lg text-slate-800 mb-3 flex items-center gap-2">
                                     <span className="h-2 w-2 rounded-full bg-indigo-500" />

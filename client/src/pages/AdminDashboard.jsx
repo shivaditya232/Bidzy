@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api/axios"
-import { roomPath } from "../api/room"
+import { roomPath, useRoomId } from "../api/room"
 import socket, { connectToRoom } from "../api/socket"
 import Toast from "../components/Toast"
 import ConfirmModal from "../components/ConfirmModal"
@@ -27,6 +27,7 @@ function AdminDashboard() {
     const [message,setMessage]=useState('')
     const [messageType,setMessageType]=useState('success')
     const navigate=useNavigate()
+    const roomId=useRoomId()
     const [confirmAction,setConfirmAction]=useState(null)
 
     useEffect(()=>{
@@ -40,7 +41,7 @@ function AdminDashboard() {
     },[message])
 
     const fetchPlayers=()=>{
-        api.get(roomPath('/players'))
+        api.get(roomPath(roomId,'/players'))
         .then(res=>{
             setPlayers(res.data)
         })
@@ -62,7 +63,7 @@ function AdminDashboard() {
             fetchPlayers()
         })
         // listeners are ready -> connect (with our token) and join this room's live events
-        connectToRoom()
+        connectToRoom(roomId)
 
         return ()=>{
             socket.off('auction-started')
@@ -75,7 +76,7 @@ function AdminDashboard() {
     const [editingPurse,setEditingPurse]=useState({})
 
     const fetchTeams=()=>{
-        api.get(roomPath('/members'))
+        api.get(roomPath(roomId,'/members'))
         .then(res=>{
             setTeams(res.data)
         })
@@ -93,7 +94,7 @@ function AdminDashboard() {
     }
 
     const handleSavePurse=(id)=>{
-        api.patch(roomPath(`/members/${id}`),{purseRemaining:editingPurse[id]})
+        api.patch(roomPath(roomId,`/members/${id}`),{purseRemaining:editingPurse[id]})
         .then(res=>{
             setMessage('Team purse updated successfully')
             setMessageType('success')
@@ -108,7 +109,7 @@ function AdminDashboard() {
     const [sets,setSets]=useState([])
 
     const fetchSets=()=>{
-        api.get(roomPath('/sets'))
+        api.get(roomPath(roomId,'/sets'))
         .then(res=>{
             setSets(res.data)
         })
@@ -127,7 +128,7 @@ function AdminDashboard() {
     const [editSetName,setEditSetName]=useState('')
 
     const handleCreateSet=()=>{
-        api.post(roomPath('/sets'),{name:newSetName})
+        api.post(roomPath(roomId,'/sets'),{name:newSetName})
         .then(res=>{
             setMessage(res.data.message)
             setMessageType('success')
@@ -142,7 +143,7 @@ function AdminDashboard() {
     }
 
     const handleUpdateSet=(id)=>{
-        api.patch(roomPath(`/sets/${id}`),{name:editSetName})
+        api.patch(roomPath(roomId,`/sets/${id}`),{name:editSetName})
         .then(res=>{
             setMessage(res.data.message)
             setMessageType('success')
@@ -159,7 +160,7 @@ function AdminDashboard() {
         setConfirmAction({
             message:'Delete this set?',
             onConfirm:()=>{
-                api.delete(roomPath(`/sets/${id}`))
+                api.delete(roomPath(roomId,`/sets/${id}`))
                 .then(res=>{
                     setMessage(res.data.message)
                     setMessageType('success')
@@ -191,7 +192,7 @@ function AdminDashboard() {
         setStats({...stats,[field]:value})
     }
     const handleAddPlayer=()=>{
-        api.post(roomPath('/players'),{name,role,country,basePrice,set,stats})
+        api.post(roomPath(roomId,'/players'),{name,role,country,basePrice,set,stats})
         .then(res=>{
             setPlayers([...players,res.data.player])
             setMessage('Player added successfully')
@@ -252,7 +253,7 @@ function AdminDashboard() {
     }
 
     const handleUpdatePlayer=()=>{
-        api.patch(roomPath(`/players/${editingPlayer._id}`),editForm)
+        api.patch(roomPath(roomId,`/players/${editingPlayer._id}`),editForm)
         .then(res=>{
             setMessage('Player updated successfully')
             setMessageType('success')
@@ -273,7 +274,7 @@ function AdminDashboard() {
         setConfirmAction({
             message:'Delete this player?',
             onConfirm:()=>{
-                api.delete(roomPath(`/players/${id}`))
+                api.delete(roomPath(roomId,`/players/${id}`))
                 .then(res=>{
                     setMessage(res.data.message)
                     setMessageType('success')
@@ -288,7 +289,7 @@ function AdminDashboard() {
         })
     }
     const handleStartAuction=()=>{
-        api.post(roomPath('/auction/start'))
+        api.post(roomPath(roomId,'/auction/start'))
         .then(res=>{
             setMessage(res.data.message)
             setMessageType('success')
@@ -303,7 +304,7 @@ function AdminDashboard() {
         setConfirmAction({
             message:"Save today's results and reset all players and purses for a new auction?",
             onConfirm:()=>{
-                api.post(roomPath('/auction/reset'))
+                api.post(roomPath(roomId,'/auction/reset'))
                 .then(res=>{
                     setMessage(res.data.message)
                     setMessageType('success')
@@ -327,8 +328,8 @@ function AdminDashboard() {
       <Navbar
         title="Admin"
         actions={[
-          { label:'Past Auctions', onClick:()=>navigate('/history') },
-          { label:'View Results', onClick:()=>navigate('/results') }
+          { label:'Past Auctions', onClick:()=>navigate(`/rooms/${roomId}/history`) },
+          { label:'View Results', onClick:()=>navigate(`/rooms/${roomId}/results`) }
         ]}
       />
 
