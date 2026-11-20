@@ -28,7 +28,7 @@ const loadRoomMember=async (req,res,next)=>{
     }
 };
 
-//per-room versions of authorize('admin') / authorize('team')
+//who can do what inside a room (these replaced the old global admin/team roles)
 const requireHost=(req,res,next)=>{
     if(req.member.role!=='host'){
         return res.status(403).json({message:'Only the host can do this'});

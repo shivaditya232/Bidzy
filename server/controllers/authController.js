@@ -41,8 +41,7 @@ const registerUser=async (req,res)=>{
             user:{
                 id:newUser._id,
                 name:newUser.name,
-                email:newUser.email,
-                role:newUser.role||null
+                email:newUser.email
             }
         });
     }
@@ -83,10 +82,7 @@ const loginUser=async(req,res)=>{
             user:{
                 id:user._id,
                 name:user.name,
-                email:user.email,
-                role:user.role,
-                teamName:user.teamName,
-                purseRemaining:user.purseRemaining
+                email:user.email
             }
         });
     }

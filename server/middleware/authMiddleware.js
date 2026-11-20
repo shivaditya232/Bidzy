@@ -17,12 +17,13 @@ const protect=async (req,res,next)=>{
     }
 
     try{
-        //the token only carries the id. role comes from the DB, so a deleted user or changed role takes effect immediately.
-        const user=await User.findById(decoded.id).select('role');
+        //make sure the account still exists, so a deleted user is locked out straight away.
+        //what you may do inside a room is checked later by loadRoomMember / requireHost / requireTeam.
+        const user=await User.findById(decoded.id).select('_id');
         if(!user){
             return res.status(401).json({message:"Account no longer exists"});
         }
-        req.user={id:user._id.toString(),role:user.role||null};
+        req.user={id:user._id.toString()};
         next();
     }
     catch(error){
@@ -31,12 +32,4 @@ const protect=async (req,res,next)=>{
     }
 };
 
-const authorize=(...allowedRoles)=>{
-    return (req,res,next)=>{
-        if(!allowedRoles.includes(req.user.role)){
-            return res.status(403).json({message:"access denied"});
-        }
-        next();
-    };
-};
-module.exports={protect,authorize};
+module.exports={protect};

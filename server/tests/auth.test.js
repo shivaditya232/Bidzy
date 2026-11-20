@@ -50,7 +50,7 @@ test('sign-up creates a plain account and logs you in',async()=>{
     assert.strictEqual(r.code,201);
     assert.ok(r.body.token,'should return a token');
     assert.strictEqual(r.body.user.email,'asha@example.com','email is trimmed and lowercased');
-    assert.strictEqual(r.body.user.role,null,'new accounts have no global role');
+    assert.deepStrictEqual(Object.keys(r.body.user).sort(),['email','id','name'],'only id, name and email come back');
 
     const decoded=jwt.verify(r.body.token,process.env.JWT_SECRET);
     assert.deepStrictEqual(Object.keys(decoded).filter(k=>!['iat','exp'].includes(k)),['id'],'token carries only the id');
@@ -59,10 +59,12 @@ test('sign-up creates a plain account and logs you in',async()=>{
 test('sign-up ignores role, teamName and purse from the body',async()=>{
     const r=await call(registerUser,{name:'Sneaky',email:'sneaky@example.com',password:'secret1',role:'admin',teamName:'X',purse:999999});
     assert.strictEqual(r.code,201);
-    const user=await User.findOne({email:'sneaky@example.com'});
-    assert.strictEqual(user.role,undefined,'role must not be settable');
-    assert.strictEqual(user.teamName,undefined);
-    assert.strictEqual(user.purse,12000,'purse stays at the default');
+    // read the raw document: none of these fields may be stored at all
+    const raw=await User.collection.findOne({email:'sneaky@example.com'});
+    assert.strictEqual(raw.role,undefined,'role must not be settable');
+    assert.strictEqual(raw.teamName,undefined);
+    assert.strictEqual(raw.purse,undefined);
+    assert.strictEqual(raw.purseRemaining,undefined);
 });
 
 test('sign-up validation',async()=>{
@@ -93,13 +95,13 @@ test('login works with any email casing and rejects a wrong password',async()=>{
     assert.strictEqual(bad.code,400);
 });
 
-test('protect: role comes from the DB, not the token',async()=>{
-    const user=await User.create({name:'Legacy',email:'legacy@example.com',password:'x',role:'admin'});
-    // an old-style token that claims "team" — the DB says admin, so admin wins
-    const oldToken=jwt.sign({id:user._id,role:'team'},process.env.JWT_SECRET);
+test('protect: only the id is trusted, and the account must still exist',async()=>{
+    const user=await User.create({name:'Legacy',email:'legacy@example.com',password:'x'});
+    // an old-style token that also claims a role: the extra claim is ignored
+    const oldToken=jwt.sign({id:user._id,role:'admin'},process.env.JWT_SECRET);
     const r=await runProtect(oldToken);
     assert.strictEqual(r.passed,true);
-    assert.strictEqual(r.user.role,'admin');
+    assert.deepStrictEqual(r.user,{id:user._id.toString()},'req.user is just the id');
 
     await User.deleteOne({_id:user._id});
     const gone=await runProtect(oldToken);

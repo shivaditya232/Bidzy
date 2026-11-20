@@ -15,25 +15,8 @@ const UserSchema=new mongoose.Schema({
     password:{
         type:String,
         required:true
-    },
-    role:{
-        type:String,
-        //legacy global role for the single-auction app. new sign-ups get none;
-        //from A3.3 roles live on room membership (host/team) instead.
-        enum:['admin','team']
-    },
-    teamName:{
-        type:String,
-    },
-    purse:{
-        type:Number,
-        default:12000
-    },
-    purseRemaining:{
-        type:Number,
-        default:12000
-    },
-
+    }
+    //role, team name and purse are per room now: see Membership
 },{
     timestamps:true
 });
