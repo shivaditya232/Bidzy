@@ -115,7 +115,7 @@ test('IPL room: join with a franchise, get its name and colour; each franchise o
     const joined=await run([joinRoom],asUser(a,{body:{inviteCode:code,franchise:'CSK'}}));
     assert.strictEqual(joined.code,201);
     assert.strictEqual(joined.body.member.teamName,'Chennai Super Kings');
-    assert.strictEqual(joined.body.member.color,'#FDB913');
+    assert.strictEqual(joined.body.member.color,'#F9CD05');
     assert.strictEqual(joined.body.member.lineup.length,11,'starts with 11 empty positions');
 
     assert.match((await run([joinRoom],asUser(await makeUser('Noone'),{body:{inviteCode:code}}))).body.message,/Pick a franchise/);

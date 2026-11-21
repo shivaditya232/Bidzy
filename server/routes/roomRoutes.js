@@ -12,7 +12,8 @@ router.get('/',protect,getMyRooms);
 router.post('/',protect,createRoom);
 //registered before /:roomId so these words aren't read as a room id
 router.post('/join',protect,joinRoom);
-router.get('/franchises',protect,getFranchises);
+//public: the colours are needed on sign-up/landing pages, before anyone has logged in
+router.get('/franchises',getFranchises);
 router.get('/preview/:inviteCode',protect,previewRoom);
 router.get('/:roomId',protect,loadRoomMember,getRoom);
 router.patch('/:roomId/settings',protect,loadRoomMember,requireHost,updateRoomSettings);
