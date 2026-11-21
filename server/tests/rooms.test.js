@@ -46,7 +46,7 @@ after(async()=>{
 let roomId,inviteCode;
 
 test('create room: you become host, room gets defaults and an invite code',async()=>{
-    const r=await run([createRoom],{user:host,body:{name:'  Friday League  '}});
+    const r=await run([createRoom],{user:host,body:{name:'  Friday League  ',type:'custom'}});
     assert.strictEqual(r.code,201);
     const room=r.body.room;
     roomId=room._id.toString();
@@ -73,7 +73,7 @@ test('create room validation',async()=>{
 });
 
 test('join by code (any casing) gives a team membership with the room purse',async()=>{
-    const r=await run([joinRoom],{user:alice,body:{inviteCode:inviteCode.toLowerCase(),teamName:'Chennai'}});
+    const r=await run([joinRoom],{user:alice,body:{inviteCode:inviteCode.toLowerCase(),teamName:'Chennai',color:'#22AA55'}});
     assert.strictEqual(r.code,201);
     assert.strictEqual(r.body.member.role,'team');
     assert.strictEqual(r.body.member.purseRemaining,12000);
@@ -81,24 +81,24 @@ test('join by code (any casing) gives a team membership with the room purse',asy
 });
 
 test('join errors: bad code, already in, host joining own room, duplicate team name',async()=>{
-    assert.strictEqual((await run([joinRoom],{user:bob,body:{inviteCode:'ZZZZZZ',teamName:'Mumbai'}})).code,404);
-    assert.strictEqual((await run([joinRoom],{user:alice,body:{inviteCode,teamName:'Other'}})).code,400);
-    assert.strictEqual((await run([joinRoom],{user:host,body:{inviteCode,teamName:'HostTeam'}})).code,400);
+    assert.strictEqual((await run([joinRoom],{user:bob,body:{inviteCode:'ZZZZZZ',teamName:'Mumbai',color:'#22AA55'}})).code,404);
+    assert.strictEqual((await run([joinRoom],{user:alice,body:{inviteCode,teamName:'Other',color:'#22AA55'}})).code,400);
+    assert.strictEqual((await run([joinRoom],{user:host,body:{inviteCode,teamName:'HostTeam',color:'#22AA55'}})).code,400);
 
-    const dup=await run([joinRoom],{user:bob,body:{inviteCode,teamName:'CHENNAI'}});
+    const dup=await run([joinRoom],{user:bob,body:{inviteCode,teamName:'CHENNAI',color:'#22AA55'}});
     assert.strictEqual(dup.code,400);
     assert.match(dup.body.message,/team name/);
     assert.strictEqual((await Room.findById(roomId)).teamCount,1,'a failed join gives its slot back');
 
-    assert.strictEqual((await run([joinRoom],{user:bob,body:{inviteCode,teamName:'Mumbai'}})).code,201);
+    assert.strictEqual((await run([joinRoom],{user:bob,body:{inviteCode,teamName:'Mumbai',color:'#22AA55'}})).code,201);
 });
 
 test('10 people join a room with 3 free slots at the same instant: exactly 3 get in',async()=>{
-    const r=await run([createRoom],{user:host,body:{name:'Tiny Room',settings:{maxTeams:3}}});
+    const r=await run([createRoom],{user:host,body:{name:'Tiny Room',type:'custom',settings:{maxTeams:3}}});
     const tiny=r.body.room;
     const joiners=await Promise.all(Array.from({length:10},(_,i)=>makeUser('Joiner'+i)));
 
-    const results=await Promise.all(joiners.map((u,i)=>run([joinRoom],{user:u,body:{inviteCode:tiny.inviteCode,teamName:'Team '+i}})));
+    const results=await Promise.all(joiners.map((u,i)=>run([joinRoom],{user:u,body:{inviteCode:tiny.inviteCode,teamName:'Team '+i,color:'#22AA55'}})));
     assert.strictEqual(results.filter(x=>x.code===201).length,3);
     assert.strictEqual(results.filter(x=>x.code===400&&x.body.message==='This room is full').length,7);
     assert.strictEqual((await Room.findById(tiny._id)).teamCount,3);
@@ -142,7 +142,7 @@ test('settings and joining are locked once the auction starts',async()=>{
     await Room.updateOne({_id:roomId},{$set:{status:'live'}});
     const r=await run([loadRoomMember,requireHost,updateRoomSettings],{user:host,params:{roomId},body:{purse:900}});
     assert.strictEqual(r.code,409);
-    const late=await run([joinRoom],{user:outsider,body:{inviteCode,teamName:'Late'}});
+    const late=await run([joinRoom],{user:outsider,body:{inviteCode,teamName:'Late',color:'#22AA55'}});
     assert.strictEqual(late.code,400);
     assert.match(late.body.message,/already started/);
 });

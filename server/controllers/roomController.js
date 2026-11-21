@@ -4,6 +4,10 @@ const Room=require('../models/Room');
 const Membership=require('../models/Membership');
 const seedDefaultSets=require('../config/seedSets');
 const {getSquad,getRoomSquads}=require('../utils/auctionRules');
+const {FRANCHISES,getFranchise}=require('../config/franchises');
+const {emptyLineup}=require('../models/Membership');
+
+const HEX_COLOR=/^#[0-9A-Fa-f]{6}$/;
 
 //no 0/O/1/I so codes are easy to read out loud
 const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -33,6 +37,8 @@ const validateSettings=(body,current)=>{
     }
     if(body.maxTeams!==undefined){
         if(!isInt(body.maxTeams,2,20)) return {error:'Max teams must be between 2 and 20'};
+        //there are only 10 franchises to go round
+        if(current.type==='ipl'&&body.maxTeams>10) return {error:'An IPL room can have at most 10 teams'};
         values.maxTeams=body.maxTeams;
     }
     if(body.increments!==undefined){
@@ -99,16 +105,20 @@ const createRoom=async (req,res)=>{
         if(!name){
             return res.status(400).json({message:'Room name is required (max 60 characters)'});
         }
-        const {error,values}=validateSettings(req.body.settings||{},{purse:12000,rules:Room.DEFAULT_RULES});
+        const type=req.body.type===undefined ? 'ipl' : req.body.type;
+        if(type!=='ipl'&&type!=='custom'){
+            return res.status(400).json({message:'Room type must be ipl or custom'});
+        }
+        const {error,values}=validateSettings(req.body.settings||{},{type,purse:12000,rules:Room.DEFAULT_RULES});
         if(error){
             return res.status(400).json({message:error});
         }
 
-        
+
         let room=null;
         for(let attempt=0;attempt<5&&!room;attempt++){
             try{
-                room=await Room.create({name,inviteCode:makeInviteCode(),host:req.user.id,settings:values});
+                room=await Room.create({name,type,inviteCode:makeInviteCode(),host:req.user.id,settings:values});
             }
             catch(error){
                 if(error.code!==11000) throw error;
@@ -132,17 +142,35 @@ const createRoom=async (req,res)=>{
 const joinRoom=async (req,res)=>{
     try{
         const inviteCode=typeof req.body.inviteCode==='string' ? req.body.inviteCode.trim().toUpperCase() : '';
-        const teamName=cleanName(req.body.teamName,40);
         if(!inviteCode){
             return res.status(400).json({message:'Invite code is required'});
-        }
-        if(!teamName){
-            return res.status(400).json({message:'Team name is required (max 40 characters)'});
         }
 
         const room=await Room.findOne({inviteCode});
         if(!room){
             return res.status(404).json({message:'No room with that code'});
+        }
+
+        //who you are in this room: IPL rooms -> a franchise (its name and colour), custom rooms -> your own name and colour
+        let teamName,franchise,color;
+        if(room.type==='custom'){
+            teamName=cleanName(req.body.teamName,40);
+            if(!teamName){
+                return res.status(400).json({message:'Team name is required (max 40 characters)'});
+            }
+            if(typeof req.body.color!=='string'||!HEX_COLOR.test(req.body.color)){
+                return res.status(400).json({message:'Pick a team colour'});
+            }
+            color=req.body.color.toUpperCase();
+        }
+        else{
+            const picked=getFranchise(req.body.franchise);
+            if(!picked){
+                return res.status(400).json({message:'Pick a franchise'});
+            }
+            franchise=picked.code;
+            teamName=picked.name;
+            color=picked.primary;
         }
         const alreadyIn=await Membership.findOne({room:room._id,user:req.user.id});
         if(alreadyIn){
@@ -170,8 +198,11 @@ const joinRoom=async (req,res)=>{
                 user:req.user.id,
                 role:'team',
                 teamName,
+                franchise,
+                color,
                 purse:claimed.settings.purse,
-                purseRemaining:claimed.settings.purse
+                purseRemaining:claimed.settings.purse,
+                lineup:emptyLineup()
             });
             //the host may have changed the purse between our read and our insert. settings saves the room first,
             //then updates every team, so if we got in after that update, the room already shows the new purse here.
@@ -187,9 +218,11 @@ const joinRoom=async (req,res)=>{
             //we took a slot but couldn't use it -> give it back
             await Room.updateOne({_id:room._id},{$inc:{teamCount:-1}});
             if(error.code===11000){
-                const message=error.keyPattern&&error.keyPattern.teamName
-                    ? 'That team name is already taken in this room'
-                    : "You're already in this room";
+                //in an IPL room the team name IS the franchise name, so a clash can trip either index first
+                const clash=error.keyPattern||{};
+                let message="You're already in this room";
+                if(clash.franchise||(clash.teamName&&room.type==='ipl')) message='That franchise is already taken in this room';
+                else if(clash.teamName) message='That team name is already taken in this room';
                 return res.status(400).json({message});
             }
             throw error;
@@ -204,7 +237,7 @@ const joinRoom=async (req,res)=>{
 const getMyRooms=async (req,res)=>{
     try{
         const memberships=await Membership.find({user:req.user.id})
-            .populate('room','name inviteCode status teamCount settings host createdAt')
+            .populate('room','name type inviteCode status teamCount settings host createdAt')
             .sort({createdAt:-1});
 
         const rooms=memberships
@@ -213,6 +246,8 @@ const getMyRooms=async (req,res)=>{
                 room:m.room,
                 myRole:m.role,
                 teamName:m.teamName||null,
+                franchise:m.franchise||null,
+                color:m.color||null,
                 purseRemaining:m.purseRemaining??null
             }));
         res.status(200).json(rooms);
@@ -232,6 +267,8 @@ const getRoom=async (req,res)=>{
                 id:req.member._id,
                 role:req.member.role,
                 teamName:req.member.teamName||null,
+                franchise:req.member.franchise||null,
+                color:req.member.color||null,
                 purseRemaining:req.member.purseRemaining??null
             },
             members:members.map(m=>({
@@ -240,6 +277,8 @@ const getRoom=async (req,res)=>{
                 name:m.user ? m.user.name : null,
                 role:m.role,
                 teamName:m.teamName||null,
+                franchise:m.franchise||null,
+                color:m.color||null,
                 purseRemaining:m.purseRemaining??null
             }))
         });
@@ -253,7 +292,7 @@ const getRoom=async (req,res)=>{
 const updateRoomSettings=async (req,res)=>{
     try{
         const currentSettings=req.room.toObject().settings;
-        const {error,values}=validateSettings(req.body,{purse:currentSettings.purse,rules:currentSettings.rules});
+        const {error,values}=validateSettings(req.body,{type:req.room.type,purse:currentSettings.purse,rules:currentSettings.rules});
         if(error){
             return res.status(400).json({message:error});
         }
@@ -322,6 +361,8 @@ const getMembers=async (req,res)=>{
         res.status(200).json(teams.map(t=>({
             _id:t._id,
             teamName:t.teamName,
+            franchise:t.franchise||null,
+            color:t.color||null,
             purse:t.purse,
             purseRemaining:t.purseRemaining,
             squadSize:squads[t._id.toString()] ? squads[t._id.toString()].size : 0,
@@ -372,4 +413,35 @@ const updateMember=async (req,res)=>{
     }
 };
 
-module.exports={createRoom,joinRoom,getMyRooms,getRoom,updateRoomSettings,getMyMember,getMembers,updateMember};
+//the 10 IPL franchises with their colours, for the join screen
+const getFranchises=async (req,res)=>{
+    res.status(200).json(FRANCHISES);
+};
+
+//what a room looks like before you join it: name, type, how full, and which franchises are taken.
+//only safe facts, no member details. you still need the code to see it.
+const previewRoom=async (req,res)=>{
+    try{
+        const inviteCode=typeof req.params.inviteCode==='string' ? req.params.inviteCode.trim().toUpperCase() : '';
+        const room=await Room.findOne({inviteCode});
+        if(!room){
+            return res.status(404).json({message:'No room with that code'});
+        }
+        const taken=await Membership.find({room:room._id,role:'team',franchise:{$type:'string'}}).select('franchise');
+        res.status(200).json({
+            name:room.name,
+            type:room.type,
+            status:room.status,
+            teamCount:room.teamCount,
+            maxTeams:room.settings.maxTeams,
+            purse:room.settings.purse,
+            takenFranchises:taken.map(m=>m.franchise)
+        });
+    }
+    catch(error){
+        console.error('previewRoom failed:',error.message);
+        res.status(500).json({message:'Server error',error:error.message});
+    }
+};
+
+module.exports={createRoom,joinRoom,getMyRooms,getRoom,updateRoomSettings,getMyMember,getMembers,updateMember,getFranchises,previewRoom};

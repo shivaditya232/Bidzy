@@ -28,6 +28,25 @@ const membershipSchema=new mongoose.Schema({
     },
     purseRemaining:{
         type:Number
+    },
+    //IPL rooms: the franchise this team picked (CSK, MI, ...). custom rooms: none.
+    franchise:{
+        type:String
+    },
+    //the team's colour: the franchise's colour in IPL rooms, the team's own pick in custom rooms
+    color:{
+        type:String
+    },
+    //the team's playing XI in batting order. lineup[0] = position 1 ... lineup[10] = position 11.
+    //each position has one starter and the backups who can replace them.
+    //a backup can cover several positions. private to the team until the auction ends.
+    lineup:{
+        type:[{
+            _id:false,
+            player:{type:mongoose.Schema.Types.ObjectId,ref:'Player',default:null},
+            backups:[{type:mongoose.Schema.Types.ObjectId,ref:'Player'}]
+        }],
+        default:undefined
     }
 },{timestamps:true});
 
@@ -45,4 +64,17 @@ membershipSchema.index(
     }
 );
 
+//each franchise can be taken by only one team in a room
+membershipSchema.index(
+    {room:1,franchise:1},
+    {
+        unique:true,
+        partialFilterExpression:{franchise:{$type:'string'}}
+    }
+);
+
+//11 empty positions: what a team starts with, and what a new auction resets to
+const emptyLineup=()=>Array.from({length:11},()=>({player:null,backups:[]}));
+
 module.exports=mongoose.model('Membership',membershipSchema);
+module.exports.emptyLineup=emptyLineup;

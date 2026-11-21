@@ -3,6 +3,7 @@ const AuctionSession=require('../models/AuctionSession');
 const Player=require('../models/Player');
 const Room=require('../models/Room');
 const Membership=require('../models/Membership');
+const {emptyLineup}=Membership;
 const Bid=require('../models/Bid');
 const AuctionRound=require('../models/AuctionRound');
 const {emitToRoom}=require('../config/socket');
@@ -307,6 +308,8 @@ const resetAuction=async (req,res)=>{
 
         await Player.updateMany({room:roomId},{status:'pending',soldPrice:null,soldTo:null});
         await Membership.updateMany({room:roomId,role:'team'},[{$set:{purseRemaining:'$purse'}}],{updatePipeline:true});
+        //nobody owns any players now, so every XI starts empty again
+        await Membership.updateMany({room:roomId,role:'team'},{$set:{lineup:emptyLineup()}});
         await AuctionSession.deleteOne({room:roomId});
         await Room.updateOne({_id:roomId},{$set:{status:'lobby'}});
 

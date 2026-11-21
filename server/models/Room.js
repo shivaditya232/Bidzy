@@ -38,6 +38,12 @@ const roomSchema=new mongoose.Schema({
         ref:'User',
         required:true
     },
+    //ipl = teams pick one of the 10 franchises (real colours, max 10 teams). custom = teams name themselves and pick a colour.
+    type:{
+        type:String,
+        enum:['ipl','custom'],
+        default:'ipl'
+    },
     //lobby = teams can join and settings can change. live/ended = locked.
     status:{
         type:String,
