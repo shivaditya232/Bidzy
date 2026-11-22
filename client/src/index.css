@@ -216,3 +216,8 @@ body {
 .bz-quiet:hover::after { transform: scaleX(1); opacity: 1; }
 .bz-quiet:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; border-radius: 4px; }
 .bz-quiet:disabled { cursor: not-allowed; color: var(--color-fg-3); }
+
+/* busy: the light pulses while waiting for the server, and the button can't be pressed again */
+.bz-btn[aria-busy="true"] { pointer-events: none; }
+.bz-btn[aria-busy="true"]::before { animation: bz-pulse 1s ease-in-out infinite; }
+@keyframes bz-pulse { 50% { opacity: .3; } }

@@ -43,3 +43,13 @@ export const updateSettings=async(roomId,changes)=>(await api.patch(`/rooms/${ro
 
 // where to send someone after they pick / create / join a room
 export const roomHome=(roomId,role)=>role==='host' ? `/rooms/${roomId}/host` : `/rooms/${roomId}/board`
+
+// where to send someone right after they log in or sign up:
+// their most recent room, or the welcome page if they aren't in any room yet
+export const homeAfterLogin=async()=>{
+    const rooms=await getMyRooms()
+    if(rooms.length===0){
+        return '/welcome'
+    }
+    return roomHome(rooms[0].room._id,rooms[0].myRole)
+}
