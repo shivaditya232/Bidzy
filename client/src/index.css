@@ -39,6 +39,12 @@
   --color-sold: #3DDC97;
   --color-alert: #FF6B5E;
 
+  /* the house glow: Bidzy's own colour on every page that isn't a team's (landing, sign-up, lobby...).
+     only ever a glow: never text, never a button fill, never a status (sold stays mint) */
+  --color-pitch: #1F9D5C;
+  --color-pitch-deep: #0B5A37;
+  --color-floodlight: #FFF1CF;
+
   /* one easing curve for every motion: fast out, gentle settle */
   --ease-bidzy: cubic-bezier(.2, .8, .2, 1);
 }
@@ -112,3 +118,101 @@ body {
     transition-duration: .01ms !important;
   }
 }
+
+/* ---------- Bidzy buttons: floodlights ----------
+   every button is a light; the brighter the light, the more important the action.
+   used through components/ui/Button.jsx, which picks one of these kinds. */
+.bz-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  padding: 16px 20px 12px;
+  background: rgb(255 255 255 / .03);
+  color: var(--color-fg);
+  font-family: var(--font-num);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .2s var(--ease-bidzy), transform .08s var(--ease-bidzy);
+  /* the light: colour and glow are set per kind */
+  --bz-light: var(--color-floodlight);
+  --bz-glow: rgb(255 241 207 / .45);
+}
+/* the light bar above the label */
+.bz-btn::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 0;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--bz-light);
+  box-shadow: 0 0 18px 2px var(--bz-glow);
+  opacity: .55;
+  transition: opacity .2s var(--ease-bidzy), box-shadow .2s var(--ease-bidzy);
+}
+.bz-btn:hover { background: rgb(255 255 255 / .07); }
+.bz-btn:hover::before { opacity: 1; box-shadow: 0 0 28px 6px var(--bz-glow); }
+.bz-btn:active { transform: translateY(1px); }
+/* the light flashes when pressed */
+.bz-btn:active::before { animation: bz-flash .35s ease-out; }
+@keyframes bz-flash { 0% { box-shadow: 0 0 60px 18px var(--bz-glow); } }
+.bz-btn:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 4px; }
+.bz-btn .bz-arrow { display: inline-block; transition: transform .2s var(--ease-bidzy); }
+.bz-btn:hover .bz-arrow { transform: translateX(3px); }
+
+/* primary: the brightest light, full white label, one per screen */
+.bz-btn.bz-primary { color: #fff; background: rgb(255 255 255 / .06); }
+.bz-btn.bz-primary::before { opacity: 1; height: 4px; box-shadow: 0 0 24px 4px rgb(255 241 207 / .6); }
+/* secondary: a dimmer light beside it */
+.bz-btn.bz-secondary { color: var(--color-fg-2); --bz-light: rgb(244 242 236 / .35); --bz-glow: rgb(244 242 236 / .12); }
+/* team: the light in your team's colour (set --bz-light inline, via Button's glow prop) */
+.bz-btn.bz-team { color: #fff; --bz-glow: color-mix(in oklab, var(--bz-light) 60%, transparent); }
+.bz-btn.bz-team::before { opacity: 1; height: 4px; }
+/* danger: a red light */
+.bz-btn.bz-danger { color: var(--color-alert); --bz-light: var(--color-alert); --bz-glow: rgb(255 107 94 / .45); }
+/* small: room cards, the nav, popups */
+.bz-btn.bz-sm { font-size: 16px; padding: 12px 15px 9px; }
+.bz-btn.bz-sm::before { left: 10px; right: 10px; }
+/* disabled: the light is off */
+.bz-btn:disabled { cursor: not-allowed; color: var(--color-fg-3); background: rgb(255 255 255 / .02); transform: none; }
+.bz-btn:disabled::before { opacity: .12; box-shadow: none; animation: none; }
+
+/* quiet: text with a floodlight underline that draws in on hover */
+.bz-quiet {
+  position: relative;
+  border: 0;
+  background: none;
+  padding: 6px 2px;
+  color: var(--color-fg);
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.bz-quiet::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 2px;
+  background: var(--color-floodlight);
+  opacity: .6;
+  transform: scaleX(.25);
+  transform-origin: left;
+  transition: transform .3s var(--ease-bidzy), opacity .3s var(--ease-bidzy);
+}
+.bz-quiet:hover::after { transform: scaleX(1); opacity: 1; }
+.bz-quiet:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; border-radius: 4px; }
+.bz-quiet:disabled { cursor: not-allowed; color: var(--color-fg-3); }

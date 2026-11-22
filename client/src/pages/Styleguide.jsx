@@ -5,9 +5,10 @@ import RollingNumber from '../components/ui/RollingNumber'
 import SoldStamp from '../components/ui/SoldStamp'
 import Popup from '../components/ui/Popup'
 import Toast from '../components/ui/Toast'
+import Button from '../components/ui/Button'
 import { useFranchises } from '../hooks/useFranchises'
 import { formatMoney } from '../utils/money'
-import { teamStyle } from '../utils/color'
+import { teamStyle, deriveGlow, CUSTOM_COLOURS, HOUSE_GLOW } from '../utils/color'
 
 // Development-only page: every Bidzy building block, in real team colours.
 // Not a product page; it's here so the pieces can be checked before pages use them.
@@ -42,6 +43,8 @@ const Pill=({children})=>(
 function Styleguide() {
     const {franchises,byCode,loading,error}=useFranchises()
     const [mine,setMine]=useState('CSK')
+    const [house,setHouse]=useState(true)
+    const [custom,setCustom]=useState(CUSTOM_COLOURS[0])
     const [lot,setLot]=useState({price:420,leader:'CSK',challenger:'MI',sold:false,round:0})
     const [popupOpen,setPopupOpen]=useState(false)
     const [toast,setToast]=useState(null)
@@ -83,6 +86,7 @@ function Styleguide() {
         setTimeout(()=>setLot(prev=>({price:420,leader:mine,challenger:rival,sold:false,round:prev.round})),3200)
     }
     const pick=(code)=>{
+        setHouse(false)
         setMine(code)
         setLot(prev=>({price:420,leader:code,challenger:code==='MI' ? 'CSK' : 'MI',sold:false,round:prev.round}))
     }
@@ -90,18 +94,32 @@ function Styleguide() {
     return (
         <div className="min-h-screen bg-night font-text text-fg antialiased">
             {/* hero: the page in your colours */}
-            <Aura glow={my.glow} variant="page" as="header" className="pt-24 pb-18">
+            <Aura glow={house ? HOUSE_GLOW : my.glow} variant="page" as="header" className="pt-24 pb-18">
                 <div className="mx-auto grid max-w-[1080px] gap-5 px-5">
                     <span className="font-num text-[22px] font-black tracking-[.06em]">BIDZY · STYLEGUIDE</span>
                     <h1 className="max-w-[11ch] font-num text-[clamp(54px,9.5vw,120px)] leading-[.88] font-black uppercase">Every bid builds your XI</h1>
-                    <p className="m-0 max-w-[46ch] text-lg text-fg-2">Pick a franchise. Everything below takes its colours from the server.</p>
+                    <p className="m-0 max-w-[46ch] text-lg text-fg-2">Bidzy's own pitch-green glow outside a room. Pick a franchise to see a team's colours instead.</p>
+                    <div className="flex flex-wrap gap-3">
+                        <Button kind="primary" arrow>Create a room</Button>
+                        <Button kind="secondary">Join with a code</Button>
+                    </div>
                     <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Pick a franchise">
+                        <button
+                            type="button"
+                            onClick={()=>setHouse(true)}
+                            aria-pressed={house}
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-line bg-night/35 py-[7px] pr-3.5 pl-2 text-sm font-semibold transition-colors
+                                hover:border-white/25 aria-pressed:border-fg aria-pressed:bg-fg aria-pressed:text-night"
+                        >
+                            <span className="size-[18px] rounded-full bg-pitch" />
+                            Bidzy
+                        </button>
                         {franchises.map(f=>(
                             <button
                                 key={f.code}
                                 type="button"
                                 onClick={()=>pick(f.code)}
-                                aria-pressed={f.code===mine}
+                                aria-pressed={!house&&f.code===mine}
                                 style={teamStyle(f.glow)}
                                 className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-line bg-night/35 py-[7px] pr-3.5 pl-2 text-sm font-semibold transition-colors
                                     hover:border-white/25 aria-pressed:border-fg aria-pressed:bg-fg aria-pressed:text-night"
@@ -140,14 +158,72 @@ function Styleguide() {
                             </div>
                         </div>
                     </Aura>
-                    <div className="mt-7 flex flex-wrap items-center gap-2.5">
+                    <div className="mt-7 flex flex-wrap items-center gap-3">
                         {['MI','RCB','KKR'].filter(c=>c!==mine).map(c=>(
-                            <button key={c} type="button" onClick={()=>raise(c)} className="cursor-pointer rounded-full border border-line bg-white/5 px-4 py-2 text-sm font-semibold hover:bg-white/10">
-                                <span className="mr-2 inline-block size-2.5 rounded-full" style={{background:byCode[c].glow.p}} />{c} raises
-                            </button>
+                            <Button key={c} kind="team" size="sm" glow={byCode[c].glow} onClick={()=>raise(c)}>{c} raises</Button>
                         ))}
-                        <button type="button" onClick={race} className="cursor-pointer rounded-full border border-line bg-white/5 px-4 py-2 text-sm font-semibold hover:bg-white/10">Both press at once</button>
-                        <button type="button" onClick={hammer} disabled={lot.sold} className="cursor-pointer rounded-full bg-fg px-4 py-2 text-sm font-semibold text-night disabled:opacity-50">Bring down the hammer</button>
+                        <Button kind="secondary" size="sm" onClick={race}>Both press at once</Button>
+                        <Button kind="primary" size="sm" onClick={hammer} disabled={lot.sold}>Bring down the hammer</Button>
+                    </div>
+                </Section>
+
+                <Section eyebrow="Button" title="Every button is a light">
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+                        {[
+                            ['Primary','Brightest light. One per screen.',<Button key="p" kind="primary" arrow>Create a room</Button>],
+                            ['Secondary','A dimmer light beside it.',<Button key="s" kind="secondary">Join with a code</Button>],
+                            ['Quiet','Small actions and links.',<Button key="q" kind="quiet">Room settings</Button>],
+                            ['Danger','Things you can\'t take back.',<Button key="d" kind="danger">Reset auction</Button>],
+                            ['Small','Room cards, the nav, popups.',<span key="sm" className="flex flex-wrap gap-2.5"><Button kind="primary" size="sm">Enter room</Button><Button kind="secondary" size="sm">Copy code</Button></span>],
+                            ['Disabled','The light is off.',<Button key="x" kind="primary" disabled>Start auction</Button>]
+                        ].map(([name,use,demo])=>(
+                            <div key={name} className="grid content-start gap-4 rounded-[20px] border border-line bg-night-2 p-5">
+                                <div><b className="text-[15px]">{name}</b><p className="m-0 text-sm text-fg-2">{use}</p></div>
+                                <div>{demo}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        {franchises.map(f=>(
+                            <Button key={f.code} kind="team" glow={f.glow} size="sm">{f.code}</Button>
+                        ))}
+                    </div>
+                    <p className="mt-3 text-sm text-fg-2">Team lights: dark brand colours (MI, KKR, GT) are brightened for the light so they still shine.</p>
+                </Section>
+
+                <Section eyebrow="deriveGlow" title="Custom teams pick any colour">
+                    <div className="grid items-start gap-[clamp(20px,4vw,48px)] md:grid-cols-2">
+                        <div className="grid gap-5">
+                            <p className="m-0 text-fg-2">In a custom room there are no franchises. Pick a colour and Bidzy builds the glow, paddle and button light from it. Too-dark colours are lifted, too-bright ones calmed.</p>
+                            <div className="grid grid-cols-6 gap-2.5" role="group" aria-label="Team colours">
+                                {CUSTOM_COLOURS.map(c=>(
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        onClick={()=>setCustom(c)}
+                                        aria-label={`Colour ${c}`}
+                                        aria-pressed={custom.toLowerCase()===c.toLowerCase()}
+                                        className="aspect-square cursor-pointer rounded-[14px] border-2 border-transparent transition-transform hover:scale-105 aria-pressed:border-fg"
+                                        style={{background:c}}
+                                    />
+                                ))}
+                            </div>
+                            <label htmlFor="sg-any-colour" className="flex items-center gap-3 text-sm text-fg-2">
+                                <input id="sg-any-colour" type="color" value={custom} onChange={(e)=>setCustom(e.target.value)}
+                                    className="size-[46px] cursor-pointer rounded-xl border border-line bg-transparent p-[3px]" />
+                                Or any colour you like ({custom.toUpperCase()})
+                            </label>
+                        </div>
+                        <Aura glow={deriveGlow(custom)} className="grid min-h-[280px] content-between gap-6 rounded-3xl border border-line p-6">
+                            <div>
+                                <span className="text-sm text-fg-2">Custom room · Hostel Mega Auction</span>
+                                <h3 className="font-num text-[44px] leading-[.9] font-black uppercase">Gully XI</h3>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3.5">
+                                <Paddle glow={deriveGlow(custom)} code="GXI" amount={formatMoney(440)} />
+                                <Button kind="team" glow={deriveGlow(custom)}>Start auction</Button>
+                            </div>
+                        </Aura>
                     </div>
                 </Section>
 
@@ -195,10 +271,10 @@ function Styleguide() {
 
                 <Section eyebrow="Popup + Toast" title="Asking and telling">
                     <div className="flex flex-wrap gap-2.5">
-                        <button type="button" onClick={()=>setPopupOpen(true)} className="cursor-pointer rounded-full bg-fg px-4 py-2 text-sm font-semibold text-night">Open a popup</button>
-                        <button type="button" onClick={()=>say({title:'Sold.',message:`Dhoni walks in for ${formatMoney(440)}. Pencil him in at No. 7?`,tone:'good'})} className="cursor-pointer rounded-full border border-line bg-white/5 px-4 py-2 text-sm font-semibold">Good toast</button>
-                        <button type="button" onClick={()=>say({title:'Squad\'s full.',message:'25 players is a team and the bench.',tone:'bad'})} className="cursor-pointer rounded-full border border-line bg-white/5 px-4 py-2 text-sm font-semibold">Bad toast</button>
-                        <button type="button" onClick={()=>say({title:'Reconnecting.',message:'The scorer dropped the line. Catching up…',tone:'info'})} className="cursor-pointer rounded-full border border-line bg-white/5 px-4 py-2 text-sm font-semibold">Info toast</button>
+                        <Button kind="primary" size="sm" onClick={()=>setPopupOpen(true)}>Open a popup</Button>
+                        <Button kind="secondary" size="sm" onClick={()=>say({title:'Sold.',message:`Dhoni walks in for ${formatMoney(440)}. Pencil him in at No. 7?`,tone:'good'})}>Good toast</Button>
+                        <Button kind="secondary" size="sm" onClick={()=>say({title:'Squad\'s full.',message:'25 players is a team and the bench.',tone:'bad'})}>Bad toast</Button>
+                        <Button kind="secondary" size="sm" onClick={()=>say({title:'Reconnecting.',message:'The scorer dropped the line. Catching up…',tone:'info'})}>Info toast</Button>
                     </div>
                 </Section>
             </main>
@@ -208,8 +284,8 @@ function Styleguide() {
                 onClose={()=>setPopupOpen(false)}
                 title="Start the auction?"
                 actions={<>
-                    <button type="button" onClick={()=>setPopupOpen(false)} className="cursor-pointer rounded-full border border-line px-4 py-2 text-sm font-semibold">Not yet</button>
-                    <button type="button" onClick={()=>setPopupOpen(false)} className="cursor-pointer rounded-full bg-fg px-4 py-2 text-sm font-semibold text-night">Start</button>
+                    <Button kind="secondary" size="sm" onClick={()=>setPopupOpen(false)}>Not yet</Button>
+                    <Button kind="primary" size="sm" onClick={()=>setPopupOpen(false)}>Start</Button>
                 </>}
             >
                 Settings lock once the first player is up.

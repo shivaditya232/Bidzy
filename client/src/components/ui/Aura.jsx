@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { HOUSE_GLOW } from '../../utils/color'
 
-// A surface that glows in a team's colours.
+// A surface that glows in a team's colours (or Bidzy's own pitch-green house glow when there's no team).
 // The team's primary owns the space (a bright and a deep shade); its accent is a small glow in a corner.
 // When the colours change (another team takes the lead, you pick a franchise), it cross-fades in 0.9s.
 //
@@ -28,7 +29,9 @@ const Layer=({colors,visible,variant})=>{
 }
 
 function Aura({ glow, accent, variant='card', as:Tag='div', className='', children, ...rest }) {
-    const colors={a:glow?.p||'#1A1F29',a2:glow?.pd||'#10141B',b:accent||glow?.acc||'#1A1F29'}
+    // no glow given -> the house glow (landing, sign-up, lobby...)
+    const source=glow||HOUSE_GLOW
+    const colors={a:source.p,a2:source.pd,b:accent||source.acc}
     // two layers: the new colours go on the hidden one, then it fades in over the old one
     const [state,setState]=useState({active:0,layers:[colors,null]})
     const first=useRef(true)
