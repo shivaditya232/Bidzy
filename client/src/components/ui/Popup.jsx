@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import Aura from './Aura'
 
 const FOCUSABLE='button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
 
@@ -9,7 +10,10 @@ const FOCUSABLE='button:not([disabled]),[href],input:not([disabled]),select:not(
 //   <Popup open={open} onClose={()=>setOpen(false)} title="Start the auction?" actions={<>...buttons...</>}>
 //       Settings lock once the first player is up.
 //   </Popup>
-function Popup({ open, onClose, title, children, actions }) {
+//   glow: optional team colours ({p,pd,acc}); the top of the popup glows in them and cross-fades when they change
+//   wide: a roomier popup for forms (520px instead of 420px)
+// Pass a stable onClose (useCallback): a new function every render would re-run the focus handling.
+function Popup({ open, onClose, title, children, actions, glow, wide=false }) {
     const sheetRef=useRef(null)
     const titleId=useId()
 
@@ -60,9 +64,15 @@ function Popup({ open, onClose, title, children, actions }) {
                 aria-modal="true"
                 aria-labelledby={titleId}
                 tabIndex={-1}
-                className="w-full max-w-[420px] rounded-[22px] border border-line bg-night-2 p-6 font-text text-fg outline-none"
+                className={`relative isolate max-h-[calc(100dvh-40px)] w-full overflow-y-auto rounded-[22px] border border-line bg-night-2 p-6 font-text text-fg outline-none
+                    ${wide ? 'max-w-[520px]' : 'max-w-[420px]'}`}
                 style={{animation:'bidzy-rise .22s var(--ease-bidzy)'}}
             >
+                {glow && (
+                    <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+                        <Aura glow={glow} variant="sheet" className="h-full" />
+                    </div>
+                )}
                 <h2 id={titleId} className="font-num text-[30px] leading-none font-extrabold uppercase">{title}</h2>
                 <div className="mt-2 mb-5 text-fg-2">{children}</div>
                 {actions && <div className="flex flex-wrap justify-end gap-2.5">{actions}</div>}

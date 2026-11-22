@@ -7,19 +7,28 @@ import { HOUSE_GLOW } from '../../utils/color'
 //
 //   <Aura glow={{p,pd,acc}} variant="card" className="rounded-[28px] p-8">...</Aura>
 //   accent: override the corner colour (the auction floor passes the challenger's colour here)
-//   variant: 'page' = tall hero, fades to night lower down; 'card' = shorter surface, lighter fade
+//   variant: 'page' = tall hero, fades to night lower down; 'card' = shorter surface, lighter fade;
+//            'sheet' = glow only along the top, the rest stays plain (popups with forms in them)
 const FADES={
     page:'linear-gradient(to bottom,transparent 0%,rgb(7 9 13 / .35) 40%,var(--color-night) 92%)',
-    card:'linear-gradient(to bottom,rgb(7 9 13 / .10) 0%,rgb(7 9 13 / .55) 100%)'
+    card:'linear-gradient(to bottom,rgb(7 9 13 / .10) 0%,rgb(7 9 13 / .55) 100%)',
+    sheet:'linear-gradient(to bottom,transparent 0%,var(--color-night-2) 48%)'
+}
+
+const BIG={
+    page:(c)=>`radial-gradient(75% 80% at 20% 15% in oklab,${c.a},transparent 70%),radial-gradient(70% 75% at 68% 30% in oklab,${c.a2},transparent 72%)`,
+    card:(c)=>`radial-gradient(80% 110% at 12% 30% in oklab,${c.a},transparent 72%),radial-gradient(60% 90% at 55% 70% in oklab,${c.a2},transparent 72%)`,
+    sheet:(c)=>`radial-gradient(70% 40% at 15% 18% in oklab,${c.a},transparent 72%),radial-gradient(55% 32% at 60% 18% in oklab,${c.a2},transparent 75%)`
+}
+const CORNER={
+    page:(c)=>`radial-gradient(26% 30% at 92% 10% in oklab,${c.b},transparent 72%)`,
+    card:(c)=>`radial-gradient(34% 70% at 98% 20% in oklab,${c.b},transparent 70%)`,
+    sheet:(c)=>`radial-gradient(24% 16% at 92% 16% in oklab,${c.b},transparent 72%)`
 }
 
 const Layer=({colors,visible,variant})=>{
-    const big=variant==='page'
-        ? `radial-gradient(75% 80% at 20% 15% in oklab,${colors.a},transparent 70%),radial-gradient(70% 75% at 68% 30% in oklab,${colors.a2},transparent 72%)`
-        : `radial-gradient(80% 110% at 12% 30% in oklab,${colors.a},transparent 72%),radial-gradient(60% 90% at 55% 70% in oklab,${colors.a2},transparent 72%)`
-    const corner=variant==='page'
-        ? `radial-gradient(26% 30% at 92% 10% in oklab,${colors.b},transparent 72%)`
-        : `radial-gradient(34% 70% at 98% 20% in oklab,${colors.b},transparent 70%)`
+    const big=(BIG[variant]||BIG.card)(colors)
+    const corner=(CORNER[variant]||CORNER.card)(colors)
     return (
         <div className="absolute -inset-[20%] transition-opacity duration-[900ms] ease-bidzy" style={{opacity:visible ? 1 : 0}}>
             <div className="absolute inset-0 will-change-transform" style={{background:big,animation:'bidzy-drift-1 26s ease-in-out infinite alternate'}} />

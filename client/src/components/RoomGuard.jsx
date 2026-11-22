@@ -5,9 +5,8 @@ import { getRoom, roomHome } from '../api/rooms'
 import { isLoggedIn, logout } from '../api/auth'
 import { RoomContext } from './roomContext'
 
-// Where to send people who aren't in a room / aren't logged in.
-// Change to '/lobby' once the lobby page exists.
-const NO_ROOM_PATH='/login'
+// Where to send people who open a room they aren't in (or one that doesn't exist)
+const NO_ROOM_PATH='/lobby'
 
 // Guards every /rooms/:roomId/... page.
 // Asks the server who you are in THIS room (the server is the real check; this just routes you sensibly).

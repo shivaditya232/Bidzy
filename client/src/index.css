@@ -221,3 +221,59 @@ body {
 .bz-btn[aria-busy="true"] { pointer-events: none; }
 .bz-btn[aria-busy="true"]::before { animation: bz-pulse 1s ease-in-out infinite; }
 @keyframes bz-pulse { 50% { opacity: .3; } }
+
+/* ---------- lobby ---------- */
+/* a room card glows in who you are in that room (set --team-p / --team-pd with teamStyle) */
+.bz-room-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 70% at 0% 0% in oklab, var(--team-p), transparent 70%),
+    radial-gradient(60% 50% at 30% 0% in oklab, var(--team-pd), transparent 75%);
+  opacity: .9;
+}
+.bz-room-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 15%, var(--color-night-2) 72%);
+}
+.bz-room-ended .bz-room-glow { filter: saturate(.35); opacity: .5; }
+
+/* the live dot pulses like a broadcast light */
+.bz-live-dot { box-shadow: 0 0 0 0 rgb(255 77 77 / .7); animation: bz-live 1.4s infinite; }
+@keyframes bz-live { 70% { box-shadow: 0 0 0 8px rgb(255 77 77 / 0); } 100% { box-shadow: 0 0 0 0 rgb(255 77 77 / 0); } }
+
+/* your tag on a card / a franchise tile: team colour, accent along the bottom, gold drawn as metal */
+.bz-team-chip {
+  position: relative;
+  overflow: hidden;
+  color: var(--team-ink);
+  background: linear-gradient(135deg in oklab, var(--team-p), var(--team-pd));
+}
+.bz-team-chip::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--bz-edge, 3px);
+  background: var(--team-acc-solid);
+}
+
+/* the invite ticket you get after creating a room */
+.bz-ticket {
+  background: linear-gradient(135deg, #FFF6DF, #F3E3B8);
+  color: #1A1407;
+  -webkit-mask:
+    radial-gradient(circle 11px at 0 64%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 11px at 100% 64%, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 11px at 0 64%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 11px at 100% 64%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+/* each letter of the code flips in, one after another */
+.bz-flip { animation: bz-flip .5s var(--ease-bidzy) backwards; }
+@keyframes bz-flip { from { transform: rotateX(90deg); opacity: 0; } }

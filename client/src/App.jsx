@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
-import Welcome from './pages/Welcome'
+import Lobby from './pages/Lobby'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './pages/AdminDashboard'
 import AuctionBoard from './pages/AuctionBoard'
@@ -20,8 +20,8 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      {/* temporary: an account that isn't in any room yet (the lobby replaces this) */}
-      <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
+      {/* your rooms: create one or join one with a code */}
+      <Route path="/lobby" element={<ProtectedRoute><Lobby /></ProtectedRoute>} />
 
       {/* everything inside a room. the room comes from the URL, the guard checks you're in it */}
       <Route path="/rooms/:roomId/host" element={

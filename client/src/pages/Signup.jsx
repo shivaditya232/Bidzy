@@ -4,8 +4,8 @@ import AuthLayout from '../components/AuthLayout'
 import Field from '../components/ui/Field'
 import Button from '../components/ui/Button'
 import PasswordToggle from '../components/PasswordToggle'
-import { signup, isLoggedIn, logout } from '../api/auth'
-import { homeAfterLogin } from '../api/rooms'
+import { signup, isLoggedIn } from '../api/auth'
+import { HOME_PATH } from '../api/rooms'
 import { validateSignup, hasErrors } from '../utils/validate'
 
 // turn a failed request into a message next to the right field (or above the button)
@@ -31,10 +31,7 @@ function Signup(){
 
     // already logged in? skip this page
     useEffect(()=>{
-        if(!isLoggedIn()) return
-        homeAfterLogin()
-            .then(path=>navigate(path,{replace:true}))
-            .catch(()=>logout())
+        if(isLoggedIn()) navigate(HOME_PATH,{replace:true})
     },[navigate])
 
     const errors=validateSignup(form)
@@ -58,7 +55,7 @@ function Signup(){
         setBusy(true)
         try{
             await signup({name:form.name.trim(),email:form.email.trim(),password:form.password})
-            navigate(await homeAfterLogin(),{replace:true})
+            navigate(HOME_PATH,{replace:true})
         }
         catch(err){
             setServerError(readSignupError(err))

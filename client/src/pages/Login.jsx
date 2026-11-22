@@ -4,8 +4,8 @@ import AuthLayout from '../components/AuthLayout'
 import Field from '../components/ui/Field'
 import Button from '../components/ui/Button'
 import PasswordToggle from '../components/PasswordToggle'
-import { login, isLoggedIn, logout } from '../api/auth'
-import { homeAfterLogin } from '../api/rooms'
+import { login, isLoggedIn } from '../api/auth'
+import { HOME_PATH } from '../api/rooms'
 import { validateLogin, hasErrors } from '../utils/validate'
 
 const readLoginError=(err)=>{
@@ -30,10 +30,7 @@ function Login(){
 
     // already logged in? skip this page
     useEffect(()=>{
-        if(!isLoggedIn()) return
-        homeAfterLogin()
-            .then(path=>navigate(path,{replace:true}))
-            .catch(()=>logout())
+        if(isLoggedIn()) navigate(HOME_PATH,{replace:true})
     },[navigate])
 
     const errors=validateLogin(form)
@@ -56,7 +53,7 @@ function Login(){
         setBusy(true)
         try{
             await login({email:form.email.trim(),password:form.password})
-            navigate(await homeAfterLogin(),{replace:true})
+            navigate(HOME_PATH,{replace:true})
         }
         catch(err){
             setServerError(readLoginError(err))
