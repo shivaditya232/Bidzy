@@ -1,26 +1,70 @@
+import { useRef, useState } from 'react'
 import { teamStyle } from '../../utils/color'
 
-// Your bid button: your team's paddle.
-// Primary colour in two shades, your accent as a thin edge along the bottom (metal when it's gold).
+const RING=2*Math.PI*84 // circumference of the timer ring
+
+// Your bid button: a real auction paddle in your team's colours.
+// Tap it and it thrusts up and forward at the auctioneer. Tap while you're already on top and it wobbles "no".
+// The bid timer runs as a ring around the head (pass progress 0..1 and seconds to show it).
 //
-//   <Paddle glow={glow} code="CSK" amount="₹4.40 Cr" onBid={placeBid} disabled={...} />
-function Paddle({ glow, code, amount, onBid, disabled=false, label='paddle' }) {
+//   <Paddle glow={glow} code="MI" amount="₹4.40 Cr" onBid={placeBid} leading={iLead} progress={0.6} seconds={9} />
+//   disabled: can't bid at all (auction paused, purse too low...)
+function Paddle({ glow, code, amount, onBid, disabled=false, leading=false, progress, seconds, label }) {
+    const [motion,setMotion]=useState(null) // 'up' | 'nope' | null
+    const [whoosh,setWhoosh]=useState(0)
+    const timer=useRef(null)
+
+    const play=(kind)=>{
+        clearTimeout(timer.current)
+        setMotion(null)
+        // next frame, so the same animation can replay on a quick second tap
+        requestAnimationFrame(()=>{
+            setMotion(kind)
+            timer.current=setTimeout(()=>setMotion(null),kind==='up' ? 750 : 400)
+        })
+    }
+
+    const handleClick=()=>{
+        if(disabled) return
+        if(leading){
+            play('nope')
+            return
+        }
+        play('up')
+        setWhoosh(w=>w+1)
+        onBid?.()
+    }
+
+    const hasClock=typeof progress==='number'
+    const hurry=hasClock&&typeof seconds==='number'&&seconds<=5
+    const classes=['bz-paddle',motion==='up'&&'bz-up',motion==='nope'&&'bz-nope',leading&&'bz-leading',disabled&&'bz-off'].filter(Boolean).join(' ')
+
     return (
-        <button
-            type="button"
-            onClick={onBid}
-            disabled={disabled}
-            style={teamStyle(glow)}
-            className="group relative isolate grid min-w-[220px] cursor-pointer justify-items-start gap-0.5 overflow-hidden rounded-2xl px-[22px] pt-3.5 pb-[18px] text-left
-                text-[var(--team-ink)] shadow-[0_10px_30px_-10px_var(--team-p),inset_0_1px_0_rgb(255_255_255/.25)]
-                transition-[transform,filter] duration-75 ease-bidzy active:translate-y-px active:scale-[.99] active:brightness-95
-                disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 disabled:active:scale-100"
-        >
-            <span className="absolute inset-0 -z-10" style={{background:'linear-gradient(135deg in oklab,var(--team-p),var(--team-pd))'}} />
-            <span className="text-xs font-bold uppercase tracking-[.12em] opacity-80">{code} {label}</span>
-            <strong className="font-num text-[38px] leading-none font-black tabular-nums">{amount}</strong>
-            <span className="absolute inset-x-0 bottom-0 h-[5px]" style={{background:'var(--team-acc-solid)'}} />
-        </button>
+        <div className="bz-paddle-wrap" style={teamStyle(glow)}>
+            {hasClock && (
+                <>
+                    <svg className={`bz-ring ${hurry ? 'bz-hurry' : ''}`} viewBox="0 0 178 178" aria-hidden="true">
+                        <circle className="bz-ring-track" cx="89" cy="89" r="84" />
+                        <circle className="bz-ring-left" cx="89" cy="89" r="84" strokeDasharray={RING} strokeDashoffset={RING*(1-Math.max(0,Math.min(1,progress)))} />
+                    </svg>
+                    {typeof seconds==='number' && <span className={`bz-secs ${hurry ? 'bz-hurry' : ''}`} aria-hidden="true">{seconds}</span>}
+                </>
+            )}
+            {whoosh>0 && <span key={whoosh} className="bz-whoosh" aria-hidden="true" />}
+            <button
+                type="button"
+                className={classes}
+                onClick={handleClick}
+                aria-disabled={disabled||leading}
+                aria-label={label||(leading ? `You lead at ${amount}` : `Bid ${amount}`)}
+            >
+                <span className="bz-paddle-head">
+                    <span className="bz-paddle-code">{code}</span>
+                    <span className="bz-paddle-amount">{amount}</span>
+                </span>
+                <span className="bz-paddle-handle" aria-hidden="true" />
+            </button>
+        </div>
     )
 }
 

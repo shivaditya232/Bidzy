@@ -16,7 +16,7 @@ const Room=require('../models/Room');
 const Membership=require('../models/Membership');
 const Bid=require('../models/Bid');
 const Set=require('../models/Set');
-const {placeBid,startAuction,finalizeAndAdvance,autoAdvanceTimer}=require('../controllers/auctionController');
+const {placeBid,startAuction,finalizeAndAdvance,getCurrentAuction,resetAuction,autoAdvanceTimer}=require('../controllers/auctionController');
 
 const TEST_DB='bidzy_test';
 const TEAM_COUNT=20;
@@ -103,6 +103,11 @@ test('parallel bids: exactly one winner per price step',async()=>{
     const bidCount=await Bid.countDocuments({room:A.room._id,player:A.players[0]._id});
     assert.strictEqual(bidCount,sorted.length,'one Bid document per accepted bid');
     console.log(`  accepted ${sorted.length} bids across ${ROUNDS} rounds: ${sorted.join(', ')}`);
+
+    // the board's bid feed after a reload: the latest bids on this player, newest first
+    const current=await callAs(getCurrentAuction,A.room,A.members[0]);
+    const feed=current.body.recentBids.map(b=>b.amount);
+    assert.deepStrictEqual(feed,[...sorted].reverse().slice(0,5),'recentBids = last 5 bids, newest first');
 });
 
 test('finalize fired many times at once: purse deducted exactly once',async()=>{
@@ -186,4 +191,20 @@ test('two rooms at the same time: bids and sales never cross over',async()=>{
     // and room A's auction was not touched by any of this
     const a=await AuctionSession.findOne({room:A.room._id});
     assert.strictEqual(a.status,'live');
+});
+
+test('reset clears the old bids, so a new round starts with an empty bid feed',async()=>{
+    const R=await makeRoom('resetfeed',2,['Feed Player']);
+    const hostMember=await Membership.findOne({room:R.room._id,role:'host'});
+    assert.strictEqual((await callAs(startAuction,R.room,hostMember)).code,200);
+    assert.strictEqual((await callAs(placeBid,R.room,R.members[0])).code,200);
+    assert.strictEqual(await Bid.countDocuments({room:R.room._id}),1);
+
+    assert.strictEqual((await callAs(resetAuction,R.room,hostMember)).code,200);
+    assert.strictEqual(await Bid.countDocuments({room:R.room._id}),0,'old bids are gone after a reset');
+
+    const lobbyRoom=await Room.findById(R.room._id);
+    assert.strictEqual((await callAs(startAuction,lobbyRoom,hostMember)).code,200);
+    const current=await callAs(getCurrentAuction,lobbyRoom,R.members[0]);
+    assert.deepStrictEqual(current.body.recentBids,[],'the same player up again shows no bids from the last round');
 });

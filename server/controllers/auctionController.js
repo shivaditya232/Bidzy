@@ -311,6 +311,8 @@ const resetAuction=async (req,res)=>{
         //nobody owns any players now, so every XI starts empty again
         await Membership.updateMany({room:roomId,role:'team'},{$set:{lineup:emptyLineup()}});
         await AuctionSession.deleteOne({room:roomId});
+        //the round is archived above, so its bids go too. otherwise the next round's bid feed would show old bids on the same players
+        await Bid.deleteMany({room:roomId});
         await Room.updateOne({_id:roomId},{$set:{status:'lobby'}});
 
         res.status(200).json({message:'Auction has been reset. Ready for a new round.'});
@@ -356,7 +358,11 @@ const getCurrentAuction=async (req,res)=>{
             {path:'currentPlayer'},
             {path:'highestBidder',select:'teamName'}
         ]);
-        res.status(200).json({populatedSession});
+        //the last few bids on the player up now, newest first (the bid feed on the board after a reload)
+        const recentBids=session.currentPlayer
+            ? await Bid.find({room:req.room._id,player:session.currentPlayer}).sort({createdAt:-1,_id:-1}).limit(5).select('team amount createdAt')
+            : [];
+        res.status(200).json({populatedSession,recentBids});
     }
     catch(error){
         console.error('getCurrentAuction failed:',error.message);

@@ -1,420 +1,257 @@
-import { useState,useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import api from "../api/axios"
-import { roomPath, useRoomId } from "../api/room"
-import socket, { connectToRoom } from "../api/socket"
-import Toast from "../components/Toast"
-import PlayerStatsModal from "../components/PlayerStatsModal"
-import Navbar from "../components/Navbar"
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import Aura from '../components/ui/Aura'
+import Button from '../components/ui/Button'
+import Paddle from '../components/ui/Paddle'
+import Toast from '../components/ui/Toast'
+import LotCard from '../components/board/LotCard'
+import XiPanel from '../components/board/XiPanel'
+import TeamTag from '../components/board/TeamTag'
+import { UpcomingPopup, TeamsPopup, XiPopup } from '../components/board/BoardPopups'
+import { useRoom } from '../components/roomContext'
+import { useFranchises } from '../hooks/useFranchises'
+import socket, { connectToRoom } from '../api/socket'
+import { getAuction, placeBid, getPlayers, getTeams, getMyMember } from '../api/auction'
+import { getMyLineup, saveLineup } from '../api/rooms'
+import { errorMessage } from '../api/axios'
+import { formatMoney } from '../utils/money'
+import { teamStyle } from '../utils/color'
+import { nextBid, idOf, placeInFirstOpen, upcomingPlayers, boughtByTeam, teamGlow } from '../utils/board'
 
-const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.18)]"
+const HAMMER_MS=2800 // how long SOLD / UNSOLD stays up before the next player rolls in
 
-function AuctionBoard() {
+// The auction floor, from a team's seat: your XI on the left, the player on the block in the middle,
+// your paddle below. The page glows in your colours; the corner glows in whoever leads.
+function AuctionBoard(){
+    const { roomId, room, me }=useRoom()
+    const { byCode }=useFranchises()
+    const [data,setData]=useState(null)        // {session, players, teams, mine, lineup, unplaced}
+    const [feed,setFeed]=useState([])          // [{key, teamId, amount}] newest first
+    const [hammer,setHammer]=useState(null)    // {key, sold, detail} while the gavel is down
+    const [landedId,setLandedId]=useState(null)
+    const [now,setNow]=useState(()=>Date.now())
+    const [popup,setPopup]=useState(null)      // 'upcoming' | 'teams' | 'xi'
+    const [toast,setToast]=useState(null)
+    const [announce,setAnnounce]=useState('')
+    const toastTimer=useRef(null)
+    const homeCountry=room.settings?.rules?.homeCountry||'India'
 
-  const [session,setSession]=useState(null);
-  const [message,setMessage]=useState('');
-  const [messageType,setMessageType]=useState('success');
-  const [resultPopup,setResultPopup]=useState(null);
-  const [myProfile,setMyProfile]=useState(null);
-  const [allPlayers,setAllPlayers]=useState([]);
-  const [teamsList,setTeamsList]=useState([]);
-  const [openPanel,setOpenPanel]=useState(null);
-  const [selectedTeamId,setSelectedTeamId]=useState(null);
-  const [selectedPlayer,setSelectedPlayer]=useState(null);
-  const navigate=useNavigate()
-  const roomId=useRoomId()
+    const showToast=useCallback((message,tone='bad')=>{
+        clearTimeout(toastTimer.current)
+        setToast({message,tone})
+        toastTimer.current=setTimeout(()=>setToast(null),2600)
+    },[])
 
-  useEffect(()=>{
-    if(!message) return;
-    const timer=setTimeout(()=>{
-      setMessage('')
-    },3000)
-    return ()=>{
-      clearTimeout(timer)
+    // everything the board shows, in one go
+    const loadAll=useCallback(async()=>{
+        const [auction,players,teams,mine,lineup]=await Promise.all([
+            getAuction(roomId),getPlayers(roomId),getTeams(roomId),getMyMember(roomId),getMyLineup(roomId)
+        ])
+        setData({session:auction.populatedSession,players,teams,mine,lineup:lineup.lineup,unplaced:lineup.unplaced})
+        const rows=(auction.recentBids||[]).map(b=>({key:`${idOf(b.team)}-${b.amount}`,teamId:idOf(b.team),amount:b.amount}))
+        setFeed(rows.filter((row,i)=>rows.findIndex(r=>r.key===row.key)===i))
+        return {players,lineup:lineup.lineup}
+    },[roomId])
+
+    // you won a player: drop him into the first open slot of your XI
+    const placeWon=useCallback(async(playerId,lineup)=>{
+        const next=placeInFirstOpen(lineup,playerId)
+        if(!next) return
+        try{
+            const saved=await saveLineup(roomId,next)
+            setData(prev=>prev ? {...prev,lineup:saved.lineup,unplaced:saved.unplaced} : prev)
+            setLandedId(playerId)
+            setTimeout(()=>setLandedId(null),2000)
+        }
+        catch{ /* e.g. a 5th overseas starter: he stays in "not in your XI" */ }
+    },[roomId])
+
+    useEffect(()=>{
+        loadAll().catch(err=>showToast(errorMessage(err)))
+    },[loadAll,showToast])
+
+    // live events
+    useEffect(()=>{
+        const onStarted=()=>{ loadAll().catch(()=>{}) }
+        const onBid=(event)=>{
+            setData(prev=>prev ? {...prev,session:{...prev.session,currentPrice:event.currentPrice,highestBidder:event.highestBidder,timerEndsAt:event.timerEndsAt}} : prev)
+            // the same bid can arrive twice (live event + a reload that already has it): keep it once
+            const key=`${idOf(event.highestBidder)}-${event.currentPrice}`
+            setFeed(prev=>prev.some(b=>b.key===key) ? prev : [{key,teamId:idOf(event.highestBidder),amount:event.currentPrice},...prev].slice(0,5))
+            setAnnounce(`${event.highestBidderName} bid ${formatMoney(event.currentPrice)}`)
+        }
+        const onFinished=(event)=>{
+            const done=event.finishedPlayer
+            const sold=done?.status==='sold'
+            const mineWon=sold&&String(done.soldTo)===String(me.id)
+            setHammer({key:done?.id||Date.now(),sold,detail:sold ? `${mineWon ? 'To you' : `To ${done.teamName}`} · ${formatMoney(done.soldPrice)}` : undefined})
+            setAnnounce(sold ? `Sold to ${mineWon ? 'you' : done.teamName} for ${formatMoney(done.soldPrice)}` : `${done?.name} unsold`)
+            setTimeout(async()=>{
+                setHammer(null)
+                try{
+                    const fresh=await loadAll()
+                    if(mineWon) placeWon(String(done.id),fresh.lineup)
+                }
+                catch{ /* the next event or a reload catches up */ }
+            },HAMMER_MS)
+        }
+        socket.on('auction-started',onStarted)
+        socket.on('bid-placed',onBid)
+        socket.on('next-player',onFinished)
+        socket.on('auction-ended',onFinished)
+        connectToRoom(roomId)
+        return ()=>{
+            socket.off('auction-started',onStarted)
+            socket.off('bid-placed',onBid)
+            socket.off('next-player',onFinished)
+            socket.off('auction-ended',onFinished)
+        }
+    },[roomId,me.id,loadAll,placeWon])
+
+    // the clock: a few times a second is smooth enough for the ring
+    useEffect(()=>{
+        const tick=setInterval(()=>setNow(Date.now()),200)
+        return ()=>{ clearInterval(tick); clearTimeout(toastTimer.current) }
+    },[])
+
+    const closePopup=useCallback(()=>setPopup(null),[])
+
+    const players=data?.players
+    const playersById=useMemo(()=>Object.fromEntries((players||[]).map(p=>[String(p._id),p])),[players])
+    const teamsById=useMemo(()=>Object.fromEntries((data?.teams||[]).map(t=>[String(t._id),t])),[data?.teams])
+
+    if(!data){
+        return <div className="min-h-screen bg-night" aria-busy="true" />
     }
-  },[message])
 
-  const fetchAuction=()=>{
-    api.get(roomPath(roomId,'/auction'))
-    .then(res=>{
-      setSession(res.data.populatedSession)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
+    const { session, teams, mine, lineup }=data
+    const myTeam=teamsById[String(me.id)]||{teamName:mine.teamName,franchise:mine.franchise,color:mine.color}
+    const myGlow=teamGlow(myTeam,byCode)
+    const rules=room.settings?.rules||{}
+    const player=session?.currentPlayer&&typeof session.currentPlayer==='object' ? session.currentPlayer : null
+    const live=session?.status==='live'&&player
+    const ended=session?.status==='ended'||room.status==='ended'
+    const leaderId=idOf(session?.highestBidder)
+    const leader=leaderId ? teamsById[leaderId]||{teamName:session.highestBidder?.teamName} : null
+    const iLead=leaderId===String(me.id)
+    const amount=live ? nextBid(session.currentPrice,room.settings.increments) : 0
+    const msLeft=live&&session.timerEndsAt ? Math.max(0,new Date(session.timerEndsAt).getTime()-now) : 0
+    const timerMs=(room.settings.timerSeconds||15)*1000
+    const tooPoor=amount>mine.purseRemaining
+    const canBid=live&&!hammer&&msLeft>0&&!tooPoor
 
-  const fetchMyProfile=()=>{
-    api.get(roomPath(roomId,'/members/me'))
-    .then(res=>{
-      setMyProfile(res.data)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
+    const lotIndex=player ? players.findIndex(p=>String(p._id)===String(player._id)) : -1
+    const lotPlayer=lotIndex>-1 ? players[lotIndex] : null
+    const lotLabel=lotPlayer ? `${lotPlayer.set?.name ? lotPlayer.set.name+' · ' : ''}Lot ${lotIndex+1}` : ''
+    const upcoming=upcomingPlayers(players)
+    const otherTeams=teams.filter(t=>String(t._id)!==String(me.id))
+    const unplaced=(data.unplaced||[]).map(id=>playersById[idOf(id)]).filter(Boolean)
+    const feedRows=feed.map(f=>({...f,team:teamsById[f.teamId]||null}))
 
-  const fetchAllPlayers=()=>{
-    api.get(roomPath(roomId,'/players'))
-    .then(res=>{
-      setAllPlayers(res.data)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
-
-  const fetchTeamsList=()=>{
-    api.get(roomPath(roomId,'/members'))
-    .then(res=>{
-      setTeamsList(res.data)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
-  const handleBid=()=>{
-    api.post(roomPath(roomId,'/auction/bid'))
-    .then(res=>{
-      setMessage('Bid placed successfully')
-      setMessageType('success')
-    })
-    .catch(err=>{
-      setMessage(err.response?.data?.message||'Something went wrong')
-      setMessageType('error')
-    })
-  }
-  useEffect(()=>{
-    fetchAuction()
-    fetchMyProfile()
-    fetchAllPlayers()
-    fetchTeamsList()
-
-    socket.on('auction-started',()=>{
-      fetchAuction()
-      fetchAllPlayers()
-    })
-    socket.on('bid-placed',(data)=>{
-      setSession(prev => prev ? {
-        ...prev,
-        currentPrice: data.currentPrice,
-        highestBidder: { teamName: data.highestBidderName },
-        timerEndsAt: data.timerEndsAt
-      } : prev)
-    })
-    socket.on('next-player',(data)=>{
-      setResultPopup(data.finishedPlayer)
-      setTimeout(()=>{
-        setResultPopup(null)
-        fetchAuction()
-        fetchMyProfile()
-        fetchAllPlayers()
-        fetchTeamsList()
-      },2000)
-    })
-    socket.on('auction-ended',(data)=>{
-      setResultPopup(data.finishedPlayer)
-      setTimeout(()=>{
-        setResultPopup(null)
-        fetchAuction()
-        fetchMyProfile()
-        fetchAllPlayers()
-        fetchTeamsList()
-      },2000)
-    })
-    // listeners are ready -> connect (with our token) and join this room's live events
-    connectToRoom(roomId)
-    return ()=>{
-      socket.off('auction-started')
-      socket.off('bid-placed')
-      socket.off('next-player')
-      socket.off('auction-ended')
+    const handleBid=async()=>{
+        try{
+            await placeBid(roomId)
+        }
+        catch(err){
+            showToast(errorMessage(err))
+        }
     }
-  },[])
-  const [timeLeft,setTimeLeft]=useState(0)
-  useEffect(()=>{
-    const interval=setInterval(()=>{
-      if(session && session.timerEndsAt){
-        const remaining=Math.max(0,Math.floor((new Date(session.timerEndsAt)-new Date())/1000))
-        setTimeLeft(remaining)
-      }
-      else{
-        setTimeLeft(0)
-      }
-    },1000)
-    return()=>{
-      clearInterval(interval);
+
+    let hintTitle,hintText
+    if(hammer){ hintTitle='Hammer down'; hintText='Next player in a moment.' }
+    else if(ended){ hintTitle='Paddle down'; hintText='The auction is over. Your squad is final.' }
+    else if(!live){ hintTitle='Paddle down'; hintText='Bidding opens when the host puts a player up.' }
+    else if(iLead){ hintTitle="You're on top"; hintText=`Hold your nerve. If nobody beats ${formatMoney(session.currentPrice)}, he's yours.` }
+    else if(tooPoor){ hintTitle='Out of reach'; hintText=`${formatMoney(amount)} is more than your ${formatMoney(mine.purseRemaining)} left.` }
+    else{
+        const stillNeed=Math.max(0,(rules.squadMin||0)-mine.squadSize-1)
+        hintTitle=`Raise to ${formatMoney(amount)}`
+        hintText=`Tap your paddle. You'd have ${formatMoney(mine.purseRemaining-amount)} left${stillNeed>0 ? ` for ${stillNeed} more players` : ''}.`
     }
-  },[session])
 
-  const myPlayers=myProfile ? allPlayers.filter(p=>p.status==='sold' && p.soldTo && p.soldTo._id===myProfile._id) : []
-  const upcomingPlayers=allPlayers.filter(p=>p.status==='pending')
-  const otherTeams=teamsList
-    .filter(team=>!myProfile || team._id!==myProfile._id)
-    .map(team=>({
-      ...team,
-      players:allPlayers.filter(p=>p.status==='sold' && p.soldTo && p.soldTo._id===team._id)
-    }))
-  const selectedTeam=otherTeams.find(team=>team._id===selectedTeamId) || null
+    const pill='grid rounded-xl border border-line bg-night/55 px-3 pt-1.5 pb-[5px]'
+    const pillLabel='text-[10px] font-bold tracking-[.14em] text-fg-3 uppercase'
+    const pillValue='font-num text-xl leading-[1.05] font-extrabold tabular-nums'
 
-  return (
-    <div className="min-h-screen bg-slate-50 relative overflow-hidden">
-      <div className="pointer-events-none fixed -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-200/30 blur-3xl" />
-      <div className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-violet-200/20 blur-3xl" />
+    return (
+        <Aura variant="page" glow={myGlow} accent={leader ? teamGlow(leader,byCode).p : undefined}
+            className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased" style={teamStyle(myGlow)}>
+            <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-10 sm:px-5">
+                <header className="mb-5 flex flex-wrap items-center justify-between gap-3.5">
+                    <div className="flex min-w-0 items-center gap-3.5">
+                        <Link to="/lobby" className="font-num text-[22px] font-black tracking-[.06em] text-fg no-underline">BIDZY</Link>
+                        {(session ? session.status==='live' : room.status==='live') && (
+                            <span className="inline-flex items-center gap-[7px] rounded-full border border-[#FF4D4D]/50 px-2.5 pt-1 pb-[3px] text-[11px] font-bold tracking-[.14em]">
+                                <i className="bz-live-dot size-[7px] rounded-full bg-[#FF4D4D]" aria-hidden="true" />LIVE
+                            </span>
+                        )}
+                        <span className="truncate font-semibold text-fg-2">{room.name}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                        <div className={pill}><small className={pillLabel}>You</small><span className="pt-0.5"><TeamTag team={myTeam} franchisesByCode={byCode} /></span></div>
+                        <div className={pill}><small className={pillLabel}>Purse left</small><b className={pillValue}>{formatMoney(mine.purseRemaining)}</b></div>
+                        <div className={pill}><small className={pillLabel}>Squad</small><b className={pillValue}>{mine.squadSize} / {rules.squadMax}</b></div>
+                        <div className={pill}><small className={pillLabel}>Overseas</small><b className={pillValue}>{mine.overseasCount} / {rules.overseasMax}</b></div>
+                    </div>
+                </header>
 
-      <Navbar
-        title="Auction Board"
-        actions={[
-          { label:'Past Auctions', onClick:()=>navigate(`/rooms/${roomId}/history`) },
-          { label:'View Results', onClick:()=>navigate(`/rooms/${roomId}/results`) }
-        ]}
-      />
+                <div className="grid items-start gap-5 min-[921px]:grid-cols-[290px_minmax(0,1fr)]">
+                    <aside className="hidden rounded-[22px] border border-line bg-night-2/80 p-4 backdrop-blur-md min-[921px]:block">
+                        <XiPanel lineup={lineup} playersById={playersById} homeCountry={homeCountry} boughtCount={mine.squadSize} landedId={landedId} />
+                    </aside>
 
-      <div className="relative flex justify-center px-4 py-10">
-      <div className="w-full max-w-md">
-        <Toast message={message} type={messageType} />
+                    <main className="min-w-0">
+                        {player
+                            ? <LotCard key={player._id} player={player} lotLabel={lotLabel} homeCountry={homeCountry} price={session.currentPrice}
+                                leader={leader} mine={iLead} feed={feedRows} franchisesByCode={byCode} hammer={hammer} />
+                            : (
+                                <div className="grid min-h-[400px] place-items-center content-center gap-3 rounded-[26px] border border-white/15 bg-night-2/80 p-6 text-center">
+                                    <h1 className="m-0 font-num text-[clamp(40px,6vw,72px)] leading-[.9] font-black uppercase">
+                                        {ended ? 'Auction over' : 'Waiting for the host'}
+                                    </h1>
+                                    <p className="m-0 max-w-[42ch] text-fg-2">
+                                        {ended
+                                            ? 'Every player has gone under the hammer. See who ended up where.'
+                                            : 'The first player comes up as soon as the host starts the auction. Keep this page open.'}
+                                    </p>
+                                    {ended && <Button as={Link} to={`/rooms/${roomId}/results`} kind="primary" arrow>See results</Button>}
+                                </div>
+                            )}
 
-        {resultPopup && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-2xl p-8 text-center max-w-sm w-full">
-              {resultPopup.status==='sold' ? (
-                <>
-                  <p className="text-sm font-bold tracking-wide text-green-600 mb-2">SOLD!</p>
-                  <h2 className="font-display font-bold text-2xl text-slate-800 mb-1">{resultPopup.name}</h2>
-                  <p className="text-slate-600 mb-4">
-                    to <span className="font-semibold text-slate-800">{resultPopup.teamName}</span>
-                  </p>
-                  <p className="font-display text-3xl font-bold text-green-600">{resultPopup.soldPrice}</p>
-                </>
-              ) : (
-                <>
-                  <p className="text-sm font-bold tracking-wide text-red-600 mb-2">UNSOLD</p>
-                  <h2 className="font-display font-bold text-2xl text-slate-800">{resultPopup.name}</h2>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-        {session && session.status==='live' && session.currentPlayer && (
-          <div className={`${cardClass} p-6 text-center`}>
-            <h2 className="font-display font-bold text-xl text-slate-800 mb-1">{session.currentPlayer.name}</h2>
-            <p className="text-sm text-slate-500 mb-4">{session.currentPlayer.role} - {session.currentPlayer.country}</p>
+                        <section aria-label="Your paddle"
+                            className="mt-[18px] grid items-center gap-[18px] rounded-[22px] border border-line bg-night-2/70 px-[18px] py-4 max-[620px]:justify-items-center max-[620px]:text-center min-[621px]:grid-cols-[minmax(0,1fr)_auto]">
+                            <div className="grid gap-1">
+                                <b className="font-num text-[26px] leading-none font-black uppercase">{hintTitle}</b>
+                                <span className="text-sm text-fg-2">{hintText}</span>
+                            </div>
+                            <Paddle
+                                glow={myGlow}
+                                code={myTeam.franchise||myTeam.teamName?.slice(0,3).toUpperCase()}
+                                amount={formatMoney(iLead ? session.currentPrice : amount||player?.basePrice)}
+                                onBid={handleBid}
+                                disabled={!canBid}
+                                leading={iLead&&!hammer}
+                                progress={live&&!hammer ? msLeft/timerMs : 0}
+                                seconds={live&&!hammer ? Math.ceil(msLeft/1000) : undefined}
+                            />
+                        </section>
 
-            <div className="flex flex-wrap justify-center gap-4 bg-slate-50 rounded-xl p-4 mb-4">
-              {[
-                {label:'Matches',value:session.currentPlayer.stats.matches},
-                {label:'Runs',value:session.currentPlayer.stats.runs},
-                {label:'Bat Avg',value:session.currentPlayer.stats.battingAverage},
-                {label:'Strike Rate',value:session.currentPlayer.stats.strikeRate},
-                {label:'Wickets',value:session.currentPlayer.stats.wickets},
-                {label:'Economy',value:session.currentPlayer.stats.bowlingEconomy}
-              ].filter(stat=>stat.value).map(stat=>{
-                return (
-                  <div key={stat.label}>
-                    <p className="text-xs text-slate-500">{stat.label}</p>
-                    <p className="text-sm font-semibold text-slate-800">{stat.value}</p>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="flex justify-center gap-8 mb-4">
-              <div>
-                <p className="text-xs text-slate-500">Current Price</p>
-                <p className="font-display text-2xl font-bold text-indigo-600">{session.currentPrice}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Time Left</p>
-                <p className={`font-display text-2xl font-bold ${timeLeft<=5 ? 'text-red-600' : 'text-slate-800'}`}>{timeLeft}s</p>
-              </div>
+                        <div className="mt-[18px] flex flex-wrap gap-2.5">
+                            <Button kind="secondary" size="sm" className="min-[921px]:hidden" onClick={()=>setPopup('xi')}>Your team</Button>
+                            <Button kind="secondary" size="sm" onClick={()=>setPopup('upcoming')}>Upcoming players <span className="text-fg-3">({upcoming.length})</span></Button>
+                            <Button kind="secondary" size="sm" onClick={()=>setPopup('teams')}>Other teams' players</Button>
+                        </div>
+                    </main>
+                </div>
             </div>
 
-            <p className="text-sm text-slate-600 mb-6">
-              Highest Bidder: <span className="font-medium text-slate-800">{session.highestBidder ? session.highestBidder.teamName : 'No bids yet'}</span>
-            </p>
-
-            <button
-              onClick={handleBid}
-              className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold shadow-md shadow-indigo-500/25 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all"
-            >
-              Place Bid
-            </button>
-          </div>
-        )}
-
-        {session && session.status==='ended' && (
-          <div className={`${cardClass} p-6 text-center text-slate-600`}>
-            Auction has ended
-          </div>
-        )}
-
-        {session && session.status==='not_started' && (
-          <div className={`${cardClass} p-6 text-center text-slate-600`}>
-            Waiting for the auction to start
-          </div>
-        )}
-
-        <div className="grid grid-cols-3 gap-3 mt-6">
-          <button
-            onClick={()=>setOpenPanel('myTeam')}
-            className={`${cardClass} p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all`}
-          >
-            <p className="text-sm font-semibold text-slate-800">Your Team</p>
-          </button>
-          <button
-            onClick={()=>setOpenPanel('upcoming')}
-            className={`${cardClass} p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all`}
-          >
-            <p className="text-sm font-semibold text-slate-800">Upcoming</p>
-          </button>
-          <button
-            onClick={()=>setOpenPanel('otherTeams')}
-            className={`${cardClass} p-4 text-center hover:shadow-lg hover:-translate-y-0.5 transition-all`}
-          >
-            <p className="text-sm font-semibold text-slate-800">Other Teams</p>
-          </button>
-        </div>
-
-        {openPanel==='myTeam' && myProfile && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="font-display font-semibold text-lg text-slate-800">Your Team</h2>
-                <button onClick={()=>setOpenPanel(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
-              </div>
-              <p className="text-sm text-slate-500 mb-4">
-                Purse Remaining: <span className="font-semibold text-slate-800">{myProfile.purseRemaining}</span>
-              </p>
-
-              {myPlayers.length===0 && (
-                <p className="text-sm text-slate-500">No players won yet</p>
-              )}
-
-              {myPlayers.length>0 && (
-                <>
-                  <div className="grid grid-cols-3 px-2 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 border-b border-slate-200">
-                    <span>Name</span>
-                    <span>Role</span>
-                    <span>Price</span>
-                  </div>
-                  {myPlayers.map(player=>(
-                    <button key={player._id} onClick={()=>setSelectedPlayer(player)}
-                      className="w-full grid grid-cols-3 px-2 py-2.5 text-sm text-slate-800 border-b border-slate-100 last:border-b-0 hover:bg-slate-50 text-left transition-colors">
-                      <span className="font-medium">{player.name}</span>
-                      <span className="text-slate-500">{player.role}</span>
-                      <span className="text-slate-500">{player.soldPrice}</span>
-                    </button>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {openPanel==='upcoming' && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display font-semibold text-lg text-slate-800">Upcoming Players</h2>
-                <button onClick={()=>setOpenPanel(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
-              </div>
-
-              {upcomingPlayers.length===0 && (
-                <p className="text-sm text-slate-500">No upcoming players</p>
-              )}
-
-              {upcomingPlayers.length>0 && (
-                <>
-                  <div className="grid grid-cols-3 px-2 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 border-b border-slate-200">
-                    <span>Name</span>
-                    <span>Role</span>
-                    <span>Base Price</span>
-                  </div>
-                  {upcomingPlayers.map(player=>(
-                    <button key={player._id} onClick={()=>setSelectedPlayer(player)}
-                      className="w-full grid grid-cols-3 px-2 py-2.5 text-sm text-slate-800 border-b border-slate-100 last:border-b-0 hover:bg-slate-50 text-left transition-colors">
-                      <span className="font-medium">{player.name}</span>
-                      <span className="text-slate-500">{player.role}</span>
-                      <span className="text-slate-500">{player.basePrice}</span>
-                    </button>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {openPanel==='otherTeams' && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display font-semibold text-lg text-slate-800">Other Teams</h2>
-                <button onClick={()=>setOpenPanel(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
-              </div>
-
-              {otherTeams.length===0 && (
-                <p className="text-sm text-slate-500">No other teams yet</p>
-              )}
-
-              <div className="grid gap-3">
-                {otherTeams.map(team=>(
-                  <button key={team._id}
-                    onClick={()=>{setSelectedTeamId(team._id);setOpenPanel(null)}}
-                    className="bg-slate-50 rounded-xl p-4 text-left hover:bg-indigo-50 transition-colors"
-                  >
-                    <span className="font-semibold text-slate-800">{team.teamName}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {selectedTeam && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="font-display font-semibold text-lg text-slate-800">{selectedTeam.teamName}</h2>
-                <button onClick={()=>setSelectedTeamId(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
-              </div>
-              <p className="text-sm text-slate-500 mb-4">
-                Purse Remaining: <span className="font-semibold text-slate-800">{selectedTeam.purseRemaining}</span>
-              </p>
-
-              {selectedTeam.players.length===0 && (
-                <p className="text-sm text-slate-500">No players won yet</p>
-              )}
-
-              {selectedTeam.players.length>0 && (
-                <>
-                  <div className="grid grid-cols-3 px-2 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 border-b border-slate-200">
-                    <span>Name</span>
-                    <span>Role</span>
-                    <span>Price</span>
-                  </div>
-                  {selectedTeam.players.map(player=>(
-                    <button key={player._id} onClick={()=>setSelectedPlayer(player)}
-                      className="w-full grid grid-cols-3 px-2 py-2.5 text-sm text-slate-800 border-b border-slate-100 last:border-b-0 hover:bg-slate-50 text-left transition-colors">
-                      <span className="font-medium">{player.name}</span>
-                      <span className="text-slate-500">{player.role}</span>
-                      <span className="text-slate-500">{player.soldPrice}</span>
-                    </button>
-                  ))}
-                </>
-              )}
-
-              <button onClick={()=>{setSelectedTeamId(null);setOpenPanel('otherTeams')}} className="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-                Back to Other Teams
-              </button>
-            </div>
-          </div>
-        )}
-
-        <PlayerStatsModal player={selectedPlayer} onClose={()=>setSelectedPlayer(null)} />
-      </div>
-      </div>
-    </div>
-  )
+            {popup==='upcoming' && <UpcomingPopup onClose={closePopup} players={upcoming} homeCountry={homeCountry} />}
+            {popup==='teams' && <TeamsPopup onClose={closePopup} teams={otherTeams} boughtByTeam={boughtByTeam(players)} franchisesByCode={byCode} />}
+            {popup==='xi' && <XiPopup onClose={closePopup} lineup={lineup} unplaced={unplaced} playersById={playersById} homeCountry={homeCountry} boughtCount={mine.squadSize} glow={myGlow} />}
+            {toast && <Toast message={toast.message} tone={toast.tone} />}
+            <div className="sr-only" aria-live="assertive">{announce}</div>
+        </Aura>
+    )
 }
 
 export default AuctionBoard
