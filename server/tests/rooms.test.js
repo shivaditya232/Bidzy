@@ -5,6 +5,7 @@ require('dotenv').config({path:path.join(__dirname,'..','.env'),quiet:true});
 const {test,before,after}=require('node:test');
 const assert=require('node:assert');
 const mongoose=require('mongoose');
+require('../config/socket').init(require('http').createServer()); // joinRoom announces the new team to the room
 
 const User=require('../models/User');
 const Room=require('../models/Room');

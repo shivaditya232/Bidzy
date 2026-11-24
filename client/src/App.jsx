@@ -4,7 +4,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Lobby from './pages/Lobby'
 import ProtectedRoute from './components/ProtectedRoute'
-import AdminDashboard from './pages/AdminDashboard'
+import HostDashboard from './pages/HostDashboard'
 import AuctionBoard from './pages/AuctionBoard'
 import Results from './pages/Results'
 import PastAuctions from './pages/PastAuctions'
@@ -25,7 +25,7 @@ function App() {
 
       {/* everything inside a room. the room comes from the URL, the guard checks you're in it */}
       <Route path="/rooms/:roomId/host" element={
-        <RoomGuard allowedRole="host"><AdminDashboard /></RoomGuard>
+        <RoomGuard allowedRole="host"><HostDashboard /></RoomGuard>
       } />
       <Route path="/rooms/:roomId/board" element={
         <RoomGuard allowedRole="team"><AuctionBoard /></RoomGuard>

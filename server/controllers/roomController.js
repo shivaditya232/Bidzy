@@ -6,6 +6,7 @@ const seedDefaultSets=require('../config/seedSets');
 const {getSquad,getRoomSquads}=require('../utils/auctionRules');
 const {FRANCHISES,getFranchise}=require('../config/franchises');
 const {emptyLineup}=require('../models/Membership');
+const {emitToRoom}=require('../config/socket');
 
 const HEX_COLOR=/^#[0-9A-Fa-f]{6}$/;
 
@@ -211,6 +212,13 @@ const joinRoom=async (req,res)=>{
                 await Membership.updateOne({_id:member._id,purse:claimed.settings.purse},{$set:{purse:latest.settings.purse,purseRemaining:latest.settings.purse}});
                 member.purse=latest.settings.purse;
                 member.purseRemaining=latest.settings.purse;
+            }
+            //tell the room (the host's screen) a team just arrived. the join already worked, so a failed message only gets logged
+            try{
+                emitToRoom(room._id,'team-joined',{roomId:room._id,team:{_id:member._id,teamName:member.teamName,franchise:member.franchise||null,color:member.color||null,purse:member.purse,purseRemaining:member.purseRemaining}});
+            }
+            catch(error){
+                console.error('team-joined emit failed:',error.message);
             }
             res.status(201).json({message:'Joined room',room:claimed,member});
         }
