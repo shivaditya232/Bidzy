@@ -3,6 +3,10 @@
 // A "zone" is where a card is dropped:
 //   {kind:'place', i}  an open position      {kind:'swap', i}  onto the player at i
 //   {kind:'tuck', i}   onto his right edge = become his backup      {kind:'hand'}  back to the hand
+// and while a player's backup pile is turned over (face up in his row):
+//   {kind:'pile', i, k}  onto backup k: replaces him, or moves there if he's already in the pile
+//   {kind:'pileAdd', i}  onto the pile anywhere else (his strip): add at the end
+//   {kind:'unback', i}   a backup dragged out of the pile to the hand: no longer backs up i
 import { idOf, isOverseas } from './board.js'
 
 export const XI_SIZE=11
@@ -38,9 +42,22 @@ export const planDrop=(lineup,id,zone,{byId={},homeCountry}={})=>{
     const player=byId[id]
     const from=positionOf(lineup,id)
     if(zone.kind==='hand') return from>-1 ? {ok:true,label:'Take out'} : null
+    if(zone.kind==='unback') return lineup[zone.i]?.backups.includes(id) ? {ok:true,label:'Remove backup'} : null
 
     const i=zone.i
     const there=lineup[i]?.player||null
+    if(zone.kind==='pile'||zone.kind==='pileAdd'){
+        if(!there) return null
+        if(from>-1) return {ok:false,label:'Starting already',why:`${player?.name} is in the XI. Take him out first to make him a backup.`}
+        const pile=lineup[i].backups
+        if(zone.kind==='pileAdd'){
+            if(!pile.includes(id)) return {ok:true,label:`Back up ${lastName(byId[there]?.name)}`}
+            return pile[pile.length-1]===id ? null : {ok:true,label:'Move to last'}
+        }
+        const current=pile[zone.k]
+        if(!current||current===id) return null
+        return pile.includes(id) ? {ok:true,label:`Make him no. ${zone.k+1}`} : {ok:true,label:`Replace ${lastName(byId[current]?.name)}`}
+    }
     if(zone.kind==='tuck'){
         if(!there||there===id) return null
         const name=byId[there]?.name
@@ -67,8 +84,21 @@ export const applyDrop=(lineup,id,zone)=>{
         return next
     }
     const i=zone.i
-    if(zone.kind==='tuck'){
-        next[i].backups.push(id)
+    if(zone.kind==='tuck') return addBackup(next,i,id)
+    if(zone.kind==='unback') return removeBackup(next,i,id)
+    if(zone.kind==='pileAdd'){
+        next[i].backups=[...next[i].backups.filter(b=>b!==id),id]
+        return next
+    }
+    if(zone.kind==='pile'){
+        const pile=next[i].backups
+        const at=pile.indexOf(id)
+        if(at>-1){
+            // already in the pile: move him to k
+            pile.splice(at,1)
+            pile.splice(zone.k,0,id)
+        }
+        else pile[zone.k]=id // a hand card takes backup k's place
         return next
     }
     // he starts now, so he can't be anyone's backup
@@ -86,7 +116,7 @@ export const applyDrop=(lineup,id,zone)=>{
     return next
 }
 
-// backups popup
+// add / remove one backup of position i (returns a new lineup)
 export const addBackup=(lineup,i,id)=>{
     const next=copy(lineup)
     if(next[i].player&&!next[i].backups.includes(String(id))) next[i].backups.push(String(id))
@@ -95,15 +125,6 @@ export const addBackup=(lineup,i,id)=>{
 export const removeBackup=(lineup,i,id)=>{
     const next=copy(lineup)
     next[i].backups=next[i].backups.filter(b=>b!==String(id))
-    return next
-}
-// move backup k one step up (-1) or down (+1)
-export const moveBackup=(lineup,i,k,step)=>{
-    const next=copy(lineup)
-    const list=next[i].backups
-    const j=k+step
-    if(j<0||j>=list.length) return next
-    ;[list[k],list[j]]=[list[j],list[k]]
     return next
 }
 

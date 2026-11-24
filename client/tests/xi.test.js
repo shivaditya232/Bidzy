@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { normalizeLineup, planDrop, applyDrop, addBackup, removeBackup, moveBackup, balance, powerStat, handOf, backingUp, XI_OVERSEAS_MAX } from '../src/utils/xi.js'
+import { normalizeLineup, planDrop, applyDrop, addBackup, removeBackup, balance, powerStat, handOf, backingUp, XI_OVERSEAS_MAX } from '../src/utils/xi.js'
 
 const P=(id,role,country='India',stats={})=>({_id:id,name:`First ${id.toUpperCase()}`,role,country,stats})
 const squad=[P('a','Batsman'),P('b','Batsman'),P('k','Wicketkeeper'),P('r','Allrounder'),P('w','Bowler'),
@@ -76,16 +76,32 @@ test('applyDrop does not change the lineup it was given', () => {
     assert.equal(x[3].player,null)
 })
 
-test('backups can be added once, reordered and removed', () => {
+test('backups can be added once and removed', () => {
     let x=withStarters('a')
     x=addBackup(x,0,'k'); x=addBackup(x,0,'r'); x=addBackup(x,0,'k')
     assert.deepEqual(x[0].backups,['k','r'])
-    x=moveBackup(x,0,1,-1)
-    assert.deepEqual(x[0].backups,['r','k'])
-    assert.deepEqual(moveBackup(x,0,0,-1)[0].backups,['r','k']) // already first
-    x=removeBackup(x,0,'r')
-    assert.deepEqual(x[0].backups,['k'])
+    x=removeBackup(x,0,'k')
+    assert.deepEqual(x[0].backups,['r'])
     assert.deepEqual(addBackup(empty(),2,'k')[2].backups,[]) // no starter, no backup
+})
+
+test('the turned-over pile: replace, reorder, add, remove', () => {
+    let x=withStarters('a')
+    x=addBackup(x,0,'k'); x=addBackup(x,0,'r'); x=addBackup(x,0,'w')     // pile: k r w
+    assert.equal(planDrop(x,'b',{kind:'pile',i:0,k:1},opts).label,'Replace R')
+    x=applyDrop(x,'b',{kind:'pile',i:0,k:1})
+    assert.deepEqual(x[0].backups,['k','b','w'])
+    assert.equal(planDrop(x,'w',{kind:'pile',i:0,k:0},opts).label,'Make him no. 1')
+    x=applyDrop(x,'w',{kind:'pile',i:0,k:0})
+    assert.deepEqual(x[0].backups,['w','k','b'])
+    assert.equal(planDrop(x,'w',{kind:'pile',i:0,k:0},opts),null)            // onto himself
+    assert.equal(planDrop(x,'o1',{kind:'pileAdd',i:0},opts).label,'Back up A')
+    x=applyDrop(x,'o1',{kind:'pileAdd',i:0})
+    assert.deepEqual(x[0].backups,['w','k','b','o1'])
+    assert.equal(planDrop(x,'k',{kind:'unback',i:0},opts).label,'Remove backup')
+    x=applyDrop(x,'k',{kind:'unback',i:0})
+    assert.deepEqual(x[0].backups,['w','b','o1'])
+    assert.equal(planDrop(x,'a',{kind:'pileAdd',i:0},opts).ok,false)        // a starter can't join a pile
 })
 
 test('balance: allrounders count half; keeper and bowling options', () => {

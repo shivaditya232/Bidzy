@@ -164,7 +164,7 @@ button.xi-spot { cursor: pointer; }
 @keyframes xi-nudge-up { to { transform: translateY(-4px); } }
 
 /* cards: shared */
-.xi-scard, .xi-hcard, .xi-bench, .xi-bkrow { color: var(--team-ink); }
+.xi-scard, .xi-hcard { color: var(--team-ink); }
 .xi-scard, .xi-hcard {
   position: relative; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; text-align: left; font-family: inherit;
   touch-action: manipulation; /* a swipe still scrolls; press and hold picks the card up */
@@ -276,57 +276,61 @@ button.xi-spot { cursor: pointer; }
 }
 .xi-say.is-bad { border-color: rgb(255 107 94 / .6); color: #ffd0cb; }
 
-/* backups popup */
-.xi-bkscrim { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; padding: 14px; background: rgb(3 4 6 / .6); backdrop-filter: blur(3px); }
-.xi-bkpop {
-  position: relative; isolation: isolate; overflow: hidden; outline: none; width: min(520px, 100%); max-height: 100%;
-  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; border-radius: 22px; border: 1px solid rgb(255 255 255 / .16);
-  background: var(--color-night-2); box-shadow: 0 30px 60px rgb(0 0 0 / .6); animation: xi-popin .28s var(--spring);
+/* the backup pile turned over: his backups lie face up as a deck in his row,
+   he alone shows his striped back peeking out on the right (where the backups peeked before) */
+.xi-stripes {
+  border: 2px solid transparent;
+  background: repeating-linear-gradient(135deg, rgb(233 194 90 / .5) 0 3px, transparent 3px 9px) padding-box,
+    linear-gradient(135deg in oklab, var(--team-p), var(--xi-deep)) padding-box, var(--xi-edge) border-box;
 }
-@keyframes xi-popin { from { transform: translateY(16px) scale(.96); opacity: 0; } }
-.xi-bkpop::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: radial-gradient(70% 45% at 0% 0% in oklab, color-mix(in srgb, var(--team-p) 70%, transparent), transparent 70%),
-    radial-gradient(40% 30% at 100% 0% in oklab, color-mix(in srgb, var(--team-acc) 50%, transparent), transparent 70%);
+.xi-peekbtn { position: absolute; top: 0; bottom: 0; right: -34px; width: 60px; border: 0; background: transparent; cursor: pointer; z-index: 0; border-radius: 0 16px 16px 0; }
+.xi-peekbtn:hover ~ .xi-peeks .xi-peek, .xi-peekbtn:focus-visible ~ .xi-peeks .xi-peek { filter: brightness(1.4); }
+.xi-peekbtn:focus-visible { outline: 2px solid var(--color-floodlight); outline-offset: 2px; }
+.xi-deck { position: relative; height: 66px; --step: 24px; --strip: 40px; }
+.xi-dk {
+  position: absolute; top: 0; height: 66px; left: calc(var(--k) * var(--step)); z-index: calc(20 - var(--k));
+  width: calc(100% - (var(--n) - 1) * var(--step) - var(--strip)); perspective: 900px; transition: transform .3s var(--spring);
 }
-.xi-bkpop h3 { margin: 0; font-family: var(--font-num); font-weight: 900; font-size: 26px; line-height: 1; text-transform: uppercase; }
-.xi-bktop { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding: 16px 16px 4px; }
-.xi-bktop p { margin: 4px 0 0; font-size: 12.5px; color: var(--color-fg-2); }
-.xi-bkstarter { padding: 8px 16px 10px; }
-.xi-bkstarter .xi-scard { cursor: default; pointer-events: none; }
-.xi-bkbody { overflow: auto; padding: 0 16px 8px; min-height: 0; }
-.xi-bklabel { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--color-fg-3); margin: 10px 0 7px; }
-.xi-bklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
-.xi-bkrow {
-  display: grid; grid-template-columns: 30px 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 8px 6px 6px;
-  border-radius: 14px; border: 1.5px solid transparent; background: var(--xi-face) padding-box, var(--xi-edge) border-box;
+.xi-pin { position: relative; height: 100%; transform-style: preserve-3d; }
+.xi-dk .xi-scard { position: absolute; inset: 0; min-height: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.xi-pback { position: absolute; inset: 0; border-radius: 16px; transform: rotateY(180deg); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.xi-dk:not(:first-child):not(.is-focus):hover { transform: translateX(5px); }
+.xi-dk.is-focus { z-index: 30; transform: translateY(-3px); }
+.xi-dk.is-focus .xi-scard { box-shadow: 0 0 0 2px var(--color-floodlight), 0 16px 28px -10px rgb(0 0 0 / .9); }
+.xi-dk.is-target .xi-scard { box-shadow: 0 0 0 3px var(--color-floodlight), 0 0 22px rgb(255 241 207 / .5); }
+.xi-dk.is-landed .xi-pin { animation: xi-snap .45s var(--spring); }
+.xi-dord {
+  position: absolute; top: -9px; left: -7px; z-index: 3; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-num); font-weight: 900; font-size: 13px; color: #1A1407; background: var(--gold-metal); box-shadow: 0 3px 8px rgb(0 0 0 / .6);
 }
-.xi-bkrow.is-moved { animation: xi-snap .4s var(--spring); }
-.xi-ord { font-family: var(--font-num); font-weight: 900; font-size: 22px; text-align: center; background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.xi-bkrow .xi-photo { width: 40px; height: 40px; border-radius: 9px; font-size: 15px; background: rgb(0 0 0 / .22); }
-.xi-bkrow b { display: block; font-family: var(--font-num); font-weight: 900; font-size: 18px; line-height: 1; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.xi-bkrow small { font-size: 10.5px; font-weight: 700; color: var(--xi-sub); }
-.xi-acts { display: flex; gap: 4px; }
-.xi-ib { width: 32px; height: 32px; border-radius: 10px; border: 0; cursor: pointer; display: grid; place-items: center; font-size: 13px; font-weight: 900; color: #fff; background: rgb(7 9 13 / .55); }
-.xi-ib:hover:not(:disabled) { background: rgb(7 9 13 / .8); }
-.xi-ib:disabled { opacity: .3; cursor: default; }
-.xi-ib.is-remove:hover { background: var(--color-alert); }
-.xi-ib:focus-visible { outline: 2px solid var(--color-floodlight); outline-offset: 2px; }
-.xi-bkempty { padding: 12px; border: 1.5px dashed rgb(255 255 255 / .16); border-radius: 14px; font-size: 13px; color: var(--color-fg-3); text-align: center; }
-.xi-benches { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-.xi-bench {
-  position: relative; display: grid; justify-items: start; gap: 2px; padding: 0 0 8px; border-radius: 13px; border: 1.5px solid transparent; overflow: hidden;
-  cursor: pointer; text-align: left; font-family: inherit; background: var(--xi-face-tall) padding-box, var(--xi-edge) border-box;
-  transition: transform .18s var(--spring), box-shadow .2s;
+.xi-dk:not(:first-child):not(.is-focus) .xi-dord { left: auto; right: 4px; }
+/* opening: each backup turns face up, one after another */
+.xi-deck.is-anim .xi-pin { animation: xi-dk-in .6s var(--spring) backwards; animation-delay: calc(var(--k) * 90ms + 120ms); }
+@keyframes xi-dk-in { from { transform: rotateY(180deg); } }
+.xi-deck.is-anim .xi-dstrip { animation: xi-strip-in .55s var(--spring) backwards; }
+@keyframes xi-strip-in { from { transform: rotateY(-90deg) translateX(-30px); opacity: 0; } }
+/* turning back: the backups go face down and slide right, then he swings over from the right edge, face up */
+.xi-slot.is-closing .xi-pin { animation: xi-dk-out .42s var(--ease-bidzy) forwards; animation-delay: calc((var(--n) - 1 - var(--k)) * 50ms); }
+@keyframes xi-dk-out { to { transform: translateX(32%) rotateY(180deg) scale(.94); } }
+.xi-slot.is-closing .xi-dord { opacity: 0; transition: opacity .15s; }
+.xi-slot.is-closing .xi-dstrip { animation: xi-strip-out .25s var(--ease-bidzy) forwards; }
+@keyframes xi-strip-out { to { transform: rotateY(90deg); opacity: 0; } }
+.xi-dface { position: absolute; inset: 0; z-index: 40; transform-origin: right center; animation: xi-face-in .5s var(--spring) .2s backwards; }
+.xi-dface .xi-scard { height: 100%; }
+@keyframes xi-face-in { from { transform: perspective(900px) rotateY(-95deg); } }
+.xi-dstrip {
+  position: absolute; top: 5px; bottom: 5px; right: 0; z-index: 1; width: calc(var(--strip) + 30px); border-radius: 0 14px 14px 0; cursor: pointer;
+  display: grid; justify-items: end; align-content: center; padding: 0 6px 0 0; writing-mode: vertical-rl;
+  font-family: var(--font-num); font-weight: 900; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #FFE7A0; text-shadow: 0 1px 4px rgb(0 0 0 / .8);
 }
-.xi-bench:hover { transform: translateY(-3px); box-shadow: 0 12px 22px -10px rgb(0 0 0 / .9), 0 0 16px -4px var(--rc); }
-.xi-bench:active { transform: scale(.95); }
-.xi-bench:focus-visible { outline: 2px solid var(--color-floodlight); outline-offset: 2px; }
-.xi-bench .xi-band { width: 100%; font-size: 9px; letter-spacing: .14em; padding: 2px 0 1px; }
-.xi-bench b { padding: 4px 8px 0; font-family: var(--font-num); font-weight: 900; font-size: 15px; line-height: .95; text-transform: uppercase; }
-.xi-bench small { padding: 0 8px; font-size: 9.5px; font-weight: 700; color: var(--xi-sub); }
-.xi-plus { position: absolute; right: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 900; line-height: 1; background: var(--color-floodlight); color: #1A1407; }
-.xi-bkfoot { display: flex; justify-content: flex-end; padding: 10px 16px 14px; border-top: 1px solid var(--color-line); }
+.xi-dstrip:hover { filter: brightness(1.3); }
+.xi-dstrip:focus-visible { outline: 3px solid var(--color-floodlight); outline-offset: 2px; }
+.xi-slot.is-near.act-tuck .xi-dstrip { filter: brightness(1.5); box-shadow: 0 0 0 2px var(--color-floodlight); }
+.xi-dempty {
+  position: absolute; inset: 0 calc(var(--strip) + 4px) 0 0; border: 2px dashed rgb(255 255 255 / .25); border-radius: 16px; background: transparent;
+  display: grid; place-items: center; padding: 0 10px; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--color-fg-3); text-align: center;
+}
+.xi-slot.is-near.act-tuck .xi-dempty { border-color: var(--color-floodlight); color: var(--color-floodlight); background: rgb(255 241 207 / .08); }
 
 /* phones: give the team sheet the height */
 @media (max-width: 560px) {
@@ -345,8 +349,6 @@ button.xi-spot { cursor: pointer; }
   .xi-hcard { width: 108px; height: 142px; }
   .xi-float { transform: translate(-50%, -55%) rotate(var(--tilt, 0deg)) scale(.9); }
   .xi-say { bottom: 180px; }
-  .xi-bkscrim { place-items: end center; padding: 0; }
-  .xi-bkpop { border-radius: 22px 22px 0 0; max-height: 88%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

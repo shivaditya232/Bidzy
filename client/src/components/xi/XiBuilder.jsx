@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import XiMeters from './XiMeters'
-import BackupsPopup from './BackupsPopup'
 import { SheetCard, HandCard } from './XiCards'
 import { isOverseas } from '../../utils/board'
 import { teamStyle, inkOn } from '../../utils/color'
@@ -17,7 +16,10 @@ const buzz=()=>{ try{ navigator.vibrate?.(14) } catch{ /* not on this device */ 
 
 // Arrange your XI: drag the cards in your hand onto the numbered team sheet.
 // Drop on a number to bat there, on a player to swap, on his right edge to make him a backup, back on the hand to take him out.
-// Tapping works too (tap a card, then a number), and the backup tag under each player opens his backups.
+// Tapping works too (tap a card, then a number).
+// Backups: tap the striped card backs behind a player (or his backup tag) and the pile turns over in his row:
+// his backups lie face up as a deck and he alone shows his striped back on the right. Tap a card's edge to bring it
+// to the front; drag onto a backup to replace or reorder him, onto the strip to add, back to the hand to remove.
 //   lineup: your XI from the server   squad: the players you bought   onChange(nextLineup): save it (the board debounces)
 //   saveState: 'idle' | 'saving' | 'saved' | 'error'
 function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChange, onClose }) {
@@ -33,7 +35,8 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     const [say,setSay]=useState(null)              // {seq, text, bad}
     const [shake,setShake]=useState(0)             // overseas stamps shake when a card is refused
     const [edge,setEdge]=useState('')              // 'up' / 'down' / 'up-go' ... edge hints while dragging
-    const [backupsFor,setBackupsFor]=useState(null)
+    const [pile,setPile]=useState(null)            // {i, phase:'opening'|'open'|'closing'} the turned-over pile
+    const [focus,setFocus]=useState(null)          // the backup pulled to the front of the pile
     const [announce,setAnnounce]=useState('')
 
     const rootRef=useRef(null)
@@ -46,10 +49,11 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     const suppressClick=useRef(false)
     const timers=useRef([])
     const api=useRef({})            // latest drag functions, for the document listeners
+    const seqRef=useRef(0)          // numbers each message / effect so a timer clears only its own
 
     const later=(fn,ms)=>{ timers.current.push(setTimeout(fn,ms)) }
     const tell=(text,bad=false)=>{
-        const seq=Date.now()
+        const seq=++seqRef.current
         setSay({seq,text,bad})
         later(()=>setSay(s=>s?.seq===seq ? null : s),2400)
     }
@@ -71,17 +75,28 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
         if(!plan.ok){
             tell(plan.why,true)
             if(plan.overseas){
-                const seq=Date.now()
+                const seq=++seqRef.current
                 setShake(seq)
                 later(()=>setShake(v=>v===seq ? 0 : v),600)
             }
             return false
         }
         const there=zone.kind!=='hand' ? xi[zone.i].player : null
+        const replaced=zone.kind==='pile' ? xi[zone.i].backups[zone.k] : null
         const name=byId[id]?.name
-        onChange(applyDrop(xi,id,zone))
-        const seq=Date.now()
-        if(zone.kind==='hand'){ tell(`${name} back to your hand`); setAnnounce(`${name} back to your hand`) }
+        const next=applyDrop(xi,id,zone)
+        onChange(next)
+        const seq=++seqRef.current
+        const pileMove=['pile','pileAdd','unback','tuck'].includes(zone.kind)
+        if(pile&&!pileMove) setPile(null) // the sheet changed under the open pile: close it
+        if(zone.kind==='pile'||zone.kind==='pileAdd'){
+            const text=replaced&&!next[zone.i].backups.includes(replaced)
+                ? `${name} replaces ${byId[replaced]?.name}`
+                : `${name} is backup ${next[zone.i].backups.indexOf(String(id))+1} for ${byId[there]?.name}`
+            tell(text); setAnnounce(text); setFx({seq,pileLanded:String(id)})
+        }
+        else if(zone.kind==='unback'){ tell(`${name} is no longer a backup`); setAnnounce(`${name} is no longer a backup`) }
+        else if(zone.kind==='hand'){ tell(`${name} back to your hand`); setAnnounce(`${name} back to your hand`) }
         else if(zone.kind==='tuck'){ tell(`${name} now backs up ${byId[there]?.name}`); setAnnounce(`${name} backs up ${byId[there]?.name}`); setFx({seq,ripple:zone.i}) }
         else{ setFx({seq,landed:String(id),ripple:zone.i,flip:there}); setAnnounce(`${name} bats at ${zone.i+1}`) }
         later(()=>setFx(f=>f.seq===seq ? {} : f),700)
@@ -95,7 +110,16 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
         const sheet=sheetRef.current
         if(!root||!sheet) return null
         const el=document.elementFromPoint(x,y)
-        if(el?.closest('[data-hand]')) return {kind:'hand'}
+        const d=dragRef.current
+        if(el?.closest('[data-hand]')){
+            // a backup dragged out of the open pile stops backing him up
+            if(d&&d.fromPile!==null&&positionOf(xi,d.id)===-1) return {kind:'unback',i:d.fromPile}
+            return {kind:'hand'}
+        }
+        // the open pile: onto a backup card, or anywhere else in that row (his strip) = add
+        const card=el?.closest('[data-pk]')
+        if(card) return {kind:'pile',i:Number(card.dataset.pile),k:Number(card.dataset.pk)}
+        if(pile&&el?.closest(`[data-slot="${pile.i}"]`)) return {kind:'pileAdd',i:pile.i}
         let slot=el?.closest('[data-slot]')
         if(!slot){
             const view=sheet.getBoundingClientRect()
@@ -117,7 +141,8 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     // ---- dragging (pointer events; the floating card is moved directly, not through React) ----
     const startDrag=(id,x,y,src)=>{
         setHeld(null)
-        dragRef.current={id,x,y,lx:x,key:'',zone:null,src,armed:Boolean(src.closest('[data-sheet]'))}
+        const deck=src.closest('[data-deck]')
+        dragRef.current={id,x,y,lx:x,key:'',zone:null,src,armed:Boolean(src.closest('[data-sheet]')),fromPile:deck ? Number(deck.dataset.deck) : null}
         setDrag({id,x,y})
         setHover(null)
         buzz()
@@ -137,7 +162,7 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
         const view=sheetRef.current?.getBoundingClientRect()
         if(view&&y>view.top+EDGE&&y<view.bottom-EDGE&&x>view.left&&x<view.right) d.armed=true // been inside the list once
         const zone=zoneAt(x,y)
-        const key=zone ? `${zone.kind}${zone.i??''}` : ''
+        const key=zone ? `${zone.kind}${zone.i??''}.${zone.k??''}` : ''
         if(key===d.key) return
         d.key=key
         d.zone=zone
@@ -187,7 +212,6 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
         raf.current=requestAnimationFrame(()=>api.current.tick())
     }
 
-    useEffect(()=>{ api.current={startDrag,moveDrag,endDrag,tick} })
 
     // document listeners: set up once, they call the latest functions through api
     useEffect(()=>{
@@ -247,7 +271,7 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     },[])
 
     const onCardDown=(e,id)=>{
-        if(e.button>0||backupsFor!==null) return
+        if(e.button>0||pile?.phase==='closing') return
         const p={id,x:e.clientX,y:e.clientY,src:e.currentTarget,touch:e.pointerType!=='mouse',started:false}
         if(p.touch){
             p.timer=setTimeout(()=>{
@@ -263,6 +287,15 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     const onCardClick=(e,id)=>{
         if(suppressClick.current) return
         id=String(id)
+        const inPile=e.currentTarget.closest('[data-pk]')
+        if(inPile){
+            // a card in the open pile: a held hand card replaces it, otherwise bring it to the front to read it
+            if(held&&held!==id&&positionOf(xi,held)===-1){
+                if(commit(held,{kind:'pile',i:Number(inPile.dataset.pile),k:Number(inPile.dataset.pk)})) setHeld(null)
+            }
+            else setFocus(f=>f===id ? null : id)
+            return
+        }
         if(!held||held===id){
             setHeld(held===id ? null : id)
             if(held!==id) tell(positionOf(xi,id)>-1 ? 'Now tap another number or player to swap, or your hand to take him out.' : "Now tap a number. Tap a player's right edge to make a backup.")
@@ -291,6 +324,22 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
         commit(held,{kind:'hand'})
         setHeld(null)
     }
+    // turn a player's backup pile over (one at a time), or back
+    const togglePile=(i)=>{
+        if(pile?.phase==='closing') return
+        setFocus(null)
+        buzz()
+        if(pile?.i===i){
+            setPile({i,phase:'closing'})
+            later(()=>setPile(p=>p?.phase==='closing' ? null : p),720)
+            return
+        }
+        setPile({i,phase:'opening'})
+        later(()=>setPile(p=>p?.i===i&&p.phase==='opening' ? {i,phase:'open'} : p),1100)
+        setAnnounce(`${byId[xi[i].player]?.name}'s backups, turned face up`)
+    }
+    useEffect(()=>{ api.current={startDrag,moveDrag,endDrag,tick,togglePile} })
+
     const cardProps=(id)=>({
         'data-card':id,
         onPointerDown:(e)=>onCardDown(e,id),
@@ -299,7 +348,6 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     })
 
     // ---- the popup itself: focus, Esc, no page scroll behind it ----
-    const closeBackups=useCallback(()=>setBackupsFor(null),[])
     useEffect(()=>{
         const opener=document.activeElement
         closeRef.current?.focus()
@@ -314,13 +362,13 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
         const onKey=(e)=>{
             if(e.key!=='Escape') return
             e.preventDefault()
-            if(backupsFor!==null) setBackupsFor(null)
-            else if(held) setHeld(null)
+            if(held) setHeld(null)
+            else if(pile&&pile.phase!=='closing') api.current.togglePile(pile.i)
             else onClose()
         }
         document.addEventListener('keydown',onKey)
         return ()=>document.removeEventListener('keydown',onKey)
-    },[backupsFor,held,onClose])
+    },[pile,held,onClose])
 
     // ---- what to show ----
     const dragging=drag ? byId[drag.id] : null
@@ -329,8 +377,42 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
     const osNow=overseasStarters(xi,byId,homeCountry)
     const incomingOs=Boolean(dragging&&positionOf(xi,drag.id)===-1&&isOs(dragging))
     const refusedOs=Boolean(hover?.plan?.overseas)
-    const nearI=drag&&hover&&hover.zone.kind!=='hand' ? hover.zone.i : null
-    const nearClass=hover?.plan ? (hover.plan.ok ? `act-${hover.zone.kind==='tuck' ? 'tuck' : 'swap'}` : 'act-no') : ''
+    const nearI=drag&&hover&&hover.zone.i!==undefined&&hover.zone.kind!=='unback' ? hover.zone.i : null
+    const backing=['tuck','pile','pileAdd'].includes(hover?.zone.kind)
+    const nearClass=hover?.plan ? (hover.plan.ok ? `act-${backing ? 'tuck' : 'swap'}` : 'act-no') : ''
+    const toHand=hover&&(hover.zone.kind==='hand'||hover.zone.kind==='unback')
+
+    // the turned-over pile, in the player's row
+    const renderPile=(slot,i,p)=>(
+        <div className={`xi-deck ${pile.phase==='opening' ? 'is-anim' : ''}`} data-deck={i} style={{'--n':Math.max(1,slot.backups.length)}}>
+            {slot.backups.length>0
+                ? slot.backups.map((b,k)=>{
+                    const q=byId[b]
+                    if(!q) return null
+                    const target=hover?.zone.kind==='pile'&&hover.zone.i===i&&hover.zone.k===k&&hover.plan?.ok
+                    return (
+                        <div key={`dk-${b}`} data-pk={k} data-pile={i} style={{'--k':k}}
+                            className={`xi-dk ${focus===b ? 'is-focus' : ''} ${fx.pileLanded===b ? 'is-landed' : ''} ${target ? 'is-target' : ''}`}>
+                            <span className="xi-dord" aria-hidden="true">{k+1}</span>
+                            <div className="xi-pin">
+                                <SheetCard player={q} overseas={isOs(q)} cardProps={cardProps(b)} className={drag?.id===b ? 'xi-ghost' : ''} />
+                                <span className="xi-pback xi-stripes" aria-hidden="true" />
+                            </div>
+                        </div>
+                    )
+                })
+                : (
+                    <button type="button" className="xi-dempty" onClick={()=>{ if(held&&commit(held,{kind:'pileAdd',i})) setHeld(null) }}>
+                        Drop a card here to back up {lastName(p.name)}
+                    </button>
+                )}
+            <button type="button" className="xi-dstrip xi-stripes" onClick={()=>togglePile(i)} aria-label={`Turn ${p.name} back over`}>
+                {lastName(p.name)} ↺
+            </button>
+            {pile.phase==='closing' && <div className="xi-dface" aria-hidden="true"><SheetCard player={p} overseas={isOs(p)} cardProps={{tabIndex:-1}} /></div>}
+            {tag(i)}
+        </div>
+    )
 
     const tag=(i)=>nearI===i&&hover.plan
         ? <span className={`xi-tag ${hover.plan.ok ? '' : 'is-no'}`}>{hover.plan.label}</span>
@@ -361,12 +443,16 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
                                     const p=slot.player ? byId[slot.player] : null
                                     const near=nearI===i
                                     const names=slot.backups.map(b=>byId[b]?.name).filter(Boolean)
+                                    const open=p&&pile?.i===i
                                     return (
-                                        <li key={`slot-${i}`} data-slot={i} className={`xi-slot ${p ? 'has-player' : ''} ${near ? `is-near ${nearClass}` : ''}`}>
+                                        <li key={`slot-${i}`} data-slot={i} className={`xi-slot ${p ? 'has-player' : ''} ${near ? `is-near ${nearClass}` : ''} ${open&&pile.phase==='closing' ? 'is-closing' : ''}`}>
                                             <span className="xi-num">{i+1}</span>
-                                            {p
+                                            {open ? renderPile(slot,i,p) : p
                                                 ? (
                                                     <div className="xi-spot is-filled" data-spot={i}>
+                                                        {slot.backups.length>0 && (
+                                                            <button type="button" className="xi-peekbtn" onClick={()=>togglePile(i)} aria-label={`Turn over ${p.name}'s backups`} />
+                                                        )}
                                                         <span className="xi-peeks" aria-hidden="true">
                                                             {slot.backups.slice(0,3).map(b=><span key={`peek-${b}`} className="xi-peek" />)}
                                                         </span>
@@ -378,8 +464,8 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
                                                                 fx.flip&&fx.flip===String(p._id) ? 'is-flip' : ''
                                                             ].join(' ')} />
                                                         <span className="xi-tuck" aria-hidden="true">Back up</span>
-                                                        <button type="button" className={`xi-bktag ${names.length ? '' : 'is-none'}`} onClick={()=>setBackupsFor(i)}
-                                                            aria-label={names.length ? `Backups for number ${i+1}: ${names.join(', ')}. Change` : `Add a backup for number ${i+1}`}>
+                                                        <button type="button" className={`xi-bktag ${names.length ? '' : 'is-none'}`} onClick={()=>togglePile(i)}
+                                                            aria-label={names.length ? `Backups for number ${i+1}: ${names.join(', ')}. Turn them over` : `Add a backup for number ${i+1}`}>
                                                             {names.length
                                                                 ? <><em>BACKUP</em><span>{names.map(lastName).join(' · ')}</span>✎</>
                                                                 : '+ Backup'}
@@ -410,7 +496,7 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
                             <b>Your hand</b>
                             <small>{hand.length ? `${hand.length} not starting · drag a card back here to take a player out` : squad.length ? 'Everyone is in the XI' : ''}</small>
                         </div>
-                        <div className={`xi-hand ${hover?.zone.kind==='hand' ? 'is-return' : ''}`} aria-label="Players not in the XI">
+                        <div className={`xi-hand ${toHand ? 'is-return' : ''}`} aria-label="Players not in the XI">
                             {hand.length===0
                                 ? <div className="xi-empty-hand">{squad.length ? `All ${squad.length} of your players are on the sheet.` : "You haven't bought anyone yet. Players you win land here."}</div>
                                 : hand.map((p,k)=>{
@@ -424,14 +510,11 @@ function XiBuilder({ lineup, squad, homeCountry, glow, saveState='idle', onChang
                                     )
                                 })}
                         </div>
-                        {hover?.zone.kind==='hand'&&hover.plan && <span className="xi-tag xi-hand-tag">{hover.plan.label}</span>}
+                        {toHand&&hover.plan && <span className="xi-tag xi-hand-tag">{hover.plan.label}</span>}
                     </div>
 
                     {say && <div key={say.seq} className={`xi-say ${say.bad ? 'is-bad' : ''}`} role="status">{say.text}</div>}
 
-                    {backupsFor!==null&&xi[backupsFor]?.player && (
-                        <BackupsPopup i={backupsFor} lineup={xi} byId={byId} hand={hand} isOs={isOs} onChange={onChange} onClose={closeBackups} />
-                    )}
                     <div className="sr-only" aria-live="assertive">{announce}</div>
                 </div>
             </div>
