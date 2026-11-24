@@ -356,3 +356,10 @@ body {
 @keyframes bz-bump { 30% { transform: translateY(-6px); } }
 .bz-landed { animation: bz-landed .9s var(--ease-bidzy); }
 @keyframes bz-landed { 0% { transform: translateX(-14px) scale(.96); opacity: 0; } 50% { opacity: 1; box-shadow: 0 0 0 6px color-mix(in oklab, var(--team-p) 40%, transparent); } 100% { transform: none; } }
+
+/* ---------- results: team sheets that flip over to show the XI ---------- */
+.bz-sheet { perspective: 1400px; min-width: 0; }
+.bz-sheet-inner { display: grid; transform-style: preserve-3d; transition: transform .8s var(--ease-bidzy); }
+.bz-sheet.bz-flipped .bz-sheet-inner { transform: rotateY(180deg); }
+.bz-sheet-face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.bz-sheet-back { transform: rotateY(180deg); }

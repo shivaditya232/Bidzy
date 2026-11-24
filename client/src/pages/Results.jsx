@@ -1,113 +1,128 @@
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import api from "../api/axios"
-import { roomPath, useRoomId } from "../api/room"
-import Navbar from "../components/Navbar"
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import Aura from '../components/ui/Aura'
+import Button from '../components/ui/Button'
+import RoomHeader from '../components/results/RoomHeader'
+import TeamSheet from '../components/results/TeamSheet'
+import { useRoom } from '../components/roomContext'
+import { useFranchises } from '../hooks/useFranchises'
+import { getPlayers, getTeams } from '../api/auction'
+import { getRoom, getAllLineups, roomHome } from '../api/rooms'
+import { errorMessage } from '../api/axios'
+import { formatMoney } from '../utils/money'
+import { teamGlow } from '../utils/board'
+import { liveSheets, totals } from '../utils/results'
 
-const cardClass = "bg-white rounded-2xl ring-1 ring-slate-900/5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.18)] p-6"
+const pill='grid rounded-xl border border-line bg-night/55 px-3 pt-1.5 pb-[5px]'
+const Pill=({ label, value })=><div className={pill}><small className="text-[10px] font-bold tracking-[.14em] text-fg-3 uppercase">{label}</small><b className="font-num text-[19px] leading-[1.05] font-extrabold tabular-nums">{value}</b></div>
 
-function Results() {
-    const [players, setPlayers] = useState([])
-    const navigate = useNavigate()
-    const roomId=useRoomId()
+// Every team's squad, one sheet each. Once the auction ends, the secret Playing XIs can be revealed:
+// the sheets flip over one after another.
+function Results(){
+    const { roomId, room:startRoom, role, me }=useRoom()
+    const { byCode }=useFranchises()
+    const [data,setData]=useState(null) // {room, players, teams, lineups|null}
+    const [error,setError]=useState('')
+    const [flipped,setFlipped]=useState({}) // teamId -> true
 
-    useEffect(() => {
-        api.get(roomPath(roomId,'/players'))
-        .then(res => {
-            setPlayers(res.data)
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }, [])
+    useEffect(()=>{
+        let cancelled=false
+        Promise.all([getRoom(roomId),getPlayers(roomId),getTeams(roomId)])
+            .then(async([fresh,players,teams])=>{
+                // every XI is private until the auction ends (the server says 403 before that)
+                const lineups=fresh.room.status==='ended' ? await getAllLineups(roomId).catch(()=>null) : null
+                if(!cancelled) setData({room:fresh.room,players,teams,lineups})
+            })
+            .catch(err=>{ if(!cancelled) setError(errorMessage(err)) })
+        return ()=>{ cancelled=true }
+    },[roomId])
 
-    const soldPlayers = players.filter(p => p.status === 'sold')
-    const unsoldPlayers = players.filter(p => p.status === 'unsold')
+    const room=data?.room||startRoom
+    const myTeam=role==='team'&&data ? data.teams.find(t=>String(t._id)===String(me.id)) : null
+    const myGlow=myTeam ? teamGlow(myTeam,byCode) : undefined
 
-    const teams = {}
-    soldPlayers.forEach(player => {
-        if (!player.soldTo) return
-        const teamId = player.soldTo._id
-        if (!teams[teamId]) {
-            teams[teamId] = {
-                teamName: player.soldTo.teamName,
-                players: [],
-                totalSpent: 0
-            }
-        }
-        teams[teamId].players.push(player)
-        teams[teamId].totalSpent += player.soldPrice || 0
-    })
+    if(!data){
+        return (
+            <div className="min-h-screen bg-night px-4 pt-[18px] font-text text-fg sm:px-5">
+                {error && <p role="alert" className="mx-auto max-w-[1240px] rounded-xl bg-alert/10 px-3.5 py-2.5 text-alert">{error}</p>}
+            </div>
+        )
+    }
+
+    const { players, teams, lineups }=data
+    const homeCountry=room.settings?.rules?.homeCountry||'India'
+    const ended=room.status==='ended'
+    const sum=totals(players)
+    const unsold=players.filter(p=>p.status==='unsold')
+    // your own sheet first
+    const sheets=liveSheets(teams,players).sort((a,b)=>(String(b.team._id)===String(me.id))-(String(a.team._id)===String(me.id)))
+    const xiFor=(teamId)=>lineups?.find(l=>String(l._id)===String(teamId))?.lineup
+    const anyFront=sheets.some(s=>!flipped[s.team._id])
+
+    const revealAll=()=>{
+        sheets.forEach((s,i)=>setTimeout(()=>setFlipped(prev=>({...prev,[s.team._id]:anyFront})),i*220))
+    }
 
     return (
-        <div className="min-h-screen bg-slate-50 relative overflow-hidden">
-            <div className="pointer-events-none fixed -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-200/30 blur-3xl" />
-            <div className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-violet-200/20 blur-3xl" />
+        <Aura variant="page" glow={myGlow} className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased">
+            <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-12 sm:px-5">
+                <RoomHeader room={room}>
+                    {room.status==='live' && <Button as={Link} to={roomHome(roomId,role)} kind="primary" size="sm" arrow>Back to the auction</Button>}
+                    <Button as={Link} to={`/rooms/${roomId}/history`} kind="secondary" size="sm">Past auctions</Button>
+                </RoomHeader>
 
-            <Navbar
-                title="Results"
-                actions={[
-                    { label:'Past Auctions', onClick:()=>navigate(`/rooms/${roomId}/history`) },
-                    { label:'Back', onClick:()=>navigate(-1) }
-                ]}
-            />
+                <div className="mb-[22px] flex flex-wrap items-end justify-between gap-[18px]">
+                    <div>
+                        <span className="text-xs font-semibold tracking-[.16em] text-fg-2 uppercase">Results</span>
+                        <h1 className="mt-1.5 mb-1.5 font-num text-[clamp(44px,7vw,84px)] leading-[.88] font-black uppercase [text-wrap:balance]">{ended ? 'Final squads' : 'Squads so far'}</h1>
+                        <p className="m-0 max-w-[60ch] text-base text-fg-2">
+                            {ended ? "Every team's buys, and now that the hammer's down, every Playing XI." : 'Every team\'s buys so far. The Playing XIs stay secret until the auction ends.'}
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                        <Pill label="Sold" value={sum.sold} />
+                        <Pill label="Unsold" value={sum.unsold} />
+                        <Pill label="Spent" value={formatMoney(sum.spent)} />
+                    </div>
+                </div>
 
-            <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-8">
-
-                <h1 className="font-display font-bold text-2xl text-slate-800 mb-6">Auction Results</h1>
-
-                {Object.keys(teams).length === 0 && (
-                    <div className={`${cardClass} text-center text-slate-500 mb-6`}>
-                        No players sold yet
+                {lineups && sheets.length>0 && (
+                    <div className="mb-[18px] flex flex-wrap items-center justify-between gap-3.5 rounded-[20px] border border-floodlight/25 bg-floodlight/5 px-4 py-3.5">
+                        <div>
+                            <b className="font-num text-2xl font-black uppercase">The XIs were secret</b>
+                            <span className="block text-sm text-fg-2">Each team built theirs during the auction. Flip the sheets to see them.</span>
+                        </div>
+                        <Button kind="primary" size="sm" onClick={revealAll}>{anyFront ? 'Reveal the XIs' : 'Show the squads'}</Button>
                     </div>
                 )}
 
-                <div className="grid gap-6 mb-6">
-                    {Object.values(teams).map(team => (
-                        <div key={team.teamName} className={cardClass}>
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="font-display font-semibold text-lg text-slate-800 flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                                    {team.teamName}
-                                </h2>
-                                <span className="text-sm text-slate-500">
-                                    Total Spent: <span className="font-semibold text-slate-800">{team.totalSpent}</span>
-                                </span>
-                            </div>
-                            <div className="grid grid-cols-3 px-2 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400 border-b border-slate-200">
-                                <span>Name</span>
-                                <span>Role</span>
-                                <span>Price</span>
-                            </div>
-                            {team.players.map(player => (
-                                <div key={player._id} className="grid grid-cols-3 px-2 py-2.5 text-sm text-slate-800 border-b border-slate-100 last:border-b-0">
-                                    <span className="font-medium">{player.name}</span>
-                                    <span className="text-slate-500">{player.role}</span>
-                                    <span className="text-slate-500">{player.soldPrice}</span>
-                                </div>
+                {sheets.length===0
+                    ? <p className="m-0 text-fg-2">No teams in this room yet.</p>
+                    : (
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(330px,100%),1fr))] items-start gap-4">
+                            {sheets.map(({team,squad,spent,left})=>(
+                                <TeamSheet key={team._id} team={team} glow={teamGlow(team,byCode)} squad={squad} spent={spent} left={left}
+                                    me={String(team._id)===String(me.id)} xi={xiFor(team._id)} flipped={Boolean(flipped[team._id])}
+                                    onFlip={()=>setFlipped(prev=>({...prev,[team._id]:!prev[team._id]}))}
+                                    homeCountry={homeCountry} franchisesByCode={byCode} />
                             ))}
                         </div>
-                    ))}
-                </div>
-
-                <div className={cardClass}>
-                    <h2 className="font-display font-semibold text-lg text-slate-800 flex items-center gap-2 mb-4">
-                        <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                        Unsold Players
-                    </h2>
-                    {unsoldPlayers.length === 0 && (
-                        <p className="text-sm text-slate-500">No unsold players</p>
                     )}
-                    {unsoldPlayers.map(player => (
-                        <div key={player._id} className="grid grid-cols-2 px-2 py-2.5 text-sm text-slate-800 border-b border-slate-100 last:border-b-0">
-                            <span className="font-medium">{player.name}</span>
-                            <span className="text-slate-500">{player.role}</span>
-                        </div>
-                    ))}
-                </div>
 
+                {unsold.length>0 && (
+                    <div className="mt-[22px] grid gap-2.5 rounded-[20px] border border-line bg-night-2/70 p-4">
+                        <h2 className="m-0 flex justify-between font-num text-2xl font-black uppercase">
+                            Unsold <small className="font-text text-xs font-semibold text-fg-3 normal-case">{unsold.length} {unsold.length===1 ? 'player' : 'players'}</small>
+                        </h2>
+                        <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+                            {unsold.map(p=>(
+                                <li key={p._id} className="rounded-full border border-line bg-white/[.04] px-2.5 py-1.5 text-[13px] text-fg-2">{p.name} · {formatMoney(p.basePrice)} base</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
-        </div>
+        </Aura>
     )
 }
 
