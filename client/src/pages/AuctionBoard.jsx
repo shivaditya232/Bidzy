@@ -7,7 +7,8 @@ import Toast from '../components/ui/Toast'
 import LotCard from '../components/board/LotCard'
 import XiPanel from '../components/board/XiPanel'
 import TeamTag from '../components/board/TeamTag'
-import { UpcomingPopup, TeamsPopup, XiPopup } from '../components/board/BoardPopups'
+import { UpcomingPopup, TeamsPopup } from '../components/board/BoardPopups'
+import XiBuilder from '../components/xi/XiBuilder'
 import { useRoom } from '../components/roomContext'
 import { useFranchises } from '../hooks/useFranchises'
 import socket, { connectToRoom } from '../api/socket'
@@ -31,9 +32,12 @@ function AuctionBoard(){
     const [landedId,setLandedId]=useState(null)
     const [now,setNow]=useState(()=>Date.now())
     const [popup,setPopup]=useState(null)      // 'upcoming' | 'teams' | 'xi'
+    const [saveState,setSaveState]=useState('idle') // the XI builder's 'Saving… / Saved'
     const [toast,setToast]=useState(null)
     const [announce,setAnnounce]=useState('')
     const toastTimer=useRef(null)
+    const saveTimer=useRef(null)
+    const saveSeq=useRef(0)
     const homeCountry=room.settings?.rules?.homeCountry||'India'
 
     const showToast=useCallback((message,tone='bad')=>{
@@ -65,6 +69,34 @@ function AuctionBoard(){
         }
         catch{ /* e.g. a 5th overseas starter: he stays in "not in your XI" */ }
     },[roomId])
+
+    // the XI builder changed your XI: show it at once, save it a moment later (a burst of moves = one save).
+    // only the newest save's answer is used, so a slow reply can't undo a later move.
+    const changeLineup=useCallback((next)=>{
+        setData(prev=>prev ? {...prev,lineup:next} : prev)
+        setSaveState('saving')
+        clearTimeout(saveTimer.current)
+        const seq=++saveSeq.current
+        saveTimer.current=setTimeout(async()=>{
+            try{
+                const saved=await saveLineup(roomId,next)
+                if(seq!==saveSeq.current) return
+                setData(prev=>prev ? {...prev,lineup:saved.lineup,unplaced:saved.unplaced} : prev)
+                setSaveState('saved')
+            }
+            catch(err){
+                if(seq!==saveSeq.current) return
+                setSaveState('error')
+                showToast(errorMessage(err))
+                // put back what the server has
+                try{
+                    const fresh=await getMyLineup(roomId)
+                    setData(prev=>prev ? {...prev,lineup:fresh.lineup,unplaced:fresh.unplaced} : prev)
+                }
+                catch{ /* the next reload catches up */ }
+            }
+        },450)
+    },[roomId,showToast])
 
     useEffect(()=>{
         loadAll().catch(err=>showToast(errorMessage(err)))
@@ -111,14 +143,16 @@ function AuctionBoard(){
     // the clock: a few times a second is smooth enough for the ring
     useEffect(()=>{
         const tick=setInterval(()=>setNow(Date.now()),200)
-        return ()=>{ clearInterval(tick); clearTimeout(toastTimer.current) }
+        return ()=>{ clearInterval(tick); clearTimeout(toastTimer.current); clearTimeout(saveTimer.current) }
     },[])
 
     const closePopup=useCallback(()=>setPopup(null),[])
+    const openXi=useCallback(()=>setPopup('xi'),[])
 
     const players=data?.players
     const playersById=useMemo(()=>Object.fromEntries((players||[]).map(p=>[String(p._id),p])),[players])
     const teamsById=useMemo(()=>Object.fromEntries((data?.teams||[]).map(t=>[String(t._id),t])),[data?.teams])
+    const squad=useMemo(()=>(players||[]).filter(p=>p.status==='sold'&&idOf(p.soldTo)===String(me.id)),[players,me.id])
 
     if(!data){
         return <div className="min-h-screen bg-night" aria-busy="true" />
@@ -145,7 +179,6 @@ function AuctionBoard(){
     const lotLabel=lotPlayer ? `${lotPlayer.set?.name ? lotPlayer.set.name+' · ' : ''}Lot ${lotIndex+1}` : ''
     const upcoming=upcomingPlayers(players)
     const otherTeams=teams.filter(t=>String(t._id)!==String(me.id))
-    const unplaced=(data.unplaced||[]).map(id=>playersById[idOf(id)]).filter(Boolean)
     const feedRows=feed.map(f=>({...f,team:teamsById[f.teamId]||null}))
 
     const handleBid=async()=>{
@@ -197,7 +230,7 @@ function AuctionBoard(){
 
                 <div className="grid items-start gap-5 min-[921px]:grid-cols-[290px_minmax(0,1fr)]">
                     <aside className="hidden rounded-[22px] border border-line bg-night-2/80 p-4 backdrop-blur-md min-[921px]:block">
-                        <XiPanel lineup={lineup} playersById={playersById} homeCountry={homeCountry} boughtCount={mine.squadSize} landedId={landedId} />
+                        <XiPanel lineup={lineup} playersById={playersById} homeCountry={homeCountry} boughtCount={mine.squadSize} landedId={landedId} onArrange={openXi} />
                     </aside>
 
                     <main className="min-w-0">
@@ -237,7 +270,7 @@ function AuctionBoard(){
                         </section>
 
                         <div className="mt-[18px] flex flex-wrap gap-2.5">
-                            <Button kind="secondary" size="sm" className="min-[921px]:hidden" onClick={()=>setPopup('xi')}>Your team</Button>
+                            <Button kind="secondary" size="sm" className="min-[921px]:hidden" onClick={openXi}>Arrange your XI</Button>
                             <Button kind="secondary" size="sm" onClick={()=>setPopup('upcoming')}>Upcoming players <span className="text-fg-3">({upcoming.length})</span></Button>
                             <Button kind="secondary" size="sm" onClick={()=>setPopup('teams')}>Other teams' players</Button>
                         </div>
@@ -247,7 +280,10 @@ function AuctionBoard(){
 
             {popup==='upcoming' && <UpcomingPopup onClose={closePopup} players={upcoming} homeCountry={homeCountry} />}
             {popup==='teams' && <TeamsPopup onClose={closePopup} teams={otherTeams} boughtByTeam={boughtByTeam(players)} franchisesByCode={byCode} />}
-            {popup==='xi' && <XiPopup onClose={closePopup} lineup={lineup} unplaced={unplaced} playersById={playersById} homeCountry={homeCountry} boughtCount={mine.squadSize} glow={myGlow} />}
+            {popup==='xi' && (
+                <XiBuilder lineup={lineup} squad={squad} homeCountry={homeCountry} glow={myGlow}
+                    saveState={saveState} onChange={changeLineup} onClose={closePopup} />
+            )}
             {toast && <Toast message={toast.message} tone={toast.tone} />}
             <div className="sr-only" aria-live="assertive">{announce}</div>
         </Aura>

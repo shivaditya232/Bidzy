@@ -1,0 +1,354 @@
+/* Arrange your XI: your squad as a hand of Bidzy cards printed in shades of your team's colour.
+   Reads the team variables from teamStyle() (--team-p, --team-pd, --team-acc, --team-ink)
+   plus two set by XiBuilder: --xi-stat (the big number) and --xi-edge (gold metal or the team's second colour). */
+
+.xi-root {
+  --bat: #FFB020; --wk: #22D3EE; --ar: #C084FC; --bowl: #34D399;
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+  /* card shades built from the team colour (mixed in oklab so yellow stays yellow, orange stays orange) */
+  --xi-tint: color-mix(in oklab, var(--team-p) 55%, #fff);
+  --xi-mid: color-mix(in oklab, var(--team-p) 80%, #fff);
+  --xi-deep: color-mix(in oklab, var(--team-pd) 72%, #000);
+  --xi-face:
+    repeating-linear-gradient(115deg, rgb(255 255 255 / .05) 0 1px, transparent 1px 7px),
+    radial-gradient(120% 140% at 0% 0% in oklab, var(--xi-tint), transparent 52%),
+    radial-gradient(70% 120% at 100% 100% in oklab, color-mix(in oklab, var(--team-acc) 40%, transparent), transparent 55%),
+    linear-gradient(120deg in oklab, var(--xi-mid) 0%, var(--team-p) 38%, var(--xi-deep) 100%);
+  --xi-face-tall:
+    repeating-linear-gradient(115deg, rgb(255 255 255 / .05) 0 1px, transparent 1px 7px),
+    radial-gradient(130% 70% at 0% 0% in oklab, var(--xi-tint), transparent 55%),
+    radial-gradient(110% 60% at 100% 100% in oklab, color-mix(in oklab, var(--team-acc) 40%, transparent), transparent 58%),
+    linear-gradient(170deg in oklab, var(--xi-mid) 0%, var(--team-p) 35%, var(--xi-deep) 100%);
+  --xi-sub: color-mix(in srgb, var(--team-ink) 72%, transparent);
+}
+
+/* the frame */
+.xi-scrim {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+  background: rgb(3 4 6 / .62); backdrop-filter: blur(4px);
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+}
+.xi-pop {
+  position: relative; isolation: isolate; overflow: hidden; outline: none;
+  width: min(1080px, 100%); height: min(820px, calc(100dvh - 20px));
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto;
+  border-radius: 26px; border: 1px solid rgb(255 255 255 / .16); background: var(--color-night-2);
+  font-family: var(--font-text); color: var(--color-fg);
+  animation: bidzy-rise .25s var(--ease-bidzy);
+}
+.xi-pop::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 8% 0% in oklab, var(--xi-tint), transparent 70%),
+    radial-gradient(50% 35% at 55% 0% in oklab, var(--team-p), transparent 72%),
+    radial-gradient(30% 25% at 100% 0% in oklab, var(--team-acc), transparent 70%),
+    radial-gradient(70% 40% at 50% 100% in oklab, var(--team-pd), transparent 75%);
+  opacity: .55;
+}
+.xi-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 18px 20px 6px; }
+.xi-head h2 { margin: 0; font-family: var(--font-num); font-weight: 900; font-size: 34px; line-height: .95; text-transform: uppercase; }
+.xi-head p { margin: 4px 0 0; color: var(--color-fg-2); font-size: 13px; max-width: 64ch; }
+.xi-saved { font-size: 12px; color: var(--color-fg-3); font-weight: 600; white-space: nowrap; }
+.xi-saved.is-saved { color: var(--color-sold); }
+.xi-saved.is-error { color: var(--color-alert); }
+.xi-x {
+  flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer; font-size: 18px; color: var(--color-fg);
+  background: rgb(255 255 255 / .08);
+}
+.xi-x:hover { background: rgb(255 255 255 / .16); }
+.xi-x:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
+
+/* meters */
+.xi-meters { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding: 6px 20px 12px; border-bottom: 1px solid var(--color-line); }
+.xi-seesaw { display: grid; justify-items: center; }
+.xi-seesaw svg { width: 230px; height: 66px; overflow: visible; }
+.xi-seesaw .xi-beam { transform-origin: 115px 42px; transition: transform .6s var(--spring); }
+.xi-seesaw small { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-fg-2); }
+.xi-seesaw.is-preview small { color: var(--color-floodlight); }
+.xi-stamps { display: grid; gap: 4px; justify-items: start; }
+.xi-stamps .xi-row { display: flex; gap: 6px; }
+.xi-stamp {
+  width: 38px; height: 38px; border-radius: 50%; border: 2px dashed rgb(255 255 255 / .22); display: grid; place-items: center;
+  font-family: var(--font-num); font-weight: 900; font-size: 13px; color: transparent; transition: all .3s var(--ease-bidzy);
+}
+.xi-stamp.is-on {
+  border: 2.5px solid #E9C25A; color: #FFE7A0; transform: rotate(-12deg);
+  background: radial-gradient(circle, rgb(233 194 90 / .22), rgb(233 194 90 / .06)); box-shadow: 0 0 14px rgb(233 194 90 / .25);
+}
+.xi-stamp.is-ghost { border-color: var(--color-floodlight); color: rgb(255 241 207 / .6); animation: xi-ghost .9s ease-in-out infinite alternate; }
+@keyframes xi-ghost { to { transform: scale(1.12) rotate(-12deg); box-shadow: 0 0 16px rgb(255 241 207 / .45); } }
+.xi-stamps.is-full .xi-stamp.is-on { border-color: var(--color-alert); color: #ffc4be; }
+.xi-stamps.is-shake .xi-row { animation: xi-shake .45s; }
+@keyframes xi-shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+.xi-meter-label { font-size: 11px; color: var(--color-fg-2); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.xi-facts { display: flex; gap: 6px; flex-wrap: wrap; }
+.xi-ck {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px 5px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  background: rgb(7 9 13 / .55); border: 1px solid rgb(255 255 255 / .16); white-space: nowrap;
+}
+.xi-ck b { font-family: var(--font-num); font-size: 16px; font-weight: 900; }
+.xi-ck.is-ok { border-color: rgb(52 211 153 / .55); background: rgb(52 211 153 / .1); color: #bff5de; }
+.xi-ck.is-ok::before { content: "✓"; color: var(--color-sold); font-weight: 900; }
+.xi-ck.is-hint { border-color: rgb(246 194 74 / .55); background: rgb(246 194 74 / .1); color: #ffe3a3; }
+.xi-ck.is-hint::before { content: "!"; font-weight: 900; }
+
+/* the team sheet */
+.xi-sheet-box { position: relative; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
+.xi-sheet { min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 16px 20px 18px; overscroll-behavior: contain; }
+.xi-slots {
+  list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(6, auto); grid-auto-flow: column; gap: 18px 16px;
+}
+@media (max-width: 720px) { .xi-slots { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; } }
+.xi-slot { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: center; transition: transform .22s var(--spring); }
+.xi-num {
+  position: relative; font-family: var(--font-num); font-weight: 900; font-size: 30px; text-align: center; line-height: 1;
+  background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.xi-num::before {
+  content: ""; position: absolute; left: 4px; right: 4px; top: -8px; height: 3px; border-radius: 0 0 3px 3px;
+  background: var(--color-floodlight); box-shadow: 0 0 16px 3px rgb(255 241 207 / .6); opacity: 0; transition: opacity .2s;
+}
+.xi-spot {
+  position: relative; min-height: 66px; border-radius: 16px; border: 2px dashed rgb(255 255 255 / .16); display: grid; align-items: center;
+  padding: 0 14px; color: var(--color-fg-3); font-size: 13px; font-weight: 600; transition: all .2s var(--ease-bidzy); text-align: left;
+  background: transparent; font-family: inherit; width: 100%;
+}
+button.xi-spot { cursor: pointer; }
+.xi-spot.is-filled { border: 0; padding: 0; }
+.xi-slot.is-near { transform: scale(1.035); }
+.xi-slot.is-near .xi-num::before { opacity: 1; }
+.xi-slot.is-near .xi-spot:not(.is-filled) { border-color: var(--color-floodlight); background: rgb(255 241 207 / .1); color: var(--color-floodlight); }
+.xi-slot.is-near.act-swap .xi-scard { box-shadow: 0 0 0 2px var(--color-floodlight), 0 10px 26px -8px rgb(0 0 0 / .8); }
+.xi-slot.is-near.act-tuck .xi-tuck { opacity: 1; background: rgb(255 241 207 / .18); border-color: var(--color-floodlight); color: var(--color-floodlight); }
+.xi-slot.is-near.act-no .xi-spot { border-color: var(--color-alert); background: rgb(255 107 94 / .1); color: #ffc4be; }
+.xi-slot.is-near.act-no .xi-scard { box-shadow: 0 0 0 2px var(--color-alert); }
+.xi-tag {
+  position: absolute; left: 10px; top: -12px; z-index: 6; padding: 3px 10px 2px; border-radius: 999px; pointer-events: none; white-space: nowrap;
+  background: var(--color-floodlight); color: #1A1407; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  animation: xi-tag .18s var(--spring);
+}
+.xi-tag.is-no { background: var(--color-alert); color: #fff; }
+@keyframes xi-tag { from { transform: translateY(6px) scale(.8); opacity: 0; } }
+.xi-tuck {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 30%; border-radius: 0 16px 16px 0; border: 2px dashed transparent; z-index: 4;
+  display: grid; place-items: center; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--color-fg-3);
+  opacity: 0; transition: opacity .15s; pointer-events: none;
+}
+.xi-root.is-dragging .xi-slot.has-player .xi-tuck { opacity: .9; border-color: rgb(255 255 255 / .2); background: rgb(7 9 13 / .35); }
+.xi-ripple { position: absolute; inset: 0; border-radius: 16px; pointer-events: none; z-index: 5; animation: xi-ripple .6s var(--ease-bidzy); }
+@keyframes xi-ripple {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--xi-tint) 90%, transparent); background: color-mix(in srgb, var(--xi-tint) 25%, transparent); }
+  100% { box-shadow: 0 0 0 18px transparent; background: transparent; }
+}
+/* the backs of backup cards peek out behind the starter */
+.xi-peeks { position: absolute; inset: 0; pointer-events: none; }
+.xi-peek {
+  position: absolute; top: 5px; bottom: 5px; right: -12px; width: 50%; border-radius: 13px; border: 2px solid transparent;
+  background: repeating-linear-gradient(135deg, rgb(233 194 90 / .5) 0 3px, transparent 3px 9px) padding-box,
+    linear-gradient(135deg in oklab, var(--team-p), var(--xi-deep)) padding-box, var(--xi-edge) border-box;
+}
+.xi-peek:nth-child(2) { right: -21px; filter: brightness(.8); }
+.xi-peek:nth-child(3) { right: -30px; filter: brightness(.6); }
+/* while you drag, the top and bottom edges of the sheet scroll it */
+.xi-edge {
+  position: absolute; left: 0; right: 0; height: 56px; z-index: 7; pointer-events: none; display: grid; place-items: center; opacity: 0; transition: opacity .2s;
+  font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--color-floodlight);
+}
+.xi-edge.is-up { top: 0; background: linear-gradient(to bottom, color-mix(in srgb, var(--team-p) 45%, rgb(7 9 13 / .85)), transparent); }
+.xi-edge.is-down { bottom: 0; background: linear-gradient(to top, color-mix(in srgb, var(--team-p) 45%, rgb(7 9 13 / .85)), transparent); }
+.xi-edge.is-on { opacity: 1; }
+.xi-edge.is-go span { animation: xi-nudge .5s var(--ease-bidzy) infinite alternate; }
+.xi-edge.is-up.is-go span { animation-name: xi-nudge-up; }
+@keyframes xi-nudge { to { transform: translateY(4px); } }
+@keyframes xi-nudge-up { to { transform: translateY(-4px); } }
+
+/* cards: shared */
+.xi-scard, .xi-hcard, .xi-bench, .xi-bkrow { color: var(--team-ink); }
+.xi-scard, .xi-hcard {
+  position: relative; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; text-align: left; font-family: inherit;
+  touch-action: manipulation; /* a swipe still scrolls; press and hold picks the card up */
+}
+.xi-scard::after, .xi-hcard::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / .28) 47%, transparent 58%); transform: translateX(-120%);
+}
+.xi-scard:hover::after, .xi-hcard:hover::after, .xi-float .xi-scard::after, .xi-float .xi-hcard::after { transform: translateX(120%); transition: transform .7s var(--ease-bidzy); }
+.xi-scard:focus-visible, .xi-hcard:focus-visible { outline: 3px solid var(--color-floodlight); outline-offset: 3px; }
+.xi-photo { display: grid; place-items: center; font-family: var(--font-num); font-weight: 900; object-fit: cover; object-position: 50% 15%; }
+.xi-rolechip { display: inline-block; margin-top: 4px; padding: 2px 7px 1px; border-radius: 5px; font-size: 10px; font-weight: 800; letter-spacing: .1em; color: #0A0D12; background: var(--rc); }
+.xi-os {
+  position: absolute; top: -7px; right: -6px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #E9C25A;
+  display: grid; place-items: center; font-family: var(--font-num); font-weight: 900; font-size: 11px; color: #FFE7A0;
+  background: color-mix(in oklab, var(--team-pd) 45%, #07090D); transform: rotate(-12deg); box-shadow: 0 3px 10px rgb(0 0 0 / .5);
+}
+.xi-ghost { opacity: .18; filter: grayscale(1); }
+.xi-held { outline: 3px solid var(--color-floodlight); outline-offset: 3px; }
+
+/* the sheet card (landscape) */
+.xi-scard {
+  z-index: 1; width: 100%; display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 66px;
+  padding: 6px 14px 6px 6px; border-radius: 16px; border: 2px solid transparent; overflow: hidden;
+  background: var(--xi-face) padding-box, var(--xi-edge) border-box;
+  box-shadow: 0 10px 24px -12px rgb(0 0 0 / .9), inset 0 1px 0 rgb(255 255 255 / .25);
+  transition: transform .15s var(--ease-bidzy), box-shadow .2s;
+}
+.xi-scard:hover { transform: translateY(-2px); box-shadow: 0 16px 28px -12px rgb(0 0 0 / .9), 0 0 0 1px rgb(255 255 255 / .25); }
+.xi-scard:active { transform: scale(.97); }
+.xi-scard .xi-photo { width: 54px; height: 54px; border-radius: 11px; font-size: 20px; background: rgb(0 0 0 / .22); border: 1px solid rgb(255 255 255 / .25); }
+.xi-scard .xi-name {
+  display: block; font-family: var(--font-num); font-weight: 900; font-size: 21px; line-height: 1; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: var(--xi-shadow);
+}
+.xi-stat { font-family: var(--font-num); font-weight: 900; color: var(--xi-stat); line-height: .9; }
+.xi-stat small { font-family: var(--font-text); font-size: 9px; font-weight: 800; letter-spacing: .12em; color: var(--xi-sub); }
+.xi-scard .xi-stat { text-align: right; font-size: 22px; }
+.xi-scard .xi-stat small { display: block; }
+.xi-scard.is-landed { animation: xi-snap .45s var(--spring); }
+@keyframes xi-snap { 0% { transform: scale(1.12) rotate(-3deg); } }
+.xi-scard.is-flip { animation: xi-flipin .5s var(--ease-bidzy); }
+@keyframes xi-flipin { 0% { transform: rotateY(90deg); } }
+.xi-root.is-dragging .xi-bktag { opacity: 0; pointer-events: none; }
+
+/* the backup tag hanging under each starter */
+.xi-bktag {
+  position: absolute; left: 66px; bottom: -12px; z-index: 3; display: inline-flex; align-items: center; gap: 5px; max-width: calc(100% - 90px);
+  padding: 3px 9px 2px 7px; border-radius: 999px; cursor: pointer; font-family: inherit; white-space: nowrap;
+  border: 1px solid color-mix(in srgb, var(--team-acc) 70%, transparent); background: color-mix(in oklab, var(--team-pd) 40%, #07090D);
+  color: #FFE7A0; font-size: 10.5px; font-weight: 800; letter-spacing: .04em; box-shadow: 0 4px 12px rgb(0 0 0 / .5);
+  transition: transform .15s var(--spring), background .2s;
+}
+.xi-bktag span { overflow: hidden; text-overflow: ellipsis; }
+.xi-bktag em { font-style: normal; font-size: 9px; letter-spacing: .14em; opacity: .75; }
+.xi-bktag.is-none { color: var(--color-fg-3); border-style: dashed; border-color: rgb(255 255 255 / .16); background: rgb(7 9 13 / .8); }
+.xi-bktag:hover { transform: translateY(-2px); background: color-mix(in oklab, var(--team-p) 45%, #07090D); }
+.xi-bktag.is-none:hover { color: var(--color-floodlight); }
+.xi-bktag:focus-visible { outline: 2px solid var(--color-floodlight); outline-offset: 2px; }
+
+/* the hand: portrait cards, fanned */
+.xi-hand-wrap { position: relative; border-top: 1px solid var(--color-line); padding: 8px 0 12px; background: linear-gradient(to bottom, color-mix(in srgb, var(--team-pd) 28%, transparent), rgb(7 9 13 / .9)); }
+.xi-hand-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 0 20px; }
+.xi-hand-head b { font-family: var(--font-num); font-weight: 900; font-size: 20px; text-transform: uppercase; }
+.xi-hand-head small { font-size: 12px; color: var(--color-fg-2); }
+.xi-hand { display: flex; overflow-x: auto; padding: 22px 24px 6px; scrollbar-width: thin; min-height: 190px; border-radius: 16px; }
+.xi-hand.is-return { background: rgb(255 241 207 / .06); outline: 2px dashed rgb(255 241 207 / .5); outline-offset: -8px; }
+.xi-hand-tag { top: 2px; left: 20px; }
+.xi-hc { flex: none; margin-right: -8px; position: relative; transform: rotate(var(--r)) translateY(var(--y)); transition: transform .25s var(--spring); }
+.xi-hc:last-child { margin-right: 0; }
+.xi-hc:hover, .xi-hc:focus-within { transform: rotate(0) translateY(-18px) scale(1.05); z-index: 5; }
+.xi-hcard {
+  width: 122px; height: 160px; padding: 0; border-radius: 16px; border: 2.5px solid transparent; overflow: hidden;
+  background: var(--xi-face-tall) padding-box, var(--xi-edge) border-box;
+  box-shadow: 0 14px 26px -12px rgb(0 0 0 / .95), inset 0 1px 0 rgb(255 255 255 / .3);
+  display: grid; grid-template-rows: 20px 1fr auto; transition: box-shadow .2s, transform .12s;
+}
+.xi-hcard:hover { box-shadow: 0 18px 30px -10px rgb(0 0 0 / .95), 0 0 22px -2px var(--rc); }
+.xi-hcard:active { transform: scale(.96); }
+.xi-band { background: var(--rc); color: #0A0D12; font-size: 10px; font-weight: 900; letter-spacing: .16em; display: grid; place-items: center; text-transform: uppercase; }
+.xi-hcard .xi-photo {
+  width: 100%; height: 100%; min-height: 0; font-size: 40px; background: transparent; color: color-mix(in srgb, var(--team-ink) 30%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+.xi-foot { padding: 0 9px 9px; margin-top: -34px; position: relative; }
+.xi-hcard .xi-name { display: block; font-family: var(--font-num); font-weight: 900; font-size: 17px; line-height: .95; text-transform: uppercase; text-shadow: var(--xi-shadow); }
+.xi-hcard .xi-stat { margin-top: 5px; display: flex; justify-content: space-between; align-items: baseline; font-size: 18px; line-height: 1; }
+.xi-hcard .xi-os { top: 24px; right: 6px; }
+.xi-bkm {
+  position: absolute; top: 26px; left: 6px; padding: 2px 6px 1px; border-radius: 5px; font-size: 9px; font-weight: 800; letter-spacing: .1em;
+  background: rgb(7 9 13 / .75); border: 1px solid rgb(255 231 160 / .5); color: #FFE7A0;
+}
+.xi-empty-hand { color: var(--color-fg-3); font-size: 13px; padding: 30px 20px; }
+
+/* the card under your finger (rendered on <body>, so it carries its own team variables) */
+.xi-float {
+  position: fixed; z-index: 100; left: 0; top: 0; pointer-events: none;
+  transform: translate(-50%, -55%) rotate(var(--tilt, 0deg)) scale(1.08);
+  filter: drop-shadow(0 26px 30px rgb(0 0 0 / .75)); transition: transform .08s linear;
+}
+.xi-float.is-home {
+  transition: left .42s var(--spring), top .42s var(--spring), transform .42s var(--ease-bidzy), opacity .42s;
+  transform: translate(-50%, -50%) scale(.9); opacity: .5;
+}
+.xi-say {
+  position: absolute; left: 50%; bottom: 204px; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 32px); text-align: center;
+  background: var(--color-night); border: 1px solid rgb(255 255 255 / .16); border-radius: 14px; padding: 9px 14px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 14px 30px rgb(0 0 0 / .5); animation: bidzy-rise .25s var(--ease-bidzy);
+}
+.xi-say.is-bad { border-color: rgb(255 107 94 / .6); color: #ffd0cb; }
+
+/* backups popup */
+.xi-bkscrim { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; padding: 14px; background: rgb(3 4 6 / .6); backdrop-filter: blur(3px); }
+.xi-bkpop {
+  position: relative; isolation: isolate; overflow: hidden; outline: none; width: min(520px, 100%); max-height: 100%;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; border-radius: 22px; border: 1px solid rgb(255 255 255 / .16);
+  background: var(--color-night-2); box-shadow: 0 30px 60px rgb(0 0 0 / .6); animation: xi-popin .28s var(--spring);
+}
+@keyframes xi-popin { from { transform: translateY(16px) scale(.96); opacity: 0; } }
+.xi-bkpop::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(70% 45% at 0% 0% in oklab, color-mix(in srgb, var(--team-p) 70%, transparent), transparent 70%),
+    radial-gradient(40% 30% at 100% 0% in oklab, color-mix(in srgb, var(--team-acc) 50%, transparent), transparent 70%);
+}
+.xi-bkpop h3 { margin: 0; font-family: var(--font-num); font-weight: 900; font-size: 26px; line-height: 1; text-transform: uppercase; }
+.xi-bktop { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding: 16px 16px 4px; }
+.xi-bktop p { margin: 4px 0 0; font-size: 12.5px; color: var(--color-fg-2); }
+.xi-bkstarter { padding: 8px 16px 10px; }
+.xi-bkstarter .xi-scard { cursor: default; pointer-events: none; }
+.xi-bkbody { overflow: auto; padding: 0 16px 8px; min-height: 0; }
+.xi-bklabel { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--color-fg-3); margin: 10px 0 7px; }
+.xi-bklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.xi-bkrow {
+  display: grid; grid-template-columns: 30px 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 8px 6px 6px;
+  border-radius: 14px; border: 1.5px solid transparent; background: var(--xi-face) padding-box, var(--xi-edge) border-box;
+}
+.xi-bkrow.is-moved { animation: xi-snap .4s var(--spring); }
+.xi-ord { font-family: var(--font-num); font-weight: 900; font-size: 22px; text-align: center; background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.xi-bkrow .xi-photo { width: 40px; height: 40px; border-radius: 9px; font-size: 15px; background: rgb(0 0 0 / .22); }
+.xi-bkrow b { display: block; font-family: var(--font-num); font-weight: 900; font-size: 18px; line-height: 1; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xi-bkrow small { font-size: 10.5px; font-weight: 700; color: var(--xi-sub); }
+.xi-acts { display: flex; gap: 4px; }
+.xi-ib { width: 32px; height: 32px; border-radius: 10px; border: 0; cursor: pointer; display: grid; place-items: center; font-size: 13px; font-weight: 900; color: #fff; background: rgb(7 9 13 / .55); }
+.xi-ib:hover:not(:disabled) { background: rgb(7 9 13 / .8); }
+.xi-ib:disabled { opacity: .3; cursor: default; }
+.xi-ib.is-remove:hover { background: var(--color-alert); }
+.xi-ib:focus-visible { outline: 2px solid var(--color-floodlight); outline-offset: 2px; }
+.xi-bkempty { padding: 12px; border: 1.5px dashed rgb(255 255 255 / .16); border-radius: 14px; font-size: 13px; color: var(--color-fg-3); text-align: center; }
+.xi-benches { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.xi-bench {
+  position: relative; display: grid; justify-items: start; gap: 2px; padding: 0 0 8px; border-radius: 13px; border: 1.5px solid transparent; overflow: hidden;
+  cursor: pointer; text-align: left; font-family: inherit; background: var(--xi-face-tall) padding-box, var(--xi-edge) border-box;
+  transition: transform .18s var(--spring), box-shadow .2s;
+}
+.xi-bench:hover { transform: translateY(-3px); box-shadow: 0 12px 22px -10px rgb(0 0 0 / .9), 0 0 16px -4px var(--rc); }
+.xi-bench:active { transform: scale(.95); }
+.xi-bench:focus-visible { outline: 2px solid var(--color-floodlight); outline-offset: 2px; }
+.xi-bench .xi-band { width: 100%; font-size: 9px; letter-spacing: .14em; padding: 2px 0 1px; }
+.xi-bench b { padding: 4px 8px 0; font-family: var(--font-num); font-weight: 900; font-size: 15px; line-height: .95; text-transform: uppercase; }
+.xi-bench small { padding: 0 8px; font-size: 9.5px; font-weight: 700; color: var(--xi-sub); }
+.xi-plus { position: absolute; right: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 900; line-height: 1; background: var(--color-floodlight); color: #1A1407; }
+.xi-bkfoot { display: flex; justify-content: flex-end; padding: 10px 16px 14px; border-top: 1px solid var(--color-line); }
+
+/* phones: give the team sheet the height */
+@media (max-width: 560px) {
+  .xi-head { padding: 14px 14px 4px; }
+  .xi-head h2 { font-size: 26px; }
+  .xi-head p { display: none; }
+  .xi-meters { gap: 8px 14px; padding: 2px 14px 8px; }
+  .xi-seesaw svg { width: 150px; height: 44px; }
+  .xi-seesaw small { font-size: 10px; }
+  .xi-stamp { width: 30px; height: 30px; font-size: 10px; }
+  .xi-ck { padding: 4px 8px 3px; font-size: 11px; }
+  .xi-ck b { font-size: 14px; }
+  .xi-sheet { padding: 12px 12px 16px; }
+  .xi-hand-head small { display: none; }
+  .xi-hand { padding: 18px 14px 4px; min-height: 166px; }
+  .xi-hcard { width: 108px; height: 142px; }
+  .xi-float { transform: translate(-50%, -55%) rotate(var(--tilt, 0deg)) scale(.9); }
+  .xi-say { bottom: 180px; }
+  .xi-bkscrim { place-items: end center; padding: 0; }
+  .xi-bkpop { border-radius: 22px 22px 0 0; max-height: 88%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xi-root *, .xi-float { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

@@ -1,9 +1,10 @@
-import { xiSlots } from '../../utils/board'
-import { isOverseas } from '../../utils/board'
+import Button from '../ui/Button'
+import { xiSlots, isOverseas } from '../../utils/board'
 
 // Your Playing XI, filling up as you buy: 11 numbered slots, OS for overseas, +n for backups.
 //   landedId: the player you just won glows as he drops in
-function XiPanel({ lineup, playersById, homeCountry, boughtCount, landedId }) {
+//   onArrange: opens the XI builder (drag the cards around)
+function XiPanel({ lineup, playersById, homeCountry, boughtCount, landedId, onArrange }) {
     const slots=xiSlots(lineup,playersById)
     const placed=slots.filter(s=>s.player).length
     return (
@@ -33,6 +34,7 @@ function XiPanel({ lineup, playersById, homeCountry, boughtCount, landedId }) {
             <p className="m-0 border-t border-line pt-2.5 text-[13px] text-fg-2">
                 {boughtCount} bought · {Math.max(0,boughtCount-placed)} not in the XI
             </p>
+            {onArrange && <Button kind="secondary" size="sm" arrow onClick={onArrange}>Arrange your XI</Button>}
         </div>
     )
 }

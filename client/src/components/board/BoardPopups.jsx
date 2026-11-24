@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Popup from '../ui/Popup'
 import PlayerAvatar from './PlayerAvatar'
 import TeamTag from './TeamTag'
-import XiPanel from './XiPanel'
 import { formatMoney } from '../../utils/money'
 import { isOverseas, teamGlow } from '../../utils/board'
 
@@ -62,25 +61,6 @@ export function TeamsPopup({ onClose, teams, boughtByTeam, franchisesByCode }) {
                     )}
                 </div>
             )}
-        </Popup>
-    )
-}
-
-// your XI on small screens (it sits beside the card on big ones), plus who isn't in it yet
-export function XiPopup({ onClose, lineup, unplaced, playersById, homeCountry, boughtCount, glow }) {
-    return (
-        <Popup open onClose={onClose} title="Your team" wide glow={glow}>
-            <div className="grid gap-4 text-fg">
-                <XiPanel lineup={lineup} playersById={playersById} homeCountry={homeCountry} boughtCount={boughtCount} />
-                {unplaced.length>0 && (
-                    <div className="grid gap-1.5">
-                        <span className="text-sm font-semibold">Not in your XI</span>
-                        <ul className="m-0 grid list-none gap-1.5 p-0">
-                            {unplaced.map(p=><Row key={p._id} player={p} right={formatMoney(p.soldPrice)} sub={p.role} />)}
-                        </ul>
-                    </div>
-                )}
-            </div>
         </Popup>
     )
 }
