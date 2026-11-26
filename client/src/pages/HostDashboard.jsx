@@ -13,6 +13,8 @@ import PlayerPopup from '../components/host/PlayerPopup'
 import SettingsPopup from '../components/host/SettingsPopup'
 import SetsPopup from '../components/host/SetsPopup'
 import ConfirmPopup from '../components/host/ConfirmPopup'
+import PackPicker from '../components/host/PackPicker'
+import Popup from '../components/ui/Popup'
 import { useRoom } from '../components/roomContext'
 import { useFranchises } from '../hooks/useFranchises'
 import socket, { connectToRoom } from '../api/socket'
@@ -42,13 +44,13 @@ const Pill=({ label, value })=><div className={pill}><small className={pillLabel
 // setting up (teams, players, settings, start), live (the lot, the clock, every team's purse), over (who bought what).
 function HostDashboard(){
     const { roomId, room:startRoom }=useRoom()
-    const { byCode }=useFranchises()
+    const { franchises, byCode }=useFranchises()
     const [room,setRoom]=useState(startRoom)
     const [data,setData]=useState(null)        // {session, players, teams, sets}
     const [feed,setFeed]=useState([])
     const [hammer,setHammer]=useState(null)
     const [now,setNow]=useState(()=>Date.now())
-    const [popup,setPopup]=useState(null)      // {kind:'player'|'settings'|'sets'|'start'|'reset', player?}
+    const [popup,setPopup]=useState(null)      // {kind:'player'|'settings'|'sets'|'pack'|'start'|'reset', player?}
     const [toast,setToast]=useState(null)
     const [newestTeamId,setNewestTeamId]=useState(null)
     const toastTimer=useRef(null)
@@ -123,6 +125,13 @@ function HostDashboard(){
         loadAll().catch(err=>showToast(errorMessage(err),'bad'))
     },[loadAll,showToast])
 
+    const dealt=useCallback((result)=>{
+        setPopup(null)
+        const more=result.skipped ? ` · ${result.skipped} already in` : ''
+        reload(result.added ? `${result.added} players dealt in${more}` : `Nobody new to add${more}`)
+    },[reload])
+    const packError=useCallback((message)=>showToast(message,'bad'),[showToast])
+
     const teamsById=useMemo(()=>Object.fromEntries((data?.teams||[]).map(t=>[String(t._id),t])),[data?.teams])
 
     if(!data){
@@ -154,7 +163,7 @@ function HostDashboard(){
 
     return (
         <Aura variant="page" accent={phase==='live'&&leader ? teamGlow(leader,byCode).p : undefined}
-            className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased">
+            className="min-h-screen bg-night font-text text-[15px] text-fg antialiased">
             <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-12 sm:px-5">
                 <header className="mb-6 flex flex-wrap items-center justify-between gap-3.5">
                     <div className="flex min-w-0 items-center gap-3.5">
@@ -175,6 +184,11 @@ function HostDashboard(){
 
             {popup?.kind==='player' && <PlayerPopup roomId={roomId} player={popup.player} sets={sets} defaultSetId={popup.setId} onSaved={reload} onClose={closePopup} />}
             {popup?.kind==='settings' && <SettingsPopup roomId={roomId} room={room} teamCount={teams.length} onSaved={(updated)=>{ setRoom(prev=>({...prev,...updated})); reload('Settings saved') }} onClose={closePopup} />}
+            {popup?.kind==='pack' && (
+                <Popup open onClose={closePopup} title="Add IPL sets" wide="xl">
+                    <PackPicker roomId={roomId} sets={sets} players={players} franchises={franchises} onDealt={dealt} onError={packError} />
+                </Popup>
+            )}
             {popup?.kind==='sets' && <SetsPopup roomId={roomId} groups={groupBySet(players,sets)} onChanged={()=>reload()} onClose={closePopup} />}
             {popup?.kind==='start' && (
                 <ConfirmPopup title="Start the auction?" line="Settings lock and the first player goes up." confirmLabel="Start" cancelLabel="Not yet"
@@ -231,6 +245,19 @@ function HostDashboard(){
                         <div><Button kind="secondary" size="sm" onClick={()=>setPopup({kind:'settings'})}>Edit settings</Button></div>
                     </div>
 
+                    {players.length===0 ? (
+                    <div className="grid min-w-0 content-start gap-[18px]">
+                        <PackPicker roomId={roomId} sets={sets} players={players} franchises={franchises} onDealt={dealt} onError={packError} />
+                        <div className={panel}>
+                            <h2 className={panelTitle}>Your own players</h2>
+                            <p className="m-0 text-sm text-fg-2">College league, office cup, friends' XI: add anyone with a name, a role and a base price. A photo is optional.</p>
+                            <div className="flex flex-wrap gap-2.5">
+                                <Button kind="secondary" size="sm" onClick={()=>setPopup({kind:'player'})} disabled={sets.length===0}>Add a player <span aria-hidden="true">+</span></Button>
+                                <Button kind="quiet" onClick={()=>setPopup({kind:'sets'})}>Order of sets</Button>
+                            </div>
+                        </div>
+                    </div>
+                    ) : (
                     <div className={panel}>
                         <h2 className={panelTitle}>Players <small className={panelNote}>{players.length} {players.length===1 ? 'player' : 'players'} · {sets.length} sets</small></h2>
                         <div className="grid gap-3.5">
@@ -246,15 +273,18 @@ function HostDashboard(){
                                           </button>
                                         : (
                                             <ul className="m-0 grid list-none gap-1.5 p-0">
-                                                {inSet.map(p=>(
-                                                    <li key={p._id} className="grid grid-cols-[40px_minmax(0,1fr)_auto_auto] items-center gap-2.5 rounded-xl bg-white/[.03] px-2 py-[7px]">
+                                                {inSet.map((p,k)=>(
+                                                    <li key={p._id} style={{'--k':Math.min(k,12)}} className="bz-land grid grid-cols-[40px_minmax(0,1fr)_auto_auto] items-center gap-2.5 rounded-xl bg-white/[.03] px-2 py-[7px]">
                                                         <PlayerAvatar player={p} className="size-10" />
                                                         <span className="min-w-0">
                                                             <b className="block truncate font-semibold">
                                                                 {p.name}
                                                                 {isOverseas(p,homeCountry) && <span className="ml-1.5 rounded-[5px] border border-floodlight/35 px-1 text-[10px] font-bold tracking-[.1em] text-floodlight">OS</span>}
                                                             </b>
-                                                            <small className="text-xs text-fg-3">{p.role} · {p.country}</small>
+                                                            <small className="text-xs text-fg-3">
+                                                                {p.role} · {p.country}
+                                                                {p.roleGuessed && <span className="ml-1.5 rounded-[5px] border border-dashed border-[#F6C24A]/60 px-1 text-[10px] font-bold tracking-[.06em] text-[#FFE3A3]">role guessed</span>}
+                                                            </small>
                                                         </span>
                                                         <span className="font-num text-[17px] font-extrabold tabular-nums">{formatMoney(p.basePrice)}</span>
                                                         <button type="button" onClick={()=>setPopup({kind:'player',player:p})} aria-label={`Edit ${p.name}`}
@@ -271,8 +301,10 @@ function HostDashboard(){
                         <div className="flex flex-wrap gap-2.5">
                             <Button kind="primary" size="sm" onClick={()=>setPopup({kind:'player'})} disabled={sets.length===0}>Add a player <span aria-hidden="true">+</span></Button>
                             <Button kind="secondary" size="sm" onClick={()=>setPopup({kind:'sets'})}>Order of sets</Button>
+                            <Button kind="secondary" size="sm" onClick={()=>setPopup({kind:'pack'})}>Add IPL sets</Button>
                         </div>
                     </div>
+                    )}
                 </div>
 
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-[22px] border border-line bg-night-2/75 px-[18px] py-4">

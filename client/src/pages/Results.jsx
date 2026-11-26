@@ -64,7 +64,7 @@ function Results(){
     }
 
     return (
-        <Aura variant="page" glow={myGlow} className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased">
+        <Aura variant="page" glow={myGlow} className="min-h-screen bg-night font-text text-[15px] text-fg antialiased">
             <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-12 sm:px-5">
                 <RoomHeader room={room}>
                     {room.status==='live' && <Button as={Link} to={roomHome(roomId,role)} kind="primary" size="sm" arrow>Back to the auction</Button>}

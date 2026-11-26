@@ -2,6 +2,7 @@ import { useState } from 'react'
 import TeamTag from './TeamTag'
 import Gavel from '../ui/Gavel'
 import SoldStamp from '../ui/SoldStamp'
+import PhotoCredit from '../ui/PhotoCredit'
 import { formatMoney } from '../../utils/money'
 import { statsFor, isOverseas, initials, shortName } from '../../utils/board'
 
@@ -28,6 +29,7 @@ function LotCard({ player, lotLabel, homeCountry, price, leader, mine, feed, fra
                     className="bz-lot-photo pointer-events-none absolute inset-y-0 right-0 -z-20 grid w-[58%] place-items-center font-num text-[clamp(120px,22vw,260px)] font-black text-white/[.07]">
                     {initials(player.name)}
                   </span>}
+            {showPhoto && <PhotoCredit credit={player.imageCredit} oneLine className="absolute right-[22px] bottom-[5px] max-w-[min(58%,420px)] justify-end text-[10px]! text-fg-2!" />}
             {/* darkens the bottom so the numbers read, and tints the corner in the leader's colour */}
             <span aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10"
                 style={{background:'linear-gradient(to top,rgb(13 17 23 / .96) 0%,rgb(13 17 23 / .25) 55%,transparent 80%)'}} />

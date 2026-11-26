@@ -55,6 +55,12 @@ const roomSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
+    //while the IPL pack is being loaded: a lock, so a double click can't load it twice.
+    //it runs out by itself, so a crash in the middle can't block the room forever.
+    packLoadingUntil:{
+        type:Date,
+        default:null
+    },
     settings:{
         purse:{type:Number,default:12000},
         timerSeconds:{type:Number,default:15},

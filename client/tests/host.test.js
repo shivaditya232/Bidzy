@@ -61,3 +61,17 @@ test('host: settings in crores on screen, lakhs on the server',()=>{
     assert.ok(validateSettings({...form,purseCr:'3'}).purse) // 19 x ₹20 L doesn't fit in ₹3 Cr
     assert.deepStrictEqual(settingsPayload({...form,purseCr:'90.5'}).purse,9050)
 })
+
+test('host: photo credits travel with the photo',()=>{
+    const commons={author:'RIGI',license:'CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:x.jpg'}
+    const fromCommons=playerToForm({name:'MS Dhoni',role:'Wicketkeeper',country:'India',set:'s1',image:'https://upload.wikimedia.org/x.jpg',imageCredit:commons})
+    assert.strictEqual(fromCommons.credit,'')
+    assert.deepStrictEqual(playerPayload(fromCommons).imageCredit,commons,'Commons credit kept as it came')
+
+    const own={...fromCommons,image:'data:image/webp;base64,AAAA',source:null,credit:' Photo by Asha '}
+    assert.deepStrictEqual(playerPayload(own).imageCredit,{author:'Photo by Asha'})
+    assert.deepStrictEqual(validatePlayer(own),{})
+    assert.strictEqual(playerPayload({...own,image:''}).imageCredit,null,'no photo, no credit')
+    assert.ok(validatePlayer({...own,image:'data:text/html;base64,AAAA'}).image)
+    assert.strictEqual(playerToForm({name:'A',imageCredit:{author:'Asha'}}).credit,'Asha')
+})

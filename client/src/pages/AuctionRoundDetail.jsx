@@ -37,7 +37,7 @@ function AuctionRoundDetail(){
     const back=<Link to={`/rooms/${roomId}/history`} className="mb-1.5 inline-block rounded text-[13px] font-semibold text-fg-2 no-underline hover:text-fg focus-visible:outline-2 focus-visible:outline-fg">← Past auctions</Link>
 
     return (
-        <Aura variant="page" className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased">
+        <Aura variant="page" className="min-h-screen bg-night font-text text-[15px] text-fg antialiased">
             <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-12 sm:px-5">
                 <RoomHeader room={room} />
                 {back}

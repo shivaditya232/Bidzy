@@ -53,7 +53,12 @@ export const teamSummaries=(teams=[],players=[])=>teams.map(team=>{
 export const biggestBuy=(players=[])=>players.filter(p=>p.status==='sold').reduce((best,p)=>(!best||(p.soldPrice||0)>(best.soldPrice||0)) ? p : best,null)
 
 // ---------- the player form ----------
-export const emptyPlayerForm=(setId='')=>({name:'',role:'Batsman',country:'India',basePrice:200,set:setId,image:'',stats:{}})
+// image: a link or an uploaded data URL. source: the photo's full credit (Wikimedia Commons), shown as is;
+// credit: what the host types for their own photo
+export const emptyPlayerForm=(setId='')=>({name:'',role:'Batsman',country:'India',basePrice:200,set:setId,image:'',credit:'',source:null,stats:{}})
+
+// a credit with a licence or a page came with the photo (Commons); one with just a name was typed by the host
+const isSourced=(credit)=>Boolean(credit&&(credit.license||credit.page))
 
 export const playerToForm=(player)=>({
     name:player.name||'',
@@ -62,6 +67,8 @@ export const playerToForm=(player)=>({
     basePrice:player.basePrice||200,
     set:idOf(player.set),
     image:player.image||'',
+    credit:!isSourced(player.imageCredit) ? player.imageCredit?.author||'' : '',
+    source:isSourced(player.imageCredit) ? player.imageCredit : null,
     stats:Object.fromEntries(Object.entries(player.stats||{}).filter(([,v])=>v).map(([k,v])=>[k,String(v)]))
 })
 
@@ -73,7 +80,8 @@ export const validatePlayer=(form)=>{
     if(!String(form.country||'').trim()) errors.country='Enter a country'
     if(!form.set) errors.set='Pick a set'
     const image=String(form.image||'').trim()
-    if(image&&!/^https?:\/\/\S+$/i.test(image)) errors.image='Paste a full link starting with https://'
+    if(image&&!/^https?:\/\/\S+$/i.test(image)&&!/^data:image\/(webp|jpeg|png);base64,/.test(image)) errors.image='That photo can\'t be used'
+    if(String(form.credit||'').length>160) errors.credit='Keep the credit under 160 characters'
     for(const [key,label] of STAT_FIELDS[form.role]||[]){
         const raw=form.stats?.[key]
         if(raw===undefined||raw==='') continue
@@ -91,6 +99,8 @@ export const playerPayload=(form)=>({
     basePrice:Number(form.basePrice),
     set:form.set,
     image:form.image.trim(),
+    // the photo's own credit if it came with one, else what the host typed, else none
+    imageCredit:form.image.trim() ? (form.source||(form.credit?.trim() ? {author:form.credit.trim()} : null)) : null,
     stats:Object.fromEntries((STAT_FIELDS[form.role]||[]).map(([key])=>[key,Number(form.stats?.[key])||0]))
 })
 

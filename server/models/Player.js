@@ -26,8 +26,21 @@ const playerSchema=new mongoose.Schema({
         wickets:{type:Number,default:0},
         bowlingEconomy:{type:Number,default:0}
     },
+    //a link (e.g. Wikimedia Commons) or a small uploaded photo stored right here as a data URL (see utils/playerImage.js)
     image:{
         type:String
+    },
+    //who took the photo and its licence. Commons photos need this shown with them.
+    imageCredit:{
+        author:{type:String},
+        license:{type:String},
+        licenseUrl:{type:String},
+        page:{type:String}
+    },
+    //true for players from the IPL pack with no Wikipedia page: their role was guessed from their bowling style
+    roleGuessed:{
+        type:Boolean,
+        default:false
     },
     status:{
         type:String,

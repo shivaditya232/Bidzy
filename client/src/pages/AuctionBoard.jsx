@@ -208,7 +208,7 @@ function AuctionBoard(){
 
     return (
         <Aura variant="page" glow={myGlow} accent={leader ? teamGlow(leader,byCode).p : undefined}
-            className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased" style={teamStyle(myGlow)}>
+            className="min-h-screen bg-night font-text text-[15px] text-fg antialiased" style={teamStyle(myGlow)}>
             <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-10 sm:px-5">
                 <header className="mb-5 flex flex-wrap items-center justify-between gap-3.5">
                     <div className="flex min-w-0 items-center gap-3.5">

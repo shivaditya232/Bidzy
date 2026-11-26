@@ -34,7 +34,7 @@ function PastAuctions(){
     },[roomId])
 
     return (
-        <Aura variant="page" className="min-h-screen overflow-x-hidden bg-night font-text text-[15px] text-fg antialiased">
+        <Aura variant="page" className="min-h-screen bg-night font-text text-[15px] text-fg antialiased">
             <div className="mx-auto max-w-[1240px] px-4 pt-[18px] pb-12 sm:px-5">
                 <RoomHeader room={room}>
                     <Button as={Link} to={`/rooms/${roomId}/results`} kind="secondary" size="sm">Results</Button>

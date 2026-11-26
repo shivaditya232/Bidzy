@@ -1,5 +1,6 @@
 const Player=require('../models/Player');
 const Set=require('../models/Set');
+const {checkImage,cleanCredit}=require('../utils/playerImage');
 
 //order is per room: each room's players are numbered 1,2,3...
 const getNextOrderStart=async (roomId)=>{
@@ -32,13 +33,17 @@ const getPlayers=async (req,res)=>{
 const createPlayer=async (req,res)=>{
     try{
         const {set}=req.body;
+        const imageProblem=checkImage(req.body.image);
+        if(imageProblem){
+            return res.status(400).json({message:imageProblem});
+        }
         //the set has to be one of THIS room's sets
         const setExists=await Set.findOne({_id:set,room:req.room._id});
         if(!setExists){
             return res.status(400).json({message:'No existing set'});
         }
         const startOrder=await getNextOrderStart(req.room._id);
-        const player=await Player.create({...req.body,order:startOrder,room:req.room._id});
+        const player=await Player.create({...req.body,imageCredit:cleanCredit(req.body.imageCredit),order:startOrder,room:req.room._id});
         res.status(201).json({message:'Player created succesfully',player});
     }
     catch(error){
@@ -49,14 +54,25 @@ const createPlayer=async (req,res)=>{
 
 const updatePlayer=async (req,res)=>{
     try{
-        const {room,...updates}=req.body;
+        const {room,imageCredit,...updates}=req.body;
+        const imageProblem=checkImage(updates.image);
+        if(imageProblem){
+            return res.status(400).json({message:imageProblem});
+        }
+        //a new photo (or none) comes with its own credit, or no credit at all
+        const unset={};
+        if(imageCredit!==undefined){
+            const credit=cleanCredit(imageCredit);
+            if(credit) updates.imageCredit=credit;
+            else unset.imageCredit=1;
+        }
         if(updates.set!==undefined){
             const setExists=await Set.findOne({_id:updates.set,room:req.room._id});
             if(!setExists){
                 return res.status(400).json({message:'No existing set'});
             }
         }
-        const player=await Player.findOneAndUpdate({_id:req.params.id,room:req.room._id},updates,{
+        const player=await Player.findOneAndUpdate({_id:req.params.id,room:req.room._id},{$set:updates,$unset:unset},{
             new:true,
             runValidators:true
         });
@@ -83,12 +99,16 @@ const bulkCreatePlayers=async (req,res)=>{
       if (!setExists) {
         return res.status(400).json({ message: `Invalid set ID for player ${player.name}` });
       }
+      const imageProblem=checkImage(player.image);
+      if(imageProblem){
+        return res.status(400).json({message:`${player.name}: ${imageProblem}`});
+      }
     }
 
         const startOrder=await getNextOrderStart(req.room._id);
 
         const withOrder=players.map((player,index)=>{
-            return {...player,order:startOrder+index,room:req.room._id};
+            return {...player,imageCredit:cleanCredit(player.imageCredit),order:startOrder+index,room:req.room._id};
         })
 
         const created=await Player.insertMany(withOrder);

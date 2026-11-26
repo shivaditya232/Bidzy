@@ -60,8 +60,10 @@ function Aura({ glow, accent, variant='card', as:Tag='div', className='', childr
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[colors.a,colors.a2,colors.b])
 
+    // clip, not hidden: a hidden box can still be scrolled by focus or scrollIntoView (the glow layers are
+    // wider than the page), which slid the whole page sideways on long pages
     return (
-        <Tag className={`relative isolate overflow-hidden bidzy-grain ${className}`} {...rest}>
+        <Tag className={`relative isolate overflow-clip bidzy-grain ${className}`} {...rest}>
             <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true">
                 {state.layers.map((layer,i)=>layer && (
                     <Layer key={i} colors={layer} visible={i===state.active} variant={variant} />

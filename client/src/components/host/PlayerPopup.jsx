@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Popup from '../ui/Popup'
+import PhotoCrop from './PhotoCrop'
+import PhotoCredit from '../ui/PhotoCredit'
 import Field from '../ui/Field'
 import Button from '../ui/Button'
 import { createPlayer, updatePlayer, deletePlayer } from '../../api/host'
 import { errorMessage } from '../../api/axios'
 import { formatMoney } from '../../utils/money'
 import { hasErrors } from '../../utils/validate'
+import { initials, statsFor } from '../../utils/board'
+import { ROLE_SHORT, ROLE_COLOUR } from '../../utils/xi'
 import { BASE_PRICES, ROLES, STAT_FIELDS, emptyPlayerForm, playerToForm, validatePlayer, playerPayload } from '../../utils/host'
 
 const selectClass='h-12 w-full rounded-xl border border-line bg-white/[.04] px-3 font-text text-[16px] text-fg outline-none focus:border-white/35 [&>option]:bg-night-2'
@@ -24,6 +28,11 @@ function PlayerPopup({ roomId, player, sets, defaultSetId, onSaved, onClose }) {
     const errorFor=(field)=>submitted ? errors[field] : undefined
     const set=(field)=>(e)=>{ setForm(prev=>({...prev,[field]:e.target.value})); setServerError('') }
     const setStat=(key)=>(e)=>setForm(prev=>({...prev,stats:{...prev.stats,[key]:e.target.value}}))
+    // a newly chosen (or removed) photo drops the old photo's credit; moving the crop keeps it
+    const setPhoto=useCallback((image,{fresh})=>{
+        setForm(prev=>fresh ? {...prev,image,source:null,credit:''} : {...prev,image})
+        setServerError('')
+    },[])
 
     const save=async(e)=>{
         e.preventDefault()
@@ -59,8 +68,29 @@ function PlayerPopup({ roomId, player, sets, defaultSetId, onSaved, onClose }) {
     const canRemove=editing&&player.status==='pending'
 
     return (
-        <Popup open onClose={onClose} title={editing ? 'Edit player' : 'Add a player'} wide>
+        <Popup open onClose={onClose} title={editing ? 'Edit player' : 'Add a player'} wide="xl">
             <form className="grid gap-3.5 text-fg" onSubmit={save} noValidate>
+              <div className="grid items-start gap-[18px] min-[681px]:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+                <div className="grid gap-3.5">
+                    <PhotoCrop image={form.image} onChange={setPhoto} label={form.name.trim()||'the player'} />
+                    {form.source
+                        ? <PhotoCredit credit={form.source} className="rounded-[10px] bg-white/[.03] px-2.5 py-2" />
+                        : form.image && (
+                            <Field id="player-credit" label="Photo credit (optional)" value={form.credit} onChange={set('credit')} error={errorFor('credit')}
+                                hint="Who took it. Shown small under the photo." placeholder="Photo by…" autoComplete="off" maxLength={160} />
+                        )}
+                    <div className="grid gap-1.5">
+                        <span className="text-sm font-semibold">How the card looks</span>
+                        <CardPreview form={form} />
+                    </div>
+                </div>
+
+                <div className="grid gap-3.5">
+                {player?.roleGuessed && (
+                    <p className="m-0 rounded-xl border border-dashed border-[#F6C24A]/60 px-3.5 py-2.5 text-[13px] text-[#FFE3A3]">
+                        No Wikipedia page for {player.name}, so the role was guessed from the bowling style. Check it.
+                    </p>
+                )}
                 <Field id="player-name" label="Name" value={form.name} onChange={set('name')} error={errorFor('name')} placeholder="Shubman Gill" autoComplete="off" maxLength={60} />
 
                 <div className="grid gap-1.5">
@@ -100,8 +130,9 @@ function PlayerPopup({ roomId, player, sets, defaultSetId, onSaved, onClose }) {
                     ))}
                 </div>
 
-                <Field id="player-image" label="Photo link (optional)" value={form.image} onChange={set('image')} error={errorFor('image')}
-                    hint="A link to a photo you're allowed to use. Initials show when there's none." placeholder="https://…" autoComplete="off" />
+                {errorFor('image') && <span className="text-[13px] text-alert">{errorFor('image')}</span>}
+                </div>
+              </div>
 
                 {serverError && <p role="alert" className="m-0 rounded-xl bg-alert/10 px-3.5 py-2.5 text-sm text-alert">{serverError}</p>}
 
@@ -126,6 +157,27 @@ function PlayerPopup({ roomId, player, sets, defaultSetId, onSaved, onClose }) {
                     )}
             </form>
         </Popup>
+    )
+}
+
+// the player as a card in the house colours: photo (or initials), name, role and the headline number
+function CardPreview({ form }) {
+    const [,first]=statsFor({role:form.role,stats:Object.fromEntries(Object.entries(form.stats||{}).map(([k,v])=>[k,Number(v)||0]))})
+    return (
+        <div className="bz-card-preview">
+            {form.image
+                ? <img src={form.image} alt="" className="size-16 rounded-xl object-cover object-[50%_15%]" />
+                : <span className="grid size-16 place-items-center rounded-xl bg-black/25 font-num text-[22px] font-black" aria-hidden="true">{initials(form.name||'?')}</span>}
+            <span className="min-w-0">
+                <b className="block truncate font-num text-[22px] leading-none font-black uppercase">{form.name.trim()||'New player'}</b>
+                <span className="mt-1 inline-block rounded-[5px] px-1.5 pt-px text-[10px] font-extrabold tracking-[.1em] text-[#0A0D12]" style={{background:ROLE_COLOUR[form.role]}}>{ROLE_SHORT[form.role]}</span>
+            </span>
+            {first && (
+                <span className="text-right font-num text-[22px] leading-[.9] font-black text-[#FFE7A0]">
+                    {first[1]}<small className="block font-text text-[9px] font-extrabold tracking-[.12em] text-white/70">{first[0]}</small>
+                </span>
+            )}
+        </div>
     )
 }
 

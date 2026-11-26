@@ -11,7 +11,7 @@ const FOCUSABLE='button:not([disabled]),[href],input:not([disabled]),select:not(
 //       Settings lock once the first player is up.
 //   </Popup>
 //   glow: optional team colours ({p,pd,acc}); the top of the popup glows in them and cross-fades when they change
-//   wide: a roomier popup for forms (520px instead of 420px)
+//   wide: a roomier popup for forms (520px instead of 420px), or wide="xl" (760px) for side-by-side layouts
 // Pass a stable onClose (useCallback): a new function every render would re-run the focus handling.
 function Popup({ open, onClose, title, children, actions, glow, wide=false }) {
     const sheetRef=useRef(null)
@@ -65,7 +65,7 @@ function Popup({ open, onClose, title, children, actions, glow, wide=false }) {
                 aria-labelledby={titleId}
                 tabIndex={-1}
                 className={`relative isolate max-h-[calc(100dvh-40px)] w-full overflow-y-auto rounded-[22px] border border-line bg-night-2 p-6 font-text text-fg outline-none
-                    ${wide ? 'max-w-[520px]' : 'max-w-[420px]'}`}
+                    ${wide==='xl' ? 'max-w-[760px]' : wide ? 'max-w-[520px]' : 'max-w-[420px]'}`}
                 style={{animation:'bidzy-rise .22s var(--ease-bidzy)'}}
             >
                 {glow && (

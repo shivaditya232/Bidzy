@@ -14,3 +14,4 @@ const seedDefaultSets=async (roomId)=>{
 };
 
 module.exports=seedDefaultSets;
+module.exports.DEFAULT_SETS=DEFAULT_SETS;

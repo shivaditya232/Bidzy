@@ -21,3 +21,8 @@ export const deletePlayer=async(roomId,playerId)=>(await api.delete(roomPath(roo
 export const startAuction=async(roomId)=>(await api.post(roomPath(roomId,'/auction/start'))).data
 // archive this round, give everyone their purse back, back to the lobby
 export const resetAuction=async(roomId)=>(await api.post(roomPath(roomId,'/auction/reset'))).data
+
+// the ready-made IPL 2026 pack: {about, license, total, photos, groups:[{name, sets, count, photos}]}
+export const getPack=async(roomId)=>(await api.get(roomPath(roomId,'/players/pack'))).data
+// load the picked groups of sets into the room: {added, skipped, sets}
+export const loadPack=async(roomId,groups)=>(await api.post(roomPath(roomId,'/players/pack'),{groups})).data

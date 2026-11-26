@@ -1,0 +1,5835 @@
+{
+ "about": "IPL 2026 squads (all 10 teams) for Bidzy demo rooms. Squads, roles and career numbers from Wikipedia (CC BY-SA 4.0); photos from Wikimedia Commons, credited per player. Stats are T20 career (or T20I where Wikipedia gives only international numbers), not IPL-only.",
+ "source": "https://en.wikipedia.org",
+ "license": "CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)",
+ "sets": [
+  {
+   "name": "Marquee",
+   "group": "Marquee",
+   "count": 16
+  },
+  {
+   "name": "Batters 1",
+   "group": "Batters",
+   "count": 10
+  },
+  {
+   "name": "Batters 2",
+   "group": "Batters",
+   "count": 10
+  },
+  {
+   "name": "Batters 3",
+   "group": "Batters",
+   "count": 10
+  },
+  {
+   "name": "Batters 4",
+   "group": "Batters",
+   "count": 9
+  },
+  {
+   "name": "Wicketkeepers 1",
+   "group": "Wicketkeepers",
+   "count": 11
+  },
+  {
+   "name": "Wicketkeepers 2",
+   "group": "Wicketkeepers",
+   "count": 11
+  },
+  {
+   "name": "Allrounders 1",
+   "group": "Allrounders",
+   "count": 11
+  },
+  {
+   "name": "Allrounders 2",
+   "group": "Allrounders",
+   "count": 10
+  },
+  {
+   "name": "Allrounders 3",
+   "group": "Allrounders",
+   "count": 10
+  },
+  {
+   "name": "Allrounders 4",
+   "group": "Allrounders",
+   "count": 10
+  },
+  {
+   "name": "Allrounders 5",
+   "group": "Allrounders",
+   "count": 10
+  },
+  {
+   "name": "Fast bowlers 1",
+   "group": "Fast bowlers",
+   "count": 11
+  },
+  {
+   "name": "Fast bowlers 2",
+   "group": "Fast bowlers",
+   "count": 11
+  },
+  {
+   "name": "Fast bowlers 3",
+   "group": "Fast bowlers",
+   "count": 11
+  },
+  {
+   "name": "Fast bowlers 4",
+   "group": "Fast bowlers",
+   "count": 11
+  },
+  {
+   "name": "Fast bowlers 5",
+   "group": "Fast bowlers",
+   "count": 11
+  },
+  {
+   "name": "Fast bowlers 6",
+   "group": "Fast bowlers",
+   "count": 11
+  },
+  {
+   "name": "Spinners 1",
+   "group": "Spinners",
+   "count": 9
+  },
+  {
+   "name": "Spinners 2",
+   "group": "Spinners",
+   "count": 8
+  },
+  {
+   "name": "Uncapped 1",
+   "group": "Uncapped",
+   "count": 11
+  },
+  {
+   "name": "Uncapped 2",
+   "group": "Uncapped",
+   "count": 11
+  },
+  {
+   "name": "Uncapped 3",
+   "group": "Uncapped",
+   "count": 11
+  },
+  {
+   "name": "Uncapped 4",
+   "group": "Uncapped",
+   "count": 10
+  },
+  {
+   "name": "Uncapped 5",
+   "group": "Uncapped",
+   "count": 10
+  },
+  {
+   "name": "Uncapped 6",
+   "group": "Uncapped",
+   "count": 10
+  }
+ ],
+ "players": [
+  {
+   "name": "Rishabh Pant",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 76,
+    "runs": 1209,
+    "battingAverage": 23.25,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Rishabh_Pant.jpg/500px-Rishabh_Pant.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Rishabh_Pant.jpg"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Shreyas Iyer",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 77,
+    "runs": 1820,
+    "battingAverage": 31.38,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Shreyas_Iyer_snapped_at_the_airport_%28Cropped%29.jpg",
+   "imageCredit": {
+    "author": "https://www.bollywoodhungama.com",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Shreyas_Iyer_snapped_at_the_airport_(Cropped).jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Cameron Green",
+   "role": "Allrounder",
+   "country": "Australia",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 28,
+    "runs": 638,
+    "battingAverage": 29.0,
+    "strikeRate": 0,
+    "wickets": 14,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/RSA_vs_AUS_Day_4-Cameron_Green-1.jpg/500px-RSA_vs_AUS_Day_4-Cameron_Green-1.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_4-Cameron_Green-1.jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Heinrich Klaasen",
+   "role": "Wicketkeeper",
+   "country": "South Africa",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 58,
+    "runs": 1000,
+    "battingAverage": 23.25,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Virat Kohli",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 125,
+    "runs": 4188,
+    "battingAverage": 48.69,
+    "strikeRate": 0,
+    "wickets": 4,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Virat_Kohli_during_the_India_vs_Aus_4th_Test_match_at_Narendra_Modi_Stadium_on_09_March_2023.jpg/500px-Virat_Kohli_during_the_India_vs_Aus_4th_Test_match_at_Narendra_Modi_Stadium_on_09_March_2023.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Virat_Kohli_during_the_India_vs_Aus_4th_Test_match_at_Narendra_Modi_Stadium_on_09_March_2023.jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Nicholas Pooran",
+   "role": "Wicketkeeper",
+   "country": "West Indies",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 484,
+    "runs": 11520,
+    "battingAverage": 30.15,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Jasprit Bumrah",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 100,
+    "runs": 12,
+    "battingAverage": 2.0,
+    "strikeRate": 0,
+    "wickets": 126,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Jasprit_Bumrah_in_PMO_New_Delhi.jpg/500px-Jasprit_Bumrah_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Jasprit_Bumrah_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Sanju Samson",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 82,
+    "runs": 1842,
+    "battingAverage": 26.69,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Sanju_Samson_in_PMO_New_Delhi.jpg/500px-Sanju_Samson_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Sanju_Samson_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Ruturaj Gaikwad",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 23,
+    "runs": 633,
+    "battingAverage": 39.56,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/2/27/Ruturaj_Gaikwad.jpeg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Ruturaj_Gaikwad.jpeg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Matheesha Pathirana",
+   "role": "Bowler",
+   "country": "Sri Lanka",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 21,
+    "runs": 17,
+    "battingAverage": 3.4,
+    "strikeRate": 0,
+    "wickets": 31,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Pat Cummins",
+   "role": "Allrounder",
+   "country": "Australia",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 57,
+    "runs": 158,
+    "battingAverage": 10.53,
+    "strikeRate": 0,
+    "wickets": 66,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/RSA_vs_AUS_Day_1-47_%28cropped%29.jpg/500px-RSA_vs_AUS_Day_1-47_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_1-47_(cropped).jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Yashasvi Jaiswal",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 23,
+    "runs": 723,
+    "battingAverage": 36.15,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Yashasvi_Jaiswal_in_PMO_New_Delhi.jpg/500px-Yashasvi_Jaiswal_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Yashasvi_Jaiswal_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Arshdeep Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 228,
+    "runs": 193,
+    "battingAverage": 7.42,
+    "strikeRate": 0,
+    "wickets": 294,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Arshdeep_Singh_Family_%28Cropped%29.jpg/500px-Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Arshdeep_Singh_Family_%28Cropped%29.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Arshdeep_Singh_Family_(Cropped).jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Yuzvendra Chahal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 80,
+    "runs": 6,
+    "battingAverage": 3.0,
+    "strikeRate": 0,
+    "wickets": 96,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Yuzvendra_Chahal_in_PMO_New_Delhi.jpg/500px-Yuzvendra_Chahal_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Yuzvendra_Chahal_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Rashid Khan",
+   "role": "Allrounder",
+   "country": "Afghanistan",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 547,
+    "runs": 3012,
+    "battingAverage": 13.94,
+    "strikeRate": 0,
+    "wickets": 736,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Rashid_Khan.jpg/500px-Rashid_Khan.jpg",
+   "imageCredit": {
+    "author": "Afghanistan Cricket Board",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Rashid_Khan.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Axar Patel",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Marquee",
+   "stats": {
+    "matches": 91,
+    "runs": 700,
+    "battingAverage": 18.42,
+    "strikeRate": 0,
+    "wickets": 93,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Axar_Patel_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Axar_Patel_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Shubman Gill",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 36,
+    "runs": 869,
+    "battingAverage": 28.03,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/3/34/Shubman_Gill_2023_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Bollywood Hungama",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Shubman_Gill_2023_(cropped).jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Hardik Pandya",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 131,
+    "runs": 2128,
+    "battingAverage": 29.15,
+    "strikeRate": 0,
+    "wickets": 107,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Hardik_Pandya_in_PMO_New_Delhi.jpg/500px-Hardik_Pandya_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Hardik_Pandya_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Suryakumar Yadav",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 113,
+    "runs": 3272,
+    "battingAverage": 36.35,
+    "strikeRate": 0,
+    "wickets": 2,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Suryakumar_Yadav_in_PMO_New_Delhi.jpg/500px-Suryakumar_Yadav_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Suryakumar_Yadav_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Rohit Sharma",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 159,
+    "runs": 4231,
+    "battingAverage": 32.05,
+    "strikeRate": 0,
+    "wickets": 1,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Shri_Rohit_Gurunath_Sharma_%28Cropped%29.jpg/500px-Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Shri_Rohit_Gurunath_Sharma_%28Cropped%29.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Shri_Rohit_Gurunath_Sharma_(Cropped).jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Jos Buttler",
+   "role": "Wicketkeeper",
+   "country": "England",
+   "basePrice": 200,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 163,
+    "runs": 4384,
+    "battingAverage": 34.79,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Jos_Buttler_in_2023.jpg/500px-Jos_Buttler_in_2023.jpg",
+   "imageCredit": {
+    "author": "Number 10",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Jos_Buttler_in_2023.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Prashant Veer",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 9,
+    "runs": 112,
+    "battingAverage": 28.0,
+    "strikeRate": 0,
+    "wickets": 12,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Kartik Sharma",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 23,
+    "runs": 629,
+    "battingAverage": 31.45,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Abhishek Sharma",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 209,
+    "runs": 6224,
+    "battingAverage": 33.1,
+    "strikeRate": 0,
+    "wickets": 58,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Travis Head",
+   "role": "Batsman",
+   "country": "Australia",
+   "basePrice": 200,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 53,
+    "runs": 1335,
+    "battingAverage": 28.4,
+    "strikeRate": 0,
+    "wickets": 1,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/RSA_vs_AUS_Day_3-Travis_Head-1.jpg/500px-RSA_vs_AUS_Day_3-Travis_Head-1.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_3-Travis_Head-1.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Riyan Parag",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 143,
+    "runs": 3168,
+    "battingAverage": 30.75,
+    "strikeRate": 0,
+    "wickets": 48,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Ravindra Jadeja",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 74,
+    "runs": 515,
+    "battingAverage": 21.45,
+    "strikeRate": 0,
+    "wickets": 54,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/2/2c/PM_Shri_Narendra_Modi_with_Ravindra_Jadeja_%28Cropped%29.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:PM_Shri_Narendra_Modi_with_Ravindra_Jadeja_(Cropped).jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Dhruv Jurel",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 4,
+    "runs": 12,
+    "battingAverage": 4.0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Dhruv_Jurel.jpg/500px-Dhruv_Jurel.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Dhruv_Jurel.jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "KL Rahul",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 72,
+    "runs": 2265,
+    "battingAverage": 37.75,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/6/69/KL_Rahul_at_Femina_Miss_India_2018_Grand_Finale_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Bollywood Hungama",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:KL_Rahul_at_Femina_Miss_India_2018_Grand_Finale_(cropped).jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Kuldeep Yadav",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 56,
+    "runs": 48,
+    "battingAverage": 8.0,
+    "strikeRate": 0,
+    "wickets": 98,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Kuldeep_Yadav_in_PMO_New_Delhi.jpg/500px-Kuldeep_Yadav_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Kuldeep_Yadav_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Rinku Singh",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 177,
+    "runs": 3441,
+    "battingAverage": 34.06,
+    "strikeRate": 0,
+    "wickets": 5,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Liam Livingstone",
+   "role": "Allrounder",
+   "country": "England",
+   "basePrice": 200,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 60,
+    "runs": 955,
+    "battingAverage": 25.13,
+    "strikeRate": 0,
+    "wickets": 33,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Trent Boult",
+   "role": "Bowler",
+   "country": "New Zealand",
+   "basePrice": 200,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 61,
+    "runs": 58,
+    "battingAverage": 8.28,
+    "strikeRate": 0,
+    "wickets": 83,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/2018.02.03.22.23.14-AUSvNZL_T20_AUS_innings%2C_SCG_%2839533156665%29.jpg/500px-2018.02.03.22.23.14-AUSvNZL_T20_AUS_innings%2C_SCG_%2839533156665%29.jpg",
+   "imageCredit": {
+    "author": "www.davidmolloyphotography.com from Sydney, Australia",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:2018.02.03.22.23.14-AUSvNZL_T20_AUS_innings,_SCG_(39533156665).jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Josh Hazlewood",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 200,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 60,
+    "runs": 29,
+    "battingAverage": 9.66,
+    "strikeRate": 0,
+    "wickets": 79,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/RSA_vs_AUS_Day_1_-_Josh_Hazlewood-1_%28cropped%29.jpg/500px-RSA_vs_AUS_Day_1_-_Josh_Hazlewood-1_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_1_-_Josh_Hazlewood-1_(cropped).jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Jofra Archer",
+   "role": "Bowler",
+   "country": "England",
+   "basePrice": 200,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 51,
+    "runs": 129,
+    "battingAverage": 11.72,
+    "strikeRate": 0,
+    "wickets": 68,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/d/de/Jofra_Archer_%283%29.jpg",
+   "imageCredit": {
+    "author": "BBC News اردو",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Jofra_Archer_(3).jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Mohammed Siraj",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 17,
+    "runs": 14,
+    "battingAverage": 7.0,
+    "strikeRate": 0,
+    "wickets": 17,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/d/da/Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Mohammad_Siraj_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Prime_Minister_Of_Bharat_Shri_Narendra_Damodardas_Modi_with_Mohammad_Siraj_(cropped).jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Shivam Dube",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 66,
+    "runs": 1036,
+    "battingAverage": 30.47,
+    "strikeRate": 0,
+    "wickets": 34,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Shivam_Dube_in_PMO_New_Delhi.jpg/500px-Shivam_Dube_in_PMO_New_Delhi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Shivam_Dube_in_PMO_New_Delhi.jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Varun Chakravarthy",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 150,
+    "runs": 102,
+    "battingAverage": 6.37,
+    "strikeRate": 0,
+    "wickets": 197,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Sunil Narine",
+   "role": "Allrounder",
+   "country": "West Indies",
+   "basePrice": 200,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Sunil_Narine.jpg",
+   "imageCredit": {
+    "author": "Kolkata Knight Riders - Official",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sunil_Narine.jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Mitchell Starc",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 200,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 65,
+    "runs": 98,
+    "battingAverage": 9.8,
+    "strikeRate": 0,
+    "wickets": 79,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/RSA_vs_AUS_Day_1_-_Mitchel_Starch_-2.jpg/500px-RSA_vs_AUS_Day_1_-_Mitchel_Starch_-2.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_1_-_Mitchel_Starch_-2.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Phil Salt",
+   "role": "Wicketkeeper",
+   "country": "England",
+   "basePrice": 200,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 65,
+    "runs": 1852,
+    "battingAverage": 34.94,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/2_02_Phil_Salt.jpg/500px-2_02_Phil_Salt.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:2_02_Phil_Salt.jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Ishan Kishan",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 69,
+    "runs": 2016,
+    "battingAverage": 31.01,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Ishan_Kishan.jpg/500px-Ishan_Kishan.jpg",
+   "imageCredit": {
+    "author": "Tata Ipl 2022",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Ishan_Kishan.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Jitesh Sharma",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 158,
+    "runs": 3163,
+    "battingAverage": 27.74,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Rajat Patidar",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Shimron Hetmyer",
+   "role": "Batsman",
+   "country": "West Indies",
+   "basePrice": 200,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 85,
+    "runs": 1678,
+    "battingAverage": 24.67,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Shimron_Hetmyer.jpg/500px-Shimron_Hetmyer.jpg",
+   "imageCredit": {
+    "author": "CRICKETNEXT",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Shimron_Hetmyer.jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Marcus Stoinis",
+   "role": "Allrounder",
+   "country": "Australia",
+   "basePrice": 200,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 87,
+    "runs": 1416,
+    "battingAverage": 30.78,
+    "strikeRate": 0,
+    "wickets": 53,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/2018.01.21.15.22.25-Stoinis_%2839081521620%29.jpg/500px-2018.01.21.15.22.25-Stoinis_%2839081521620%29.jpg",
+   "imageCredit": {
+    "author": "www.davidmolloyphotography.com from Sydney, Australia",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:2018.01.21.15.22.25-Stoinis_(39081521620).jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Mayank Yadav",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 26,
+    "runs": 6,
+    "battingAverage": 6.0,
+    "strikeRate": 0,
+    "wickets": 30,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Bhuvneshwar Kumar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 87,
+    "runs": 67,
+    "battingAverage": 8.37,
+    "strikeRate": 0,
+    "wickets": 90,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Bhuvneshwar_kumar_With_Rashid_Zirak_%28Bhuvneshwar_Kumar_cropped%29.jpg/500px-Bhuvneshwar_kumar_With_Rashid_Zirak_%28Bhuvneshwar_Kumar_cropped%29.jpg",
+   "imageCredit": {
+    "author": "Akshayparmar.gu",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Bhuvneshwar_kumar_With_Rashid_Zirak_(Bhuvneshwar_Kumar_cropped).jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "T. Natarajan",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 4,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 7,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/T_Natarajan.jpg/500px-T_Natarajan.jpg",
+   "imageCredit": {
+    "author": "Dee03",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:T_Natarajan.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Kagiso Rabada",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 200,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 79,
+    "runs": 184,
+    "battingAverage": 14.15,
+    "strikeRate": 0,
+    "wickets": 83,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/RSA_vs_AUS_Day_2_-_Kagiso_Rabada.jpg/500px-RSA_vs_AUS_Day_2_-_Kagiso_Rabada.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_2_-_Kagiso_Rabada.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Noor Ahmad",
+   "role": "Bowler",
+   "country": "Afghanistan",
+   "basePrice": 200,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 230,
+    "runs": 308,
+    "battingAverage": 6.41,
+    "strikeRate": 0,
+    "wickets": 261,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Tristan Stubbs",
+   "role": "Batsman",
+   "country": "South Africa",
+   "basePrice": 200,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 52,
+    "runs": 967,
+    "battingAverage": 30.21,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Mohammed Shami",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 200,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 25,
+    "runs": 6,
+    "battingAverage": 3.0,
+    "strikeRate": 0,
+    "wickets": 27,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Mohammed_Shami_Arjuna_Award_%28cropped%29.jpg/500px-Mohammed_Shami_Arjuna_Award_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "President's Secretariat",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Mohammed_Shami_Arjuna_Award_(cropped).jpg"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Avesh Khan",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 25,
+    "runs": 27,
+    "battingAverage": 13.5,
+    "strikeRate": 0,
+    "wickets": 27,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Prasidh Krishna",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 8,
+    "runs": 2,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 9,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Prasidh_Krishna.jpg/500px-Prasidh_Krishna.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Prasidh_Krishna.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Deepak Chahar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 25,
+    "runs": 53,
+    "battingAverage": 26.5,
+    "strikeRate": 0,
+    "wickets": 31,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Deepak_Chahar.jpg/500px-Deepak_Chahar.jpg",
+   "imageCredit": {
+    "author": "G. D. GOENKA SCHOOL, AGRA",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Deepak_Chahar.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Mustafizur Rahman",
+   "role": "Bowler",
+   "country": "Bangladesh",
+   "basePrice": 150,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 128,
+    "runs": 119,
+    "battingAverage": 5.66,
+    "strikeRate": 0,
+    "wickets": 160,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Mustafizur_Rahman_%284%29_%28cropped%29.jpg/500px-Mustafizur_Rahman_%284%29_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Nurunnaby Chowdhury (Hasive)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Mustafizur_Rahman_(4)_(cropped).jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Josh Inglis",
+   "role": "Wicketkeeper",
+   "country": "Australia",
+   "basePrice": 150,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 49,
+    "runs": 1033,
+    "battingAverage": 26.48,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/RSA_vs_AUS_Day_3-Josh_Inglis_04.jpg/500px-RSA_vs_AUS_Day_3-Josh_Inglis_04.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_3-Josh_Inglis_04.jpg"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Sai Sudharsan",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Auqib Nabi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 39,
+    "runs": 155,
+    "battingAverage": 11.07,
+    "strikeRate": 0,
+    "wickets": 43,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Tilak Varma",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 75,
+    "runs": 1940,
+    "battingAverage": 43.11,
+    "strikeRate": 0,
+    "wickets": 5,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Tilak_Varma_in_March_2026.png/500px-Tilak_Varma_in_March_2026.png",
+   "imageCredit": {
+    "author": "Buchi Babu Sana",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Tilak_Varma_in_March_2026.png"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Harshal Patel",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 201,
+    "runs": 1280,
+    "battingAverage": 16.0,
+    "strikeRate": 0,
+    "wickets": 247,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Mukesh Kumar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 17,
+    "runs": 5,
+    "battingAverage": 5.0,
+    "strikeRate": 0,
+    "wickets": 20,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Ravi Bishnoi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 47,
+    "runs": 65,
+    "battingAverage": 9.28,
+    "strikeRate": 0,
+    "wickets": 65,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Venkatesh Iyer",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 9,
+    "runs": 133,
+    "battingAverage": 33.25,
+    "strikeRate": 0,
+    "wickets": 5,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Venkatesh_Iyer.png/500px-Venkatesh_Iyer.png",
+   "imageCredit": {
+    "author": "Kolkata Knight Riders",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Venkatesh_Iyer.png"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Marco Jansen",
+   "role": "Allrounder",
+   "country": "South Africa",
+   "basePrice": 150,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 30,
+    "runs": 268,
+    "battingAverage": 17.86,
+    "strikeRate": 0,
+    "wickets": 33,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/RSA_vs_AUS_Day_2_-_Marco_Jansen.jpg/500px-RSA_vs_AUS_Day_2_-_Marco_Jansen.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_2_-_Marco_Jansen.jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Jason Holder",
+   "role": "Allrounder",
+   "country": "West Indies",
+   "basePrice": 150,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 96,
+    "runs": 888,
+    "battingAverage": 18.5,
+    "strikeRate": 0,
+    "wickets": 108,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Jason_Holder.jpg/500px-Jason_Holder.jpg",
+   "imageCredit": {
+    "author": "CRICKETNEXT",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Jason_Holder.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Tushar Deshpande",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 90,
+    "runs": 51,
+    "battingAverage": 7.28,
+    "strikeRate": 0,
+    "wickets": 124,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Tushar_Deshpande.jpg/500px-Tushar_Deshpande.jpg",
+   "imageCredit": {
+    "author": "Dee03",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Tushar_Deshpande.jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Rasikh Salam",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 35,
+    "runs": 75,
+    "battingAverage": 8.33,
+    "strikeRate": 0,
+    "wickets": 45,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/IG_20231222_080959.jpg/500px-IG_20231222_080959.jpg",
+   "imageCredit": {
+    "author": "Wani Moomin",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:IG_20231222_080959.jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Nitish Kumar Reddy",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 14,
+    "runs": 224,
+    "battingAverage": 32.0,
+    "strikeRate": 0,
+    "wickets": 14,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Nitish_Kumar_Reddy_BGT_2024_%28cropped%29_2.jpg/500px-Nitish_Kumar_Reddy_BGT_2024_%28cropped%29_2.jpg",
+   "imageCredit": {
+    "author": "WikiWanderer261",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "page": "https://commons.wikimedia.org/wiki/File:Nitish_Kumar_Reddy_BGT_2024_(cropped)_2.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Krunal Pandya",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 228,
+    "runs": 3017,
+    "battingAverage": 23.57,
+    "strikeRate": 0,
+    "wickets": 165,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Krunal_Pandya_and_Hardik_Pandya_%28cropped%29_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Bollywood Hungama",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Krunal_Pandya_and_Hardik_Pandya_(cropped)_(cropped).jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Shashank Singh",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 110,
+    "runs": 1763,
+    "battingAverage": 25.55,
+    "strikeRate": 0,
+    "wickets": 25,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Naman Dhir",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 67,
+    "runs": 1302,
+    "battingAverage": 26.57,
+    "strikeRate": 0,
+    "wickets": 13,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Will Jacks",
+   "role": "Allrounder",
+   "country": "England",
+   "basePrice": 150,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 48,
+    "runs": 684,
+    "battingAverage": 22.06,
+    "strikeRate": 0,
+    "wickets": 22,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/4_20_Will_Jacks.jpg/500px-4_20_Will_Jacks.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:4_20_Will_Jacks.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Rahul Chahar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 141,
+    "runs": 264,
+    "battingAverage": 9.42,
+    "strikeRate": 0,
+    "wickets": 142,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Mangesh Yadav",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Yash Dayal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 150,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 60,
+    "runs": 10,
+    "battingAverage": 5.0,
+    "strikeRate": 0,
+    "wickets": 58,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Allah Ghazanfar",
+   "role": "Bowler",
+   "country": "Afghanistan",
+   "basePrice": 100,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 5,
+    "runs": 7,
+    "battingAverage": 2.33,
+    "strikeRate": 0,
+    "wickets": 2,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Khaleel Ahmed",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 18,
+    "runs": 1,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 16,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/2_29_Khaleel_mugshot.jpg/500px-2_29_Khaleel_mugshot.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:2_29_Khaleel_mugshot.jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Ben Dwarshuis",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 16,
+    "runs": 64,
+    "battingAverage": 8.0,
+    "strikeRate": 0,
+    "wickets": 23,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/20261111_Dwarshuis.jpg/500px-20261111_Dwarshuis.jpg",
+   "imageCredit": {
+    "author": "QWisps",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:20261111_Dwarshuis.jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Nitish Rana",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 2,
+    "runs": 15,
+    "battingAverage": 7.5,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Nehal Wadhera",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 61,
+    "runs": 1159,
+    "battingAverage": 26.34,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Abdul Samad",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 94,
+    "runs": 1537,
+    "battingAverage": 26.5,
+    "strikeRate": 0,
+    "wickets": 4,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Abdul_Samad.png",
+   "imageCredit": {
+    "author": "SunrisersIPL",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Abdul_Samad.png"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "MS Dhoni",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 98,
+    "runs": 1617,
+    "battingAverage": 37.6,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/MS_Dhoni_%28Prabhav_%2723_-_RiGI_2023%29.jpg/500px-MS_Dhoni_%28Prabhav_%2723_-_RiGI_2023%29.jpg",
+   "imageCredit": {
+    "author": "RIGI",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:MS_Dhoni_(Prabhav_%2723_-_RiGI_2023).jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Ramandeep Singh",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 99,
+    "runs": 1012,
+    "battingAverage": 22.48,
+    "strikeRate": 0,
+    "wickets": 34,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Harshit Rana",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 14,
+    "runs": 101,
+    "battingAverage": 14.42,
+    "strikeRate": 0,
+    "wickets": 16,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Sandeep Sharma",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 197,
+    "runs": 111,
+    "battingAverage": 11.1,
+    "strikeRate": 0,
+    "wickets": 215,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Abhishek Porel",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 61,
+    "runs": 1590,
+    "battingAverage": 30.0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Pathum Nissanka",
+   "role": "Batsman",
+   "country": "Sri Lanka",
+   "basePrice": 100,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 91,
+    "runs": 2648,
+    "battingAverage": 31.15,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Prabhsimran Singh",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 115,
+    "runs": 3155,
+    "battingAverage": 30.63,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Ayush Badoni",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 77,
+    "runs": 1263,
+    "battingAverage": 28.06,
+    "strikeRate": 0,
+    "wickets": 9,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Mohsin Khan",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 62,
+    "runs": 101,
+    "battingAverage": 8.41,
+    "strikeRate": 0,
+    "wickets": 80,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Shahrukh Khan",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 116,
+    "runs": 1389,
+    "battingAverage": 19.29,
+    "strikeRate": 0,
+    "wickets": 8,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Shahrukh_Khan.jpg/500px-Shahrukh_Khan.jpg",
+   "imageCredit": {
+    "author": "Dee03",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Shahrukh_Khan.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Rahul Tewatia",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 169,
+    "runs": 2107,
+    "battingAverage": 26.01,
+    "strikeRate": 0,
+    "wickets": 69,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Ashutosh Sharma",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 62,
+    "runs": 1277,
+    "battingAverage": 29.69,
+    "strikeRate": 0,
+    "wickets": 4,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Priyansh Arya",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 46,
+    "runs": 1319,
+    "battingAverage": 29.31,
+    "strikeRate": 0,
+    "wickets": 1,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Nandre Burger",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 8,
+    "runs": 10,
+    "battingAverage": 5.0,
+    "strikeRate": 0,
+    "wickets": 6,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Anshul Kamboj",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 55,
+    "runs": 153,
+    "battingAverage": 17.0,
+    "strikeRate": 0,
+    "wickets": 76,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Anshul_Kamboj.jpg/500px-Anshul_Kamboj.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Anshul_Kamboj.jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Mitchell Marsh",
+   "role": "Batsman",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 89,
+    "runs": 2350,
+    "battingAverage": 33.57,
+    "strikeRate": 0,
+    "wickets": 17,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/7/73/Mitchell_Marsh.jpg",
+   "imageCredit": {
+    "author": "www.davidmolloyphotography.com",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Mitchell_Marsh.jpg"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Washington Sundar",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 65,
+    "runs": 286,
+    "battingAverage": 15.88,
+    "strikeRate": 0,
+    "wickets": 56,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Washington_Sundar.jpg/500px-Washington_Sundar.jpg",
+   "imageCredit": {
+    "author": "Dee03",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Washington_Sundar.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Tim David",
+   "role": "Batsman",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 356,
+    "runs": 6889,
+    "battingAverage": 31.03,
+    "strikeRate": 0,
+    "wickets": 16,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Angkrish Raghuvanshi",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 48,
+    "runs": 1074,
+    "battingAverage": 28.26,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Tejasvi Singh",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 6,
+    "runs": 113,
+    "battingAverage": 56.5,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Jack Edwards",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Cooper Connolly",
+   "role": "Allrounder",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 14,
+    "runs": 91,
+    "battingAverage": 10.11,
+    "strikeRate": 0,
+    "wickets": 3,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/RSA_vs_AUS_Day_-Cooper_Connolly-1.jpg/500px-RSA_vs_AUS_Day_-Cooper_Connolly-1.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_-Cooper_Connolly-1.jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Mitchell Owen",
+   "role": "Allrounder",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 15,
+    "runs": 179,
+    "battingAverage": 17.9,
+    "strikeRate": 0,
+    "wickets": 2,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Sherfane Rutherford",
+   "role": "Batsman",
+   "country": "West Indies",
+   "basePrice": 100,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 278,
+    "runs": 4869,
+    "battingAverage": 25.09,
+    "strikeRate": 0,
+    "wickets": 18,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Suyash Sharma",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 53,
+    "runs": 7,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 57,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Suyash_Sharma.png",
+   "imageCredit": {
+    "author": "Kolkata Knight Riders",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Suyash_Sharma.png"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Jacob Bethell",
+   "role": "Allrounder",
+   "country": "England",
+   "basePrice": 100,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 36,
+    "runs": 786,
+    "battingAverage": 30.23,
+    "strikeRate": 0,
+    "wickets": 8,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Mukul Choudhary",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 7,
+    "runs": 210,
+    "battingAverage": 42.0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Adam Milne",
+   "role": "Bowler",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 60,
+    "runs": 84,
+    "battingAverage": 8.4,
+    "strikeRate": 0,
+    "wickets": 71,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Sam Curran",
+   "role": "Allrounder",
+   "country": "England",
+   "basePrice": 100,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 80,
+    "runs": 744,
+    "battingAverage": 21.25,
+    "strikeRate": 0,
+    "wickets": 73,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/The_Prime_Minister_welcomes_the_World_Cup_winning_cricketers_%2852764650104%29_-_Sam_Curran_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Number 10",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:The_Prime_Minister_welcomes_the_World_Cup_winning_cricketers_(52764650104)_-_Sam_Curran_(cropped).jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Azmatullah Omarzai",
+   "role": "Allrounder",
+   "country": "Afghanistan",
+   "basePrice": 100,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 72,
+    "runs": 1041,
+    "battingAverage": 21.24,
+    "strikeRate": 0,
+    "wickets": 61,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Shahbaz Ahmed",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 114,
+    "runs": 1355,
+    "battingAverage": 25.56,
+    "strikeRate": 0,
+    "wickets": 73,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Gurjapneet Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 15,
+    "runs": 10,
+    "battingAverage": 5.0,
+    "strikeRate": 0,
+    "wickets": 21,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Dewald Brevis",
+   "role": "Batsman",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 30,
+    "runs": 697,
+    "battingAverage": 26.8,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Akshat Raghuwanshi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Shardul Thakur",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 25,
+    "runs": 69,
+    "battingAverage": 23.0,
+    "strikeRate": 0,
+    "wickets": 33,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Mitchell Santner",
+   "role": "Allrounder",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 143,
+    "runs": 1117,
+    "battingAverage": 20.3,
+    "strikeRate": 0,
+    "wickets": 151,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Akeal Hosein",
+   "role": "Bowler",
+   "country": "West Indies",
+   "basePrice": 100,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 101,
+    "runs": 322,
+    "battingAverage": 14.63,
+    "strikeRate": 0,
+    "wickets": 95,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Matt Henry",
+   "role": "Bowler",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 45,
+    "runs": 47,
+    "battingAverage": 5.87,
+    "strikeRate": 0,
+    "wickets": 53,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Matt_Henry_%28second_photo%29.jpg/500px-Matt_Henry_%28second_photo%29.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Matt_Henry_(second_photo).jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Nathan Ellis",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 100,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 39,
+    "runs": 39,
+    "battingAverage": 7.8,
+    "strikeRate": 0,
+    "wickets": 58,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Jacob Duffy",
+   "role": "Bowler",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 52,
+    "runs": 40,
+    "battingAverage": 8.0,
+    "strikeRate": 0,
+    "wickets": 67,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/1_01_Jacob_Duffy.jpg/500px-1_01_Jacob_Duffy.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:1_01_Jacob_Duffy.jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Devdutt Padikkal",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 131,
+    "runs": 3826,
+    "battingAverage": 32.42,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Devdutt_Padikkal.jpg/500px-Devdutt_Padikkal.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Devdutt_Padikkal.jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Rachin Ravindra",
+   "role": "Allrounder",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 52,
+    "runs": 759,
+    "battingAverage": 20.51,
+    "strikeRate": 0,
+    "wickets": 26,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Rachin_Ravindra.jpg/500px-Rachin_Ravindra.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Rachin_Ravindra.jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Finn Allen",
+   "role": "Batsman",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 67,
+    "runs": 1797,
+    "battingAverage": 28.52,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Gerald Coetzee",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 18,
+    "runs": 128,
+    "battingAverage": 10.66,
+    "strikeRate": 0,
+    "wickets": 22,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/RSA_vs_AUS_Day_2_-_Gerald_Coetzee.jpg/500px-RSA_vs_AUS_Day_2_-_Gerald_Coetzee.jpg",
+   "imageCredit": {
+    "author": "EGilham",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:RSA_vs_AUS_Day_2_-_Gerald_Coetzee.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Dasun Shanaka",
+   "role": "Allrounder",
+   "country": "Sri Lanka",
+   "basePrice": 100,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 131,
+    "runs": 1912,
+    "battingAverage": 20.55,
+    "strikeRate": 0,
+    "wickets": 46,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Dasun_Shanaka_in_2022.jpg/500px-Dasun_Shanaka_in_2022.jpg",
+   "imageCredit": {
+    "author": "04 ATM 04",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Dasun_Shanaka_in_2022.jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "David Miller",
+   "role": "Batsman",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 140,
+    "runs": 2804,
+    "battingAverage": 33.78,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/David_Miller_2025_interview_%28cropped%29.png/500px-David_Miller_2025_interview_%28cropped%29.png",
+   "imageCredit": {
+    "author": "Michael Sherman",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:David_Miller_2025_interview_(cropped).png"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Lungi Ngidi",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 64,
+    "runs": 59,
+    "battingAverage": 11.8,
+    "strikeRate": 0,
+    "wickets": 90,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Lungi_Ngidi_2022.jpg/500px-Lungi_Ngidi_2022.jpg",
+   "imageCredit": {
+    "author": "Storm machine",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lungi_Ngidi_2022.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Kyle Jamieson",
+   "role": "Allrounder",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 33,
+    "runs": 95,
+    "battingAverage": 10.55,
+    "strikeRate": 0,
+    "wickets": 32,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Kyle_Jamieson_2015_%28cropped%29.jpg/500px-Kyle_Jamieson_2015_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Photographer - David Hollander",
+    "license": "CC BY 3.0 nz",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/nz/deed.en",
+    "page": "https://commons.wikimedia.org/wiki/File:Kyle_Jamieson_2015_(cropped).jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Ben Duckett",
+   "role": "Batsman",
+   "country": "England",
+   "basePrice": 100,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 21,
+    "runs": 527,
+    "battingAverage": 27.73,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/f/fd/3_31_Another_four_%28Ben_Duckett_cropped%29.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:3_31_Another_four_(Ben_Duckett_cropped).jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Lockie Ferguson",
+   "role": "Bowler",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 56,
+    "runs": 38,
+    "battingAverage": 4.22,
+    "strikeRate": 0,
+    "wickets": 77,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Lockie_Ferguson.jpg/500px-Lockie_Ferguson.jpg",
+   "imageCredit": {
+    "author": "CRICKETNEXT",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lockie_Ferguson.jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Anrich Nortje",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 47,
+    "runs": 30,
+    "battingAverage": 3.75,
+    "strikeRate": 0,
+    "wickets": 56,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Aiden Markram",
+   "role": "Batsman",
+   "country": "South Africa",
+   "basePrice": 100,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 77,
+    "runs": 1966,
+    "battingAverage": 31.7,
+    "strikeRate": 0,
+    "wickets": 16,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Aiden_Markram_interview_after_WTC_final_2025_%28cropped%29.png/500px-Aiden_Markram_interview_after_WTC_final_2025_%28cropped%29.png",
+   "imageCredit": {
+    "author": "Michael Sherman",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Aiden_Markram_interview_after_WTC_final_2025_(cropped).png"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Wanindu Hasaranga",
+   "role": "Allrounder",
+   "country": "Sri Lanka",
+   "basePrice": 100,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 258,
+    "runs": 2667,
+    "battingAverage": 16.87,
+    "strikeRate": 0,
+    "wickets": 355,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Waniya.jpg/500px-Waniya.jpg",
+   "imageCredit": {
+    "author": "04 ATM 04",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Waniya.jpg"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Sai Kishore",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 100,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 94,
+    "runs": 201,
+    "battingAverage": 10.57,
+    "strikeRate": 0,
+    "wickets": 101,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/4_15_Sai_Kishore.jpg/500px-4_15_Sai_Kishore.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:4_15_Sai_Kishore.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Glenn Phillips",
+   "role": "Wicketkeeper",
+   "country": "New Zealand",
+   "basePrice": 100,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 102,
+    "runs": 2627,
+    "battingAverage": 35.02,
+    "strikeRate": 0,
+    "wickets": 9,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Glenn_Phillips.jpg/500px-Glenn_Phillips.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Glenn_Phillips.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Tom Banton",
+   "role": "Batsman",
+   "country": "England",
+   "basePrice": 100,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 242,
+    "runs": 5915,
+    "battingAverage": 27.9,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Vaibhav Arora",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Vijaykumar Vyshak",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 49,
+    "runs": 66,
+    "battingAverage": 6.6,
+    "strikeRate": 0,
+    "wickets": 61,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Richard Gleeson",
+   "role": "Bowler",
+   "country": "England",
+   "basePrice": 75,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 167,
+    "runs": 68,
+    "battingAverage": 3.77,
+    "strikeRate": 0,
+    "wickets": 198,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Richard_Gleeson.jpg/500px-Richard_Gleeson.jpg",
+   "imageCredit": {
+    "author": "Charltonkyle",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Richard_Gleeson.jpg"
+   },
+   "team2026": "RCB"
+  },
+  {
+   "name": "Nuwan Thushara",
+   "role": "Bowler",
+   "country": "Sri Lanka",
+   "basePrice": 75,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 111,
+    "runs": 40,
+    "battingAverage": 4.0,
+    "strikeRate": 0,
+    "wickets": 151,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Yash Thakur",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 73,
+    "runs": 38,
+    "battingAverage": 6.33,
+    "strikeRate": 0,
+    "wickets": 108,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Matthew Short",
+   "role": "Allrounder",
+   "country": "Australia",
+   "basePrice": 75,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 24,
+    "runs": 416,
+    "battingAverage": 20.8,
+    "strikeRate": 0,
+    "wickets": 9,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Spencer Johnson",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 75,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 11,
+    "runs": 0,
+    "battingAverage": 0.0,
+    "strikeRate": 0,
+    "wickets": 17,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Jamie Overton",
+   "role": "Allrounder",
+   "country": "England",
+   "basePrice": 75,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 27,
+    "runs": 88,
+    "battingAverage": 8.8,
+    "strikeRate": 0,
+    "wickets": 31,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Jamie_Overton.jpg",
+   "imageCredit": {
+    "author": "Harrias",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Jamie_Overton.jpg"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Romario Shepherd",
+   "role": "Allrounder",
+   "country": "West Indies",
+   "basePrice": 75,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 231,
+    "runs": 2545,
+    "battingAverage": 24.95,
+    "strikeRate": 0,
+    "wickets": 212,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Ajinkya Rahane",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 20,
+    "runs": 375,
+    "battingAverage": 20.83,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/9/96/Ajinkya_Rahane_2016_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Bollywood Hungama",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Ajinkya_Rahane_2016_(cropped).jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Tim Seifert",
+   "role": "Wicketkeeper",
+   "country": "New Zealand",
+   "basePrice": 75,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 95,
+    "runs": 2408,
+    "battingAverage": 30.87,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Rovman Powell",
+   "role": "Batsman",
+   "country": "West Indies",
+   "basePrice": 75,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 107,
+    "runs": 2068,
+    "battingAverage": 25.85,
+    "strikeRate": 0,
+    "wickets": 5,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Salil Arora",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "David Payne",
+   "role": "Bowler",
+   "country": "England",
+   "basePrice": 75,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 242,
+    "runs": 298,
+    "battingAverage": 6.93,
+    "strikeRate": 0,
+    "wickets": 313,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Kwena Maphaka",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 75,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 18,
+    "runs": 19,
+    "battingAverage": 9.5,
+    "strikeRate": 0,
+    "wickets": 18,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Harpreet Brar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 105,
+    "runs": 427,
+    "battingAverage": 17.08,
+    "strikeRate": 0,
+    "wickets": 102,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Arshad Khan",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 19,
+    "runs": 160,
+    "battingAverage": 22.85,
+    "strikeRate": 0,
+    "wickets": 15,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Gurnoor Brar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 9,
+    "runs": 18,
+    "battingAverage": 6.0,
+    "strikeRate": 0,
+    "wickets": 10,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Eshan Malinga",
+   "role": "Bowler",
+   "country": "Sri Lanka",
+   "basePrice": 75,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 8,
+    "runs": 1,
+    "battingAverage": 1.0,
+    "strikeRate": 0,
+    "wickets": 8,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Vaibhav Sooryavanshi",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 45,
+    "runs": 1790,
+    "battingAverage": 40.68,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/6/68/Vaibhav_Suryavanshi_meets_PM_Modi.jpg",
+   "imageCredit": {
+    "author": "Prime Minister's Office",
+    "license": "GODL-India",
+    "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+    "page": "https://commons.wikimedia.org/wiki/File:Vaibhav_Suryavanshi_meets_PM_Modi.jpg"
+   },
+   "team2026": "RR"
+  },
+  {
+   "name": "Ryan Rickelton",
+   "role": "Wicketkeeper",
+   "country": "South Africa",
+   "basePrice": 75,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 29,
+    "runs": 741,
+    "battingAverage": 28.5,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/2_40_Ryan_Rickleton.jpg/500px-2_40_Ryan_Rickleton.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:2_40_Ryan_Rickleton.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Quinton de Kock",
+   "role": "Wicketkeeper",
+   "country": "South Africa",
+   "basePrice": 75,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 110,
+    "runs": 3095,
+    "battingAverage": 30.95,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/QUINTON_DE_KOCK_%2815681398316%29.jpg/500px-QUINTON_DE_KOCK_%2815681398316%29.jpg",
+   "imageCredit": {
+    "author": "NAPARAZZI",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:QUINTON_DE_KOCK_(15681398316).jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Akash Deep",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 48,
+    "runs": 84,
+    "battingAverage": 10.5,
+    "strikeRate": 0,
+    "wickets": 52,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Akash_Deep.jpg/500px-Akash_Deep.jpg",
+   "imageCredit": {
+    "author": "JaumeBG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Akash_Deep.jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Jaydev Unadkat",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 10,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 14,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/2_09_Jaydev_Unadkat_1.jpg/500px-2_09_Jaydev_Unadkat_1.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:2_09_Jaydev_Unadkat_1.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Brydon Carse",
+   "role": "Bowler",
+   "country": "England",
+   "basePrice": 75,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 14,
+    "runs": 46,
+    "battingAverage": 9.2,
+    "strikeRate": 0,
+    "wickets": 20,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/1_24_Brydon_Carse.jpg/500px-1_24_Brydon_Carse.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:1_24_Brydon_Carse.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Donovan Ferreira",
+   "role": "Allrounder",
+   "country": "South Africa",
+   "basePrice": 75,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 16,
+    "runs": 240,
+    "battingAverage": 18.46,
+    "strikeRate": 0,
+    "wickets": 2,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Naman Tiwari",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 75,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "George Linde",
+   "role": "Allrounder",
+   "country": "South Africa",
+   "basePrice": 75,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 37,
+    "runs": 403,
+    "battingAverage": 19.19,
+    "strikeRate": 0,
+    "wickets": 35,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Ravi Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Sameer Rizvi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 30,
+    "runs": 504,
+    "battingAverage": 29.64,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Vishnu Vinod",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 72,
+    "runs": 1757,
+    "battingAverage": 32.53,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Yash Raj Punja",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Ashok Sharma",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Shubham Dubey",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 32,
+    "runs": 695,
+    "battingAverage": 38.61,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Xavier Bartlett",
+   "role": "Bowler",
+   "country": "Australia",
+   "basePrice": 50,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 22,
+    "runs": 77,
+    "battingAverage": 11.0,
+    "strikeRate": 0,
+    "wickets": 24,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Corbin Bosch",
+   "role": "Allrounder",
+   "country": "South Africa",
+   "basePrice": 50,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 22,
+    "runs": 115,
+    "battingAverage": 12.77,
+    "strikeRate": 0,
+    "wickets": 33,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Keshav Maharaj",
+   "role": "Bowler",
+   "country": "South Africa",
+   "basePrice": 50,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 54,
+    "runs": 107,
+    "battingAverage": 8.91,
+    "strikeRate": 0,
+    "wickets": 55,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/New_face_6-_Keshav_Maharaj.jpg/500px-New_face_6-_Keshav_Maharaj.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:New_face_6-_Keshav_Maharaj.jpg"
+   },
+   "team2026": "MI"
+  },
+  {
+   "name": "Dian Forrester",
+   "role": "Allrounder",
+   "country": "South Africa",
+   "basePrice": 50,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 39,
+    "runs": 750,
+    "battingAverage": 37.5,
+    "strikeRate": 0,
+    "wickets": 14,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Zak Foulkes",
+   "role": "Allrounder",
+   "country": "New Zealand",
+   "basePrice": 50,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 22,
+    "runs": 100,
+    "battingAverage": 14.28,
+    "strikeRate": 0,
+    "wickets": 22,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Sarfaraz Khan",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 111,
+    "runs": 1678,
+    "battingAverage": 25.81,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Jordan Cox",
+   "role": "Wicketkeeper",
+   "country": "England",
+   "basePrice": 50,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 10,
+    "runs": 127,
+    "battingAverage": 21.16,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Manish Pandey",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 308,
+    "runs": 7008,
+    "battingAverage": 31.56,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Manish_Pandey_%283%29.jpg/500px-Manish_Pandey_%283%29.jpg",
+   "imageCredit": {
+    "author": "Kolkata Knight Riders - Official",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Manish_Pandey_(3).jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Navdeep Saini",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 11,
+    "runs": 12,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 13,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Umran Malik",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 8,
+    "runs": 5,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 11,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/9/93/Umran_Malik_in_GGM.jpg",
+   "imageCredit": {
+    "author": "Gorav Sharma",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Umran_Malik_in_GGM.jpg"
+   },
+   "team2026": "KKR"
+  },
+  {
+   "name": "Rahul Tripathi",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 167,
+    "runs": 3644,
+    "battingAverage": 25.3,
+    "strikeRate": 0,
+    "wickets": 12,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Blessing Muzarabani",
+   "role": "Bowler",
+   "country": "Zimbabwe",
+   "basePrice": 50,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 88,
+    "runs": 50,
+    "battingAverage": 2.94,
+    "strikeRate": 0,
+    "wickets": 105,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Kamindu Mendis",
+   "role": "Allrounder",
+   "country": "Sri Lanka",
+   "basePrice": 50,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 46,
+    "runs": 766,
+    "battingAverage": 20.7,
+    "strikeRate": 0,
+    "wickets": 5,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Dilshan Madushanka",
+   "role": "Bowler",
+   "country": "Sri Lanka",
+   "basePrice": 50,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 22,
+    "runs": 2,
+    "battingAverage": 0.33,
+    "strikeRate": 0,
+    "wickets": 20,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Dilshan_madushanka_crick.jpg/500px-Dilshan_madushanka_crick.jpg",
+   "imageCredit": {
+    "author": "Massimo jay",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Dilshan_madushanka_crick.jpg"
+   },
+   "team2026": "SRH"
+  },
+  {
+   "name": "Shivam Mavi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 61,
+    "runs": 158,
+    "battingAverage": 8.77,
+    "strikeRate": 0,
+    "wickets": 57,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Kuldeep Sen",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 1",
+   "stats": {
+    "matches": 39,
+    "runs": 2,
+    "battingAverage": 1.0,
+    "strikeRate": 0,
+    "wickets": 32,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Rehan Ahmed",
+   "role": "Allrounder",
+   "country": "England",
+   "basePrice": 50,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 14,
+    "runs": 74,
+    "battingAverage": 14.8,
+    "strikeRate": 0,
+    "wickets": 15,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/3_57_Rehan_Ahmed.jpg/500px-3_57_Rehan_Ahmed.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:3_57_Rehan_Ahmed.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Dushmantha Chameera",
+   "role": "Allrounder",
+   "country": "Sri Lanka",
+   "basePrice": 50,
+   "set": "Allrounders 2",
+   "stats": {
+    "matches": 64,
+    "runs": 102,
+    "battingAverage": 6.0,
+    "strikeRate": 0,
+    "wickets": 70,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Prithvi Shaw",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Batters 4",
+   "stats": {
+    "matches": 124,
+    "runs": 3085,
+    "battingAverage": 25.08,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Prithvi_shaw.png",
+   "imageCredit": {
+    "author": "CRICKETNEXT",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Prithvi_shaw.png"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "Matthew Breetzke",
+   "role": "Batsman",
+   "country": "South Africa",
+   "basePrice": 50,
+   "set": "Batters 1",
+   "stats": {
+    "matches": 13,
+    "runs": 158,
+    "battingAverage": 13.16,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Manimaran Siddharth",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Jayant Yadav",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Allrounders 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Ishant Sharma",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Fast bowlers 2",
+   "stats": {
+    "matches": 14,
+    "runs": 8,
+    "battingAverage": 8.0,
+    "strikeRate": 0,
+    "wickets": 8,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/0/06/Ishant_Sharma_4.jpg",
+   "imageCredit": {
+    "author": "Dee03",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Ishant_Sharma_4.jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Connor Esterhuizen",
+   "role": "Batsman",
+   "country": "South Africa",
+   "basePrice": 50,
+   "set": "Batters 2",
+   "stats": {
+    "matches": 44,
+    "runs": 926,
+    "battingAverage": 28.93,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Luke Wood",
+   "role": "Bowler",
+   "country": "England",
+   "basePrice": 50,
+   "set": "Fast bowlers 3",
+   "stats": {
+    "matches": 17,
+    "runs": 4,
+    "battingAverage": 4.0,
+    "strikeRate": 0,
+    "wickets": 19,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/2/28/2_16_Luke_Wood_sequence_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Dave Morton",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "page": "https://commons.wikimedia.org/wiki/File:2_16_Luke_Wood_sequence_(cropped).jpg"
+   },
+   "team2026": "GT"
+  },
+  {
+   "name": "Robin Minz",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 9,
+    "runs": 73,
+    "battingAverage": 12.16,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Kumar Kushagra",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Wicketkeepers 1",
+   "stats": {
+    "matches": 32,
+    "runs": 676,
+    "battingAverage": 28.16,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Mahipal Lomror",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Allrounders 4",
+   "stats": {
+    "matches": 117,
+    "runs": 2407,
+    "battingAverage": 27.04,
+    "strikeRate": 0,
+    "wickets": 14,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Swapnil Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 90,
+    "runs": 988,
+    "battingAverage": 22.45,
+    "strikeRate": 0,
+    "wickets": 73,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Vipraj Nigam",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Spinners 2",
+   "stats": {
+    "matches": 15,
+    "runs": 118,
+    "battingAverage": 16.85,
+    "strikeRate": 0,
+    "wickets": 15,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Karun Nair",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 50,
+   "set": "Batters 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/d/d8/Karun_nair_With_Rashid_Zirak.jpg",
+   "imageCredit": {
+    "author": "User:Vishu@2008",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Karun_nair_With_Rashid_Zirak.jpg"
+   },
+   "team2026": "DC"
+  },
+  {
+   "name": "RS Ambrish",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Fast bowlers 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Aman Hakim Khan",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Allrounders 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Anukul Roy",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Allrounders 1",
+   "stats": {
+    "matches": 70,
+    "runs": 960,
+    "battingAverage": 25.94,
+    "strikeRate": 0,
+    "wickets": 56,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Zeeshan Ansari",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Spinners 1",
+   "stats": {
+    "matches": 10,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 6,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Madhav Tiwari",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Fast bowlers 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Yudhvir Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Fast bowlers 6",
+   "stats": {
+    "matches": 33,
+    "runs": 198,
+    "battingAverage": 9.9,
+    "strikeRate": 0,
+    "wickets": 25,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Krish Bhagat",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Ashwani Kumar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 21,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 25,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Ruchit Ahir",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Mohammad Izhar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Danish Malewar",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 2,
+    "runs": 2,
+    "battingAverage": 1.0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Mayank Markande",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 1,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Mayank Rawat",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Raghu Sharma",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Raj Angad Bawa",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 20,
+    "runs": 308,
+    "battingAverage": 23.69,
+    "strikeRate": 0,
+    "wickets": 22,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Atharva Ankolekar",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "MI"
+  },
+  {
+   "name": "Kuldip Yadav",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Akash Madhwal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 46,
+    "runs": 10,
+    "battingAverage": 5.0,
+    "strikeRate": 0,
+    "wickets": 54,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Shreyas Gopal",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 104,
+    "runs": 526,
+    "battingAverage": 16.43,
+    "strikeRate": 0,
+    "wickets": 124,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Rajasthan_Royals_player_Shreyas_Gopal_in_a_post-match_presentation_during_2019_Indian_Premier_League.png/500px-Rajasthan_Royals_player_Shreyas_Gopal_in_a_post-match_presentation_during_2019_Indian_Premier_League.png",
+   "imageCredit": {
+    "author": "CRICKETNEXT",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Rajasthan_Royals_player_Shreyas_Gopal_in_a_post-match_presentation_during_2019_Indian_Premier_League.png"
+   },
+   "team2026": "CSK"
+  },
+  {
+   "name": "Macneil Noronha",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Urvil Patel",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 62,
+    "runs": 1541,
+    "battingAverage": 26.56,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Mukesh Choudhary",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 36,
+    "runs": 32,
+    "battingAverage": 10.66,
+    "strikeRate": 0,
+    "wickets": 48,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Ramakrishna Ghosh",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 10,
+    "runs": 45,
+    "battingAverage": 9.0,
+    "strikeRate": 0,
+    "wickets": 3,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Ayush Mhatre",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 19,
+    "runs": 766,
+    "battingAverage": 47.87,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "CSK"
+  },
+  {
+   "name": "Abhinandan Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Kanishk Chouhan",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Satvik Deswal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Vihaan Malhotra",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 6,
+    "runs": 229,
+    "battingAverage": 45.8,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Vicky Ostwal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RCB"
+  },
+  {
+   "name": "Sarthak Ranjan",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Kartik Tyagi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 33,
+    "runs": 13,
+    "battingAverage": 3.25,
+    "strikeRate": 0,
+    "wickets": 25,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Saurabh Dubey",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Daksh Kamra",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Luvnith Sisodia",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 15,
+    "runs": 124,
+    "battingAverage": 13.77,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Prashant Solanki",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "KKR"
+  },
+  {
+   "name": "Harsh Dubey",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 38,
+    "runs": 177,
+    "battingAverage": 14.75,
+    "strikeRate": 0,
+    "wickets": 34,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Smaran Ravichandran",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Praful Hinge",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 8,
+    "runs": 3,
+    "battingAverage": 3.0,
+    "strikeRate": 0,
+    "wickets": 15,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Krains Fuletra",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Sakib Hussain",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Shivang Kumar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Amit Kumar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Onkar Tarmale",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Aniket Verma",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 26,
+    "runs": 399,
+    "battingAverage": 21.0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "SRH"
+  },
+  {
+   "name": "Vignesh Puthur",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Lhuan-dre Pretorius",
+   "role": "Wicketkeeper",
+   "country": "South Africa",
+   "basePrice": 30,
+   "set": "Wicketkeepers 2",
+   "stats": {
+    "matches": 13,
+    "runs": 201,
+    "battingAverage": 25.12,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Brijesh Sharma",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Sushant Mishra",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Emanjot Chahal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Aman Rao",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "RR"
+  },
+  {
+   "name": "Tripurana Vijay",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Ajay Mandal",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 46,
+    "runs": 450,
+    "battingAverage": 17.3,
+    "strikeRate": 0,
+    "wickets": 44,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Sahil Parakh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "DC"
+  },
+  {
+   "name": "Suryansh Shedge",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 3,
+    "runs": 8,
+    "battingAverage": 4.0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Suryansh_Shedge.jpg/500px-Suryansh_Shedge.jpg",
+   "imageCredit": {
+    "author": "Unknown authorUnknown author",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Suryansh_Shedge.jpg"
+   },
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Praveen Dubey",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 27,
+    "runs": 153,
+    "battingAverage": 12.75,
+    "strikeRate": 0,
+    "wickets": 25,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Vishal Nishad",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Musheer Khan",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 1,
+    "runs": 0,
+    "battingAverage": 0.0,
+    "strikeRate": 0,
+    "wickets": 1,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Pyla Avinash",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Harnoor Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "PBKS"
+  },
+  {
+   "name": "Arjun Tendulkar",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 29,
+    "runs": 189,
+    "battingAverage": 13.5,
+    "strikeRate": 0,
+    "wickets": 35,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "https://upload.wikimedia.org/wikipedia/commons/0/05/Sachin_Tendulkar_family_%28cropped%29.jpg",
+   "imageCredit": {
+    "author": "Bollywood Hungama",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sachin_Tendulkar_family_(cropped).jpg"
+   },
+   "team2026": "LSG"
+  },
+  {
+   "name": "Prince Yadav",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 41,
+    "runs": 41,
+    "battingAverage": 20.5,
+    "strikeRate": 0,
+    "wickets": 47,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Arshin Kulkarni",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Himmat Singh",
+   "role": "Batsman",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 55,
+    "runs": 917,
+    "battingAverage": 28.65,
+    "strikeRate": 0,
+    "wickets": 1,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Akash Singh",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 0,
+    "runs": 0,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": true,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Digvesh Rathi",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 4",
+   "stats": {
+    "matches": 12,
+    "runs": 1,
+    "battingAverage": 1.0,
+    "strikeRate": 0,
+    "wickets": 13,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "LSG"
+  },
+  {
+   "name": "Manav Suthar",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 5",
+   "stats": {
+    "matches": 29,
+    "runs": 94,
+    "battingAverage": 10.44,
+    "strikeRate": 0,
+    "wickets": 25,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Kulwant Khejroliya",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 6",
+   "stats": {
+    "matches": 27,
+    "runs": 19,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 27,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Anuj Rawat",
+   "role": "Wicketkeeper",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 1",
+   "stats": {
+    "matches": 77,
+    "runs": 1304,
+    "battingAverage": 25.07,
+    "strikeRate": 0,
+    "wickets": 0,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Nishant Sindhu",
+   "role": "Allrounder",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 2",
+   "stats": {
+    "matches": 26,
+    "runs": 460,
+    "battingAverage": 24.21,
+    "strikeRate": 0,
+    "wickets": 17,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  },
+  {
+   "name": "Prithvi Raj",
+   "role": "Bowler",
+   "country": "India",
+   "basePrice": 30,
+   "set": "Uncapped 3",
+   "stats": {
+    "matches": 3,
+    "runs": 3,
+    "battingAverage": 0,
+    "strikeRate": 0,
+    "wickets": 4,
+    "bowlingEconomy": 0
+   },
+   "roleGuessed": false,
+   "image": "",
+   "imageCredit": null,
+   "team2026": "GT"
+  }
+ ]
+}
